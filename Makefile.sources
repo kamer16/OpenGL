@@ -1,0 +1,5 @@
+SOURCES=main.cpp \
+	textfile.cpp
+
+OBJS=$(patsubst %.cpp, %.o, $(SOURCES))
+OBJS_DIR= $(patsubst %, _build/%, $(OBJS))
