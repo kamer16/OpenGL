@@ -3,11 +3,14 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++11 -Wconversion
 CPPFLAGS =
-LDFLAGS = -lGL -lglfw -lGLEW
+LDFLAGS = -lGL -lglfw -lGLEW -lGLU
 
 TARGET=main
 
 all:$(TARGET)
+
+run:$(TARGET)
+	./$(TARGET)
 
 $(TARGET):$(OBJS)
 	$(CXX)  $(LDFLAGS) $(OBJS_DIR) -o $(TARGET)
