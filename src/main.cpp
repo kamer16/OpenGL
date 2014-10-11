@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <SOIL/SOIL.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -168,6 +169,34 @@ void enableEnv()
   glEnable(GL_DEPTH_TEST);
 }
 
+void loadTextures()
+{
+  int width;
+  int height;
+  int channel;
+  unsigned char *image;
+  GLuint textures[2];
+  glGenTextures(2, textures);
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, textures[0]);
+  image = SOIL_load_image("tree.jpg", &width, &height, &channel, SOIL_LOAD_RGB);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB ,GL_UNSIGNED_BYTE, image);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  GLint loc0 = glGetUniformLocation(p, "texture0");
+  glUniform1i(loc0, 0);
+
+  glActiveTexture(GL_TEXTURE1);
+  glBindTexture(GL_TEXTURE_2D, textures[1]);
+  image = SOIL_load_image("canion.jpg", &width, &height, &channel, SOIL_LOAD_RGB);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB ,GL_UNSIGNED_BYTE, image);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  GLint loc1 = glGetUniformLocation(p, "texture1");
+  printf("%d, %d\n", loc0, loc1);
+  glUniform1i(loc1, 1);
+}
+
 int main(void)
 {
   GLFWwindow* window;
@@ -199,6 +228,7 @@ int main(void)
 
   enableEnv();
   loadShaders();
+  loadTextures();
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window))
