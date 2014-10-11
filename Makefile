@@ -3,7 +3,7 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++11 -Wconversion
 CPPFLAGS =
-LDFLAGS = -lGL -lglfw -lGLEW -lGLU
+LDFLAGS = -lGL -lglfw -lGLEW -lGLU -lSOIL
 
 TARGET=main
 
