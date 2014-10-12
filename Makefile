@@ -10,17 +10,22 @@ TARGET=main
 all:$(TARGET)
 
 $(TARGET):$(OBJS)
-	$(CXX)  $(LDFLAGS) $(OBJS_DIR) -o $(TARGET)
+	$(CXX)  $(LDFLAGS) $(OBJS) -o $(TARGET)
 
 run:$(TARGET)
 	./$(TARGET)
 
-%.o: src/%.cpp
+_build/%.o: src/%.cpp
 	@ mkdir -p _build
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o _build/$@
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 	@ $(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -o _build/$*.d
+	@mv -f _build/$*.d _build/$*.d.tmp
+	@sed -e 's|.*:|_build/$*.o:|' < _build/$*.d.tmp > _build/$*.d
+	@sed -e 's/.*://' -e 's/\\$$//' < _build/$*.d.tmp | fmt -1 | \
+	  sed -e 's/^ *//' -e 's/$$/:/' >> _build/$*.d
+	@rm -f _build/$*.d.tmp
 
 clean:
 	$(RM) -r _build $(TARGET)
 
--include $(patsubst %.cpp, _build/%.d, $(SOURCES))
+-include $(OBJS:.o=.d)

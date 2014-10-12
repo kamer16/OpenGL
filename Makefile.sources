@@ -5,5 +5,4 @@ SOURCES=main.cpp \
 	render_scene.cpp \
 	textfile.cpp
 
-OBJS=$(patsubst %.cpp, %.o, $(SOURCES))
-OBJS_DIR= $(patsubst %, _build/%, $(OBJS))
+OBJS=$(patsubst %.cpp, _build/%.o, $(SOURCES))
