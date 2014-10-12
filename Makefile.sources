@@ -1,4 +1,8 @@
 SOURCES=main.cpp \
+	vbo.cpp \
+	texture.cpp \
+	shader.cpp \
+	render_scene.cpp \
 	textfile.cpp
 
 OBJS=$(patsubst %.cpp, %.o, $(SOURCES))

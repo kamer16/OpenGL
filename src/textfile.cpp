@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "textfile.hpp"
+
 
 char *textFileRead(const char *fn) {
   FILE *fp;
