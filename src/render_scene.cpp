@@ -15,7 +15,6 @@ void renderScene(GLuint program_id, GLuint *vaoID)
   GLuint projMatIdx = glGetUniformLocation(program_id, "projMat");
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glClearColor(1, 0, 0, 1);
 
   glm::mat4 modelMat; // identity
   glm::mat4 projMat = glm::perspective(56.25f, 640.0f/480.0f, 0.1f, 100.0f);
@@ -27,4 +26,9 @@ void renderScene(GLuint program_id, GLuint *vaoID)
 
   glBindVertexArray(vaoID[0]);
   glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+  glBindVertexArray(vaoID[1]);
+  glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, 0);
+
+  glBindVertexArray(0);
 }

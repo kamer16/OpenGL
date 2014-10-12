@@ -42,7 +42,7 @@ int main(void)
 
   enableEnv();
   GLuint program_id = loadShaders();
-  GLuint vaoID[1];
+  GLuint vaoID[16];
   BindArrays(program_id, vaoID);
   loadTextures(program_id);
 

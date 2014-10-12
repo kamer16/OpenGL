@@ -11,5 +11,6 @@ void main()
 {
   vec4 tex1 = texture(texture0, uv);
   vec4 tex2 = texture(texture1, uv);
-  color = mix(tex1, tex2, 0.5);
+  /* TODO add real coolor and not tex coord as color */
+  color = mix(tex1, tex2, 0.5) + vec4(uv, 0, 1);
 }
