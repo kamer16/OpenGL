@@ -17,9 +17,9 @@ public:
 
   template <typename T, std::size_t N> void
   load_vertex_buffer(GLuint program_id, std::array<T, N> &cubeVerts);
-  
+
 private:
-  unsigned nb_elt_;
+  GLint nb_elt_;
   GLuint vao_id_;
   GLuint index_buffer_id_;
   GLuint vert_buffer_id_;

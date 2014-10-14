@@ -1,7 +1,7 @@
 -include Makefile.sources
 
-CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++11 -Wconversion -g
+CXX = clang++
+CXXFLAGS = -Wall -Wextra -std=c++11 -Wconversion -g -Weverything -Wsign-conversion
 CPPFLAGS =
 LDFLAGS = -lGL -lglfw -lGLEW -lSOIL -lGLU
 

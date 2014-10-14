@@ -8,15 +8,22 @@
 #include <glm/gtc/matrix_transform.hpp> /* lookAt, perspective */
 #include <glm/gtc/type_ptr.hpp> /* value_ptr */
 
-void set_model_view_matrix(GLuint program_id)
+extern double g_x, g_y, g_z, g_angle_x, g_angle_y;
+void set_model_view_matrix(GLuint program_id, float aspect_ratio)
 {
-  GLuint modelMatIdx = glGetUniformLocation(program_id, "modelMat");
-  GLuint viewMatIdx = glGetUniformLocation(program_id, "viewMat");
-  GLuint projMatIdx = glGetUniformLocation(program_id, "projMat");
+  GLint modelMatIdx = glGetUniformLocation(program_id, "modelMat");
+  GLint viewMatIdx = glGetUniformLocation(program_id, "viewMat");
+  GLint projMatIdx = glGetUniformLocation(program_id, "projMat");
 
+  glm::mat4 projMat = glm::perspective(56.25f, aspect_ratio, 0.1f, 50.0f);
+  glm::mat4 viewMat = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(-g_angle_x, 0, -1.0), glm::vec3(0, 1, 0));
   glm::mat4 modelMat; // identity
-  glm::mat4 projMat = glm::perspective(56.25f, 640.0f/480.0f, 0.1f, 100.0f);
-  glm::mat4 viewMat = glm::lookAt(glm::vec3(0, 6, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
+
+  modelMat = glm::translate(modelMat, glm::vec3(g_x, 0, g_z));
+  //modelMat = glm::rotate(modelMat, angle_x, glm::vec3(0, 1, 0));
+  //modelMat = glm::rotate(modelMat, angle_y, glm::vec3(1, 0, 0));
+
+  //modelMat = glm::translate(modelMat, glm::vec3(0, 0, -6));
 
   glUniformMatrix4fv(projMatIdx, 1, GL_FALSE, glm::value_ptr(projMat));
   glUniformMatrix4fv(viewMatIdx, 1, GL_FALSE, glm::value_ptr(viewMat));

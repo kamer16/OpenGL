@@ -33,8 +33,8 @@ char *textFileRead(const char *fn) {
       rewind(fp);
 
       if (count > 0) {
-        content = (char *)malloc(sizeof(char) * (count+1));
-        count = fread(content,sizeof(char),count,fp);
+        content = (char *) malloc(sizeof (char) * (size_t) (count + 1));
+        count = (int) fread(content, sizeof (char), (size_t) count, fp);
         content[count] = '\0';
       }
       fclose(fp);
@@ -43,7 +43,7 @@ char *textFileRead(const char *fn) {
   return content;
 }
 
-int textFileWrite(char *fn, char *s) {
+int textFileWrite(const char *fn, char *s) {
 
   FILE *fp;
   int status = 0;

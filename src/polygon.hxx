@@ -18,7 +18,7 @@ void
 polygon::load_vertex_buffer(GLuint program_id, std::array<T, N> &cube_verts)
 {
   glBindVertexArray(vao_id_);
-  GLuint pos_location = glGetAttribLocation(program_id, "in_position");
+  GLint pos_location = glGetAttribLocation(program_id, "in_position");
   glBindBuffer(GL_ARRAY_BUFFER, vert_buffer_id_);
   long unsigned byte_size = sizeof (T) * cube_verts.size();
   glBufferData(GL_ARRAY_BUFFER, byte_size, cube_verts.data(), GL_STATIC_DRAW);

@@ -11,8 +11,8 @@ GLuint load_vertex_buffer(GLuint program_id, std::array<T, N> &cubeVerts)
   GLuint vertBufferID;
   glGenBuffers(1, &vertBufferID);
 
-  GLuint pos_location = glGetAttribLocation(program_id, "in_position");
-  GLuint uv_idx = glGetAttribLocation(program_id, "in_uv");
+  GLint pos_location = glGetAttribLocation(program_id, "in_position");
+  GLint uv_idx = glGetAttribLocation(program_id, "in_uv");
   glBindBuffer(GL_ARRAY_BUFFER, vertBufferID);
   long unsigned byte_size = sizeof (T) * cubeVerts.size();
   glBufferData(GL_ARRAY_BUFFER, byte_size, cubeVerts.data(), GL_STATIC_DRAW);
