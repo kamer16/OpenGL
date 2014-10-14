@@ -63,8 +63,10 @@ int main(void)
       /* Swap front and back buffers */
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       glUseProgram(program_ids[0]);
-      renderScene(program_ids[0], vaoID);
+      set_model_view_matrix(program_ids[0]);
+      renderScene(vaoID);
       glUseProgram(program_ids[1]);
+      set_model_view_matrix(program_ids[1]);
       coord->draw();
       glfwSwapBuffers(window);
 

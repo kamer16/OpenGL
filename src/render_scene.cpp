@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp> /* lookAt, perspective */
 #include <glm/gtc/type_ptr.hpp> /* value_ptr */
 
-void renderScene(GLuint program_id, GLuint *vaoID)
+void set_model_view_matrix(GLuint program_id)
 {
   GLuint modelMatIdx = glGetUniformLocation(program_id, "modelMat");
   GLuint viewMatIdx = glGetUniformLocation(program_id, "viewMat");
@@ -21,12 +21,12 @@ void renderScene(GLuint program_id, GLuint *vaoID)
   glUniformMatrix4fv(projMatIdx, 1, GL_FALSE, glm::value_ptr(projMat));
   glUniformMatrix4fv(viewMatIdx, 1, GL_FALSE, glm::value_ptr(viewMat));
   glUniformMatrix4fv(modelMatIdx, 1, GL_FALSE, glm::value_ptr(modelMat));
+}
 
+void renderScene(GLuint *vaoID)
+{
   glBindVertexArray(vaoID[0]);
   glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-  glBindVertexArray(vaoID[1]);
-  glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, 0);
 
   glBindVertexArray(0);
 }
