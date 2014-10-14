@@ -76,6 +76,4 @@ void loadShaders(const char *vert_file, const char *frag_file,
   glDeleteShader(f);
 
   printProgramInfoLog(*program_id);
-
-  glUseProgram(*program_id);
 }

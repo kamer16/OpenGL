@@ -9,6 +9,8 @@ void loadTextures(GLuint program_id)
   int height;
   int channel;
   unsigned char *image;
+  // Set current program object for modification
+  glUseProgram(program_id);
   GLuint textures[2];
   glGenTextures(2, textures);
 
@@ -28,5 +30,5 @@ void loadTextures(GLuint program_id)
 
   GLint loc1 = glGetUniformLocation(program_id, "texture1");
   glUniform1i(loc1, 1);
+  glUseProgram(0);
 }
-

@@ -47,10 +47,13 @@ int main(void)
   GLuint program_ids[2];
   loadShaders("src/shaders/height.vert", "src/shaders/height.frag",
               &program_ids[0]);
+  loadShaders("src/shaders/color.vert", "src/shaders/color.frag",
+              &program_ids[1]);
+
   GLuint vaoID[16];
   BindArrays(program_ids[0], vaoID);
   loadTextures(program_ids[0]);
-  polygon *coord = coordinate_polygon_new(program_ids[0]);
+  polygon *coord = coordinate_polygon_new(program_ids[1]);
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window))
@@ -59,7 +62,9 @@ int main(void)
 
       /* Swap front and back buffers */
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      glUseProgram(program_ids[0]);
       renderScene(program_ids[0], vaoID);
+      glUseProgram(program_ids[1]);
       coord->draw();
       glfwSwapBuffers(window);
 
