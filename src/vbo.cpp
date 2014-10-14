@@ -98,8 +98,8 @@ polygon *coordinate_polygon_new(GLuint program_id)
       /* Vertex coord     ,  Vertex color */
     { { 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 0.5f } },
     { { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
-    { { 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f, 1.0f } },
-    { { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 0.0f } }
+    { { 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
+    { { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }
   }};
   coord->load_vertex_buffer(program_id, cube_verts);
   coord->load_index_buffer(cube_idxs);

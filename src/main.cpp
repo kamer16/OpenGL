@@ -12,8 +12,37 @@ void enableEnv()
   glEnable(GL_DEPTH_TEST);
 }
 
+float x, y, z;
+void handle_keyboard(GLFWwindow *w, int key, int scancode, int action, int mods)
+{
+    (void) w;
+    const float incr = 0.1;
+    //printf("%d, %d, %d, %d\n", key, scancode, action, mods);
+    // Left arraw
+    if (scancode == 113) {
+        printf("left\n");
+        x -= incr;
+    }
+    // Up arraw
+    else if (scancode == 111) {
+        printf("up\n");
+        z -= incr;
+    }
+    // Down arraw
+    else if (scancode == 116) {
+        printf("down\n");
+        z+= incr;
+    }
+    // Right arraw
+    else if (scancode == 114) {
+        printf("right\n");
+        x += incr;
+    }
+}
+
 int main(void)
 {
+    x = y = z = 0.1f;
   GLFWwindow* window;
 
   /* Initialize the library */
@@ -54,6 +83,7 @@ int main(void)
   BindArrays(program_ids[0], vaoID);
   loadTextures(program_ids[0]);
   polygon *coord = coordinate_polygon_new(program_ids[1]);
+  glfwSetKeyCallback(window, handle_keyboard);
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window))
