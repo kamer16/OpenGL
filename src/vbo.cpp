@@ -94,9 +94,12 @@ polygon *coordinate_polygon_new(GLuint program_id)
   std::array<unsigned int, 6> cube_idxs = {{
     0, 1, 0, 2, 0, 3
   }};
-  std::array<Vert, 4> cube_verts = {{
-    { {  0.0f,  0.0f,  0.0f }, { 0.5f, 0.5f } }, { {  1.0f,  0.0f, 0.0f }, { 1.0f, 0.0f } },
-    { { 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f } }, { { 0.0f, 0.0f,  1.0f }, { 1.0f, 1.0f } }
+  std::array<color_vert, 4> cube_verts = {{
+      /* Vertex coord     ,  Vertex color */
+    { { 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 0.5f } },
+    { { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
+    { { 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f, 1.0f } },
+    { { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 0.0f } }
   }};
   coord->load_vertex_buffer(program_id, cube_verts);
   coord->load_index_buffer(cube_idxs);

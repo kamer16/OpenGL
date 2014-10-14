@@ -34,5 +34,12 @@ polygon::load_vertex_buffer(GLuint program_id, std::array<T, N> &cube_verts)
     GLvoid *offset = (GLvoid *) sizeof (Vec3);
     glVertexAttribPointer(uv_idx, 2, GL_FLOAT, GL_FALSE, sizeof (T), offset);
   }
+  // Sets shaders attribute for color (r, g, b)
+  GLint color_idx = glGetAttribLocation(program_id, "in_color");
+  if (color_idx != -1) {
+    glEnableVertexAttribArray(color_idx); // Matches layout (location = 1)
+    GLvoid *offset = (GLvoid *) sizeof (Vec3);
+    glVertexAttribPointer(color_idx, 3, GL_FLOAT, GL_FALSE, sizeof (T), offset);
+  }
   glBindVertexArray(0);
 }
