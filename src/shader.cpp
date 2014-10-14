@@ -39,16 +39,14 @@ static void printProgramInfoLog(GLuint obj)
 }
 
 
-GLuint loadShaders()
+void loadShaders(const char *vert_file, const char *frag_file,
+                 GLuint *program_id)
 {
-  GLuint program_id;
   char *vs = NULL,*fs = NULL;
 
   GLuint v = glCreateShader(GL_VERTEX_SHADER);
   GLuint f = glCreateShader(GL_FRAGMENT_SHADER);
 
-  const char *vert_file = "src/shaders/height.vert";
-  const char *frag_file = "src/shaders/height.frag";
   vs = textFileRead(vert_file);
   fs = textFileRead(frag_file);
 
@@ -66,13 +64,18 @@ GLuint loadShaders()
   printShaderInfoLog(v);
   printShaderInfoLog(f);
 
-  program_id = glCreateProgram();
-  glAttachShader(program_id,v);
-  glAttachShader(program_id,f);
+  *program_id = glCreateProgram();
+  glAttachShader(*program_id,v);
+  glAttachShader(*program_id,f);
 
-  glLinkProgram(program_id);
-  printProgramInfoLog(program_id);
+  glLinkProgram(*program_id);
 
-  glUseProgram(program_id);
-  return program_id;
+  glDetachShader(*program_id, v);
+  glDetachShader(*program_id, f);
+  glDeleteShader(v);
+  glDeleteShader(f);
+
+  printProgramInfoLog(*program_id);
+
+  glUseProgram(*program_id);
 }

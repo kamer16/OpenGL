@@ -5,6 +5,7 @@
 #include "texture.hpp" // loadTextures()
 #include "vbo.hpp" // BindArrays()
 #include "render_scene.hpp" // renderScene()
+#include "polygon.hpp" // polygons
 
 void enableEnv()
 {
@@ -37,14 +38,19 @@ int main(void)
   /* We are using core version, so glewExperimental needs to be set */
   glewExperimental = GL_TRUE;
   GLenum err = glewInit();
+  glGetError();
+
   if (err != GLEW_OK)
     return -1; // or handle the error in a nicer way
 
   enableEnv();
-  GLuint program_id = loadShaders();
+  GLuint program_ids[2];
+  loadShaders("src/shaders/height.vert", "src/shaders/height.frag",
+              &program_ids[0]);
   GLuint vaoID[16];
-  BindArrays(program_id, vaoID);
-  loadTextures(program_id);
+  BindArrays(program_ids[0], vaoID);
+  loadTextures(program_ids[0]);
+  polygon *coord = coordinate_polygon_new(program_ids[0]);
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window))
@@ -52,7 +58,9 @@ int main(void)
       /* Render here */
 
       /* Swap front and back buffers */
-      renderScene(program_id, vaoID);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      renderScene(program_ids[0], vaoID);
+      coord->draw();
       glfwSwapBuffers(window);
 
       /* Poll for and process events */

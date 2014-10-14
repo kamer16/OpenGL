@@ -14,8 +14,6 @@ void renderScene(GLuint program_id, GLuint *vaoID)
   GLuint viewMatIdx = glGetUniformLocation(program_id, "viewMat");
   GLuint projMatIdx = glGetUniformLocation(program_id, "projMat");
 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
   glm::mat4 modelMat; // identity
   glm::mat4 projMat = glm::perspective(56.25f, 640.0f/480.0f, 0.1f, 100.0f);
   glm::mat4 viewMat = glm::lookAt(glm::vec3(0, 6, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));

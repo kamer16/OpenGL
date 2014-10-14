@@ -4,6 +4,7 @@
 #include <GL/glew.h> // GLuint
 
 /* Compile shaders and return the id of the newly created program */
-GLuint loadShaders();
+void loadShaders(const char *vert_file, const char *frag_file,
+                 GLuint *program_id);
 
 #endif // SHADER_HPP

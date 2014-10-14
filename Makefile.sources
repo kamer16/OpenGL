@@ -3,6 +3,7 @@ SOURCES=main.cpp \
 	texture.cpp \
 	shader.cpp \
 	render_scene.cpp \
+	polygon.cpp \
 	textfile.cpp
 
 OBJS=$(patsubst %.cpp, _build/%.o, $(SOURCES))
