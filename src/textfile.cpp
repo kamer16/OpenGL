@@ -33,9 +33,10 @@ char *textFileRead(const char *fn) {
       rewind(fp);
 
       if (count > 0) {
-        content = (char *) malloc(sizeof (char) * (size_t) (count + 1));
-        count = (int) fread(content, sizeof (char), (size_t) count, fp);
-        content[count] = '\0';
+        content = new char[count + 1];
+        size_t nb_items = fread(content, sizeof (char),
+                                static_cast<size_t>(count), fp);
+        content[nb_items] = '\0';
       }
       fclose(fp);
     }

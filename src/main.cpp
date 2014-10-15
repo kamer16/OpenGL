@@ -88,7 +88,7 @@ int main(void)
   GLFWmonitor *monitor = NULL;
   int width = 1080;
   int height = 768;
-  float aspect_ration = (float) width / (float) height;
+  float aspect_ration = static_cast<float>(width) / static_cast<float>(height);
   window = glfwCreateWindow(width, height, "Hello World", monitor, NULL);
   if (!window)
     {

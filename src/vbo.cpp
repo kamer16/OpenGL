@@ -23,7 +23,7 @@ GLuint load_vertex_buffer(GLuint program_id, std::array<T, N> &cubeVerts)
 
   // Sets shaders attribute for texture coordinates
   glEnableVertexAttribArray(uv_idx); // Matches layout (location = 1)
-  GLvoid *offset = (GLvoid *) sizeof (Vec3);
+  GLvoid *offset = reinterpret_cast<GLvoid *>(sizeof (Vec3));
   glVertexAttribPointer(uv_idx, 2, GL_FLOAT, GL_FALSE, sizeof (T), offset);
 
   return vertBufferID;

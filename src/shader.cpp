@@ -1,4 +1,3 @@
-#include <stdlib.h> // malloc, free
 #include <stdio.h> // printf
 
 #include "textfile.hpp"
@@ -12,12 +11,12 @@ static void printShaderInfoLog(GLuint obj)
 
   glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &infologLength);
 
-  if (infologLength > 0)
+  if (infologLength > 1)
     {
-      infoLog = (char *) malloc((size_t) infologLength);
+      infoLog = new char[infologLength];
       glGetShaderInfoLog(obj, infologLength, &charsWritten, infoLog);
-      printf("%s\n",infoLog);
-      free(infoLog);
+      printf("Shader Log:%s\n",infoLog);
+      delete[] infoLog;
     }
 }
 
@@ -29,12 +28,12 @@ static void printProgramInfoLog(GLuint obj)
 
   glGetProgramiv(obj, GL_INFO_LOG_LENGTH,&infologLength);
 
-  if (infologLength > 0)
+  if (infologLength > 1)
     {
-      infoLog = (char *)malloc((size_t) infologLength);
+      infoLog = new char[infologLength];
       glGetProgramInfoLog(obj, infologLength, &charsWritten, infoLog);
-      printf("%s\n",infoLog);
-      free(infoLog);
+      printf("Program Log:%s\n", infoLog);
+      delete[] infoLog;
     }
 }
 
@@ -56,7 +55,8 @@ void loadShaders(const char *vert_file, const char *frag_file,
   glShaderSource(v, 1, &vv,NULL);
   glShaderSource(f, 1, &ff,NULL);
 
-  free(vs);free(fs);
+  delete[] vs;
+  delete[] fs;
 
   glCompileShader(v);
   glCompileShader(f);
