@@ -41,41 +41,29 @@ void handle_keyboard(GLFWwindow *w, int key, int scancode, int action, int mods)
     (void) key;
     (void) action;
     (void) mods;
-    const float incr = 0.1f;
+    const float incr = 0.4f;
+    const float pi = 3.141592653589;
     if (action !=  GLFW_PRESS && action != GLFW_REPEAT)
         return;
     // Left arraw
     if (scancode == 113) {
-        g_x -= incr;
+        g_x += glm::sin(pi / 2 - g_angle_x) * incr;
+        g_z += glm::cos(pi / 2 - g_angle_x) * incr;
     }
     // Right arraw
     else if (scancode == 114) {
-        g_x += incr;
+        g_x -= glm::sin(pi / 2 - g_angle_x) * incr;
+        g_z -= glm::cos(pi / 2 - g_angle_x) * incr;
     }
     // Up arraw
     else if (scancode == 111) {
-        double h_pi = 3.14159265359 / 2;
         g_z += glm::cos(-g_angle_x) * incr;
-        printf("g_z += %f\n", glm::cos(-g_angle_x) * incr);
-        if (g_angle_x > 0) {
-          g_x += glm::cos(h_pi - g_angle_x) * incr;
-          printf("%f angle\n", g_angle_x);
-          printf("g_x += %f\n", glm::cos(h_pi - g_angle_x) * incr);
-        }
-        else {
-          printf("%f angle\n", g_angle_x);
-          printf("g_x += %f\n", glm::cos(h_pi + g_angle_x) * incr);
-          g_x += glm::cos(h_pi + g_angle_x) * incr;
-          }
+        g_x += glm::sin(-g_angle_x) * incr;
     }
     // Down arraw
     else if (scancode == 116) {
-        double h_pi = 3.14159265359 / 2;
-        g_z-= glm::cos(-g_angle_x) * incr;
-        if (g_angle_x > 0)
-          g_x -= glm::cos(h_pi - g_angle_x) * incr;
-        else
-          g_x -= glm::cos(h_pi + g_angle_x) * incr;
+        g_z -= glm::cos(-g_angle_x) * incr;
+        g_x -= glm::sin(-g_angle_x) * incr;
     }
     else if (scancode == 25) {
         g_y += incr;
@@ -88,7 +76,9 @@ void handle_keyboard(GLFWwindow *w, int key, int scancode, int action, int mods)
 int main(int argc, char *argv[])
 {
   (void) argv;
-  g_angle_x =  g_angle_y = g_x = g_y = g_z = 0.0f;
+  g_angle_x =  g_angle_y = g_x;
+  g_z = -6.0f;
+  g_y = -0.5f;
   GLFWwindow* window;
 
   /* Initialize the library */
@@ -140,7 +130,6 @@ int main(int argc, char *argv[])
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   else // TODO somehow not working, Bug in GLFW ??
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window))
