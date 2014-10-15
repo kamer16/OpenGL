@@ -27,13 +27,12 @@ double g_x, g_y, g_z, g_angle_x, g_angle_y;
 
 void handle_mouse_position(GLFWwindow *w, double x, double y)
 {
-    const double pi = 3.14159265359;
     int height, width;
     glfwGetWindowSize(w, &width, &height);
     // Allow a rotation of up to 45 degrees left and right.
     // Make center of screen the initial position
-    g_angle_x = (x - width / 2) / (width / 2) * (pi / 2);
-    g_angle_y = (y - height / 2) / (height / 2) * (pi / 2);
+    g_angle_x = (x - width / 2) / (width / 2);
+    g_angle_y = (y - height / 2) / (height / 2);
 }
 
 void handle_keyboard(GLFWwindow *w, int key, int scancode, int action, int mods)
@@ -42,26 +41,41 @@ void handle_keyboard(GLFWwindow *w, int key, int scancode, int action, int mods)
     (void) key;
     (void) action;
     (void) mods;
-    const float incr = 1.0;
-    if (action !=  GLFW_PRESS)
+    const float incr = 0.1f;
+    if (action !=  GLFW_PRESS && action != GLFW_REPEAT)
         return;
     // Left arraw
     if (scancode == 113) {
         g_x -= incr;
     }
-    // Up arraw
-    else if (scancode == 111) {
-        g_z += 1;
-        g_x += g_angle_x;
-        printf("moving: (%f, %f)\n", g_angle_x, 1.0f);
-    }
-    // Down arraw
-    else if (scancode == 116) {
-        g_z-= 1;
-    }
     // Right arraw
     else if (scancode == 114) {
         g_x += incr;
+    }
+    // Up arraw
+    else if (scancode == 111) {
+        double h_pi = 3.14159265359 / 2;
+        g_z += glm::cos(-g_angle_x) * incr;
+        printf("g_z += %f\n", glm::cos(-g_angle_x) * incr);
+        if (g_angle_x > 0) {
+          g_x += glm::cos(h_pi - g_angle_x) * incr;
+          printf("%f angle\n", g_angle_x);
+          printf("g_x += %f\n", glm::cos(h_pi - g_angle_x) * incr);
+        }
+        else {
+          printf("%f angle\n", g_angle_x);
+          printf("g_x += %f\n", glm::cos(h_pi + g_angle_x) * incr);
+          g_x += glm::cos(h_pi + g_angle_x) * incr;
+          }
+    }
+    // Down arraw
+    else if (scancode == 116) {
+        double h_pi = 3.14159265359 / 2;
+        g_z-= glm::cos(-g_angle_x) * incr;
+        if (g_angle_x > 0)
+          g_x -= glm::cos(h_pi - g_angle_x) * incr;
+        else
+          g_x -= glm::cos(h_pi + g_angle_x) * incr;
     }
     else if (scancode == 25) {
         g_y += incr;
@@ -71,8 +85,9 @@ void handle_keyboard(GLFWwindow *w, int key, int scancode, int action, int mods)
     }
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
+  (void) argv;
   g_angle_x =  g_angle_y = g_x = g_y = g_z = 0.0f;
   GLFWwindow* window;
 
@@ -85,9 +100,9 @@ int main(void)
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   /* Create a windowed mode window and its OpenGL context */
-  GLFWmonitor *monitor = NULL;
-  int width = 1080;
-  int height = 768;
+  GLFWmonitor *monitor = argc > 1 ? glfwGetPrimaryMonitor() : NULL;
+  int width = 880;
+  int height = 520;
   float aspect_ration = static_cast<float>(width) / static_cast<float>(height);
   window = glfwCreateWindow(width, height, "Hello World", monitor, NULL);
   if (!window)
@@ -124,6 +139,7 @@ int main(void)
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   else // TODO somehow not working, Bug in GLFW ??
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window))
