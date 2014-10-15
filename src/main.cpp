@@ -132,7 +132,8 @@ int main(int argc, char *argv[])
   GLuint vaoID[16];
   BindArrays(program_ids[0], vaoID);
   loadTextures(program_ids[0]);
-  polygon *coord = coordinate_polygon_new(program_ids[1]);
+  polygon *coord = polygon::coordinate_new(program_ids[1]);
+  polygon *ground = polygon::quad_xz_new(program_ids[1]);
   glfwSetKeyCallback(window, handle_keyboard);
   glfwSetCursorPosCallback(window, handle_mouse_position);
   if (monitor)
@@ -154,6 +155,7 @@ int main(int argc, char *argv[])
       glUseProgram(program_ids[1]);
       set_model_view_matrix(program_ids[1], aspect_ration);
       coord->draw();
+      ground->draw();
       glfwSwapBuffers(window);
 
       /* Poll for and process events */

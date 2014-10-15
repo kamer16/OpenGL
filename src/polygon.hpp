@@ -9,20 +9,24 @@
 class polygon
 {
 public:
-  polygon();
-  void draw();
+    static polygon *coordinate_new(GLuint program_id);
+    static polygon *quad_xz_new(GLuint program_id);
 
-  template <typename T, std::size_t N>
-  void load_index_buffer(std::array<T, N> &cubeIdxs);
+    polygon(GLenum mode);
+    void draw();
 
-  template <typename T, std::size_t N> void
-  load_vertex_buffer(GLuint program_id, std::array<T, N> &cubeVerts);
+    template <typename T, std::size_t N>
+    void load_index_buffer(std::array<T, N> &cubeIdxs);
+
+    template <typename T, std::size_t N> void
+    load_vertex_buffer(GLuint program_id, std::array<T, N> &cubeVerts);
 
 private:
-  GLint nb_elt_;
-  GLuint vao_id_;
-  GLuint index_buffer_id_;
-  GLuint vert_buffer_id_;
+    GLint nb_elt_;
+    GLuint vao_id_;
+    GLuint index_buffer_id_;
+    GLuint vert_buffer_id_;
+    GLenum mode_;
 };
 
 # include "polygon.hxx"
