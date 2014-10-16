@@ -16,7 +16,7 @@ void set_model_view_matrix(GLuint program_id, float aspect_ratio)
   GLint viewMatIdx = glGetUniformLocation(program_id, "viewMat");
   GLint projMatIdx = glGetUniformLocation(program_id, "projMat");
 
-  glm::mat4 projMat = glm::perspective(glm::radians(56.25f), aspect_ratio, 0.1f, 100.0f);
+  glm::mat4 projMat = glm::perspective(glm::radians(56.25f), aspect_ratio, 0.1f, 10000.0f);
   glm::mat4 viewMat = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -6.0),
                                   glm::vec3(0, 1, 0));
 
