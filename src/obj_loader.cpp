@@ -5,16 +5,7 @@
 #include <cassert>
 
 #include "obj_loader.hpp"
-
-struct s_vertex_idx
-{
-    // Vertex index
-    unsigned v;
-    // Texture index
-    unsigned t;
-    // Normal index
-    unsigned n;
-};
+#include "utility.hpp"
 
 static void add_indices(std::vector<s_vertex_idx> &indices, std::istringstream &iss)
 {
@@ -44,50 +35,99 @@ static void add_indices(std::vector<s_vertex_idx> &indices, std::istringstream &
                   << std::endl;
 }
 
-static void add_normals(std::vector<float> &normals, std::istringstream &iss)
+static void add_normals(std::vector<utility::vec3> &normals, std::istringstream &iss)
 {
-    float x, y, z;
-    iss >> x>> y >> z;
+    utility::vec3 normal;
+    iss >> normal.x>> normal.y >> normal.z;
     if (iss.fail())
         std::cerr << "Missing argument for normals" << std::endl;
-    normals.push_back(x);
-    normals.push_back(y);
-    normals.push_back(z);
+    normals.push_back(normal);
 }
 
-static void add_texture_coords(std::vector<float> &text_coords,
+static void add_texture_coords(std::vector<utility::vec3> &text_coords,
                                std::istringstream &iss)
 {
-    float s, t, q;
-    q = 0;
-    iss >> s >> t;
+    utility::vec3 texture;
+    texture.z = 0;
+    iss >> texture.x >> texture.y;
     if (iss.fail())
         std::cerr << "Missing argument for texture coords" << std::endl;
-    iss >> q;
-    text_coords.push_back(s);
-    text_coords.push_back(t);
-    text_coords.push_back(q);
+    iss >> texture.z;
+    text_coords.push_back(texture);
 }
 
-static void add_vertices(std::vector<float> &vertices, std::istringstream &iss)
+static void add_vertices(std::vector<utility::vec4> &vertices, std::istringstream &iss)
 {
-    float x, y, z, w;
-    w = 1;
-    iss >> x >> y >> z;
+    utility::vec4 vertex;
+    vertex.w = 1;
+    iss >> vertex.x >> vertex.y >> vertex.z;
     if (iss.fail())
         std::cerr << "Missing argument for texture coords" << std::endl;
-    iss >> w;
-    vertices.push_back(x);
-    vertices.push_back(y);
-    vertices.push_back(z);
-    vertices.push_back(w);
+    iss >> vertex.w;
+    vertices.push_back(vertex);
 }
 
-void load_obj(const char *file)
+
+// Print out vector in the mesh format
+// Mesh will only contain triangles
+void print_results(std::vector<utility::vec4> &vertices,
+                   std::vector<utility::vec3> &normals,
+                   std::vector<utility::vec3> &text_coords,
+                   std::vector<s_vertex_idx> &indices)
 {
-    std::vector<float> vertices;
-    std::vector<float> normals;
-    std::vector<float> text_coords;
+    std::cout.setf(std::ios::fixed);
+    for (auto vertex : vertices) {
+        std::cout << "v " << vertex.x << " "<< vertex.y << " " << vertex.z
+                  << " " << vertex.w << std::endl;
+    }
+    for (auto vertex : normals) {
+        std::cout << "vn " << vertex.x << " "<< vertex.y << " " << vertex.z
+                  << std::endl;
+    }
+    for (auto vertex : text_coords) {
+        std::cout << "vt " << vertex.x << " "<< vertex.y << " " << vertex.z
+                  << std::endl;
+    }
+    unsigned counter = 0;
+    for (auto vertex : indices) {
+        if (counter % 3 == 0)
+            std::cout << "f ";
+        ++counter;
+        std::cout <<  vertex.v << "/"<< vertex.t << "/" << vertex.n << " ";
+        if (counter % 3 == 0)
+            std::cout << std::endl;
+
+    }
+}
+
+static void index_object(std::vector<utility::vec4> &vertices,
+                         std::vector<utility::vec3> &normals,
+                         std::vector<utility::vec3> &text_coords,
+                         std::vector<s_vertex_idx> &indices,
+                         std::vector<utility::vec4> &out_v,
+                         std::vector<utility::vec3> &out_n,
+                         std::vector<utility::vec3> &out_t)
+{
+    for (unsigned i = 0; i < indices.size(); ++i) {
+
+        unsigned v_idx = indices[i].v;
+        unsigned n_idx = indices[i].n;
+        unsigned t_idx = indices[i].t;
+
+        out_v.push_back(vertices[v_idx]);
+        out_n.push_back(normals[n_idx]);
+        out_t.push_back(text_coords[t_idx]);
+    }
+}
+void
+load_obj(const char *file,
+         std::vector<utility::vec4> &out_v,
+         std::vector<utility::vec3> &out_n,
+         std::vector<utility::vec3> &out_t)
+{
+    std::vector<utility::vec4> vertices;
+    std::vector<utility::vec3> normals;
+    std::vector<utility::vec3> text_coords;
     std::vector<s_vertex_idx> indices;
 
     std::ifstream instr;
@@ -115,4 +155,5 @@ void load_obj(const char *file)
         std::getline(instr, buff);
         token.clear();
     }
+    index_object(vertices, normals, text_coords, indices, out_v, out_n, out_t);
 }

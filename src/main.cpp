@@ -129,7 +129,10 @@ int main(int argc, char *argv[])
   glfwSetKeyCallback(window, handle_keyboard);
   glfwSetCursorPosCallback(window, handle_mouse_position);
 
-  load_obj("data/Cube.obj");
+  std::vector<utility::vec4> vertices;
+  std::vector<utility::vec3> normals;
+  std::vector<utility::vec3> text_coords;
+  load_obj("data/Cube.obj", vertices, normals, text_coords);
   if (monitor)
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   else // TODO somehow not working, Bug in GLFW ??
