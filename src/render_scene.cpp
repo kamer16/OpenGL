@@ -16,6 +16,9 @@ void set_model_view_matrix(GLuint program_id, float aspect_ratio)
   GLint viewMatIdx = glGetUniformLocation(program_id, "viewMat");
   GLint projMatIdx = glGetUniformLocation(program_id, "projMat");
 
+  GLint model_view_idx = glGetUniformLocation(program_id, "model_view_mat");
+  GLint normal_mat_idx = glGetUniformLocation(program_id, "normal_mat");
+
   glm::mat4 projMat = glm::perspective(glm::radians(56.25f), aspect_ratio, 0.1f, 10000.0f);
   glm::mat4 viewMat = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -6.0),
                                   glm::vec3(0, 1, 0));
@@ -25,9 +28,14 @@ void set_model_view_matrix(GLuint program_id, float aspect_ratio)
   modelMat = glm::rotate(modelMat, static_cast<float>(g_angle_x), glm::vec3(0, 1, 0));
   modelMat = glm::translate(modelMat, glm::vec3(g_x, g_y, g_z));
 
+  glm::mat4 model_view_mat = viewMat * modelMat;
+  glm::mat3 normal_mat = glm::transpose(glm::inverse(glm::mat3(model_view_mat)));
+
   glUniformMatrix4fv(projMatIdx, 1, GL_FALSE, glm::value_ptr(projMat));
   glUniformMatrix4fv(viewMatIdx, 1, GL_FALSE, glm::value_ptr(viewMat));
   glUniformMatrix4fv(modelMatIdx, 1, GL_FALSE, glm::value_ptr(modelMat));
+  glUniformMatrix4fv(model_view_idx, 1, GL_FALSE, glm::value_ptr(model_view_mat));
+  glUniformMatrix4fv(normal_mat_idx, 1, GL_FALSE, glm::value_ptr(normal_mat));
 }
 
 void render_arrays(GLuint *vaoID, int nb_elt)
