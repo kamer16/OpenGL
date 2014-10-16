@@ -103,7 +103,7 @@ void bind_object(GLuint program_id, GLuint *vaoID,
   GLuint vertex_buffer_id;
   glGenBuffers(1, &vertex_buffer_id);
   glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
-  long unsigned byte_size = sizeof (float) * vertices.size();
+  long unsigned byte_size = sizeof (utility::vec3) * vertices.size();
   glBufferData(GL_ARRAY_BUFFER, byte_size, vertices.data(), GL_STATIC_DRAW);
   GLint pos_location = glGetAttribLocation(program_id, "in_position");
   glEnableVertexAttribArray(pos_location); // Matches layout (location = 0)
@@ -118,7 +118,7 @@ void bind_object(GLuint program_id, GLuint *vaoID,
   GLuint text_coord_id;
   glGenBuffers(1, &text_coord_id);
   glBindBuffer(GL_ARRAY_BUFFER, text_coord_id);
-  long unsigned byte_size = sizeof (float) * text_coords.size();
+  long unsigned byte_size = sizeof (utility::vec3) * text_coords.size();
   glBufferData(GL_ARRAY_BUFFER, byte_size, text_coords.data(), GL_STATIC_DRAW);
   GLint uv_idx = glGetAttribLocation(program_id, "in_uv");
   glEnableVertexAttribArray(uv_idx); // Matches layout (location = 1)

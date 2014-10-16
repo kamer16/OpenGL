@@ -67,8 +67,8 @@ static void add_vertices(std::vector<utility::vec3> &vertices, std::istringstrea
 // Print out vector in the mesh format
 // Mesh will only contain triangles
 void print_results(std::vector<utility::vec3> &vertices,
-                   std::vector<utility::vec3> &normals,
                    std::vector<utility::vec2> &text_coords,
+                   std::vector<utility::vec3> &normals,
                    std::vector<s_vertex_idx> &indices)
 {
     std::cout.setf(std::ios::fixed);
@@ -76,12 +76,12 @@ void print_results(std::vector<utility::vec3> &vertices,
         std::cout << "v " << vertex.x << " "<< vertex.y << " " << vertex.z
                   <<  std::endl;
     }
+    for (auto vertex : text_coords) {
+        std::cout << "vt " << vertex.x << " "<< vertex.y << std::endl;
+    }
     for (auto vertex : normals) {
         std::cout << "vn " << vertex.x << " "<< vertex.y << " " << vertex.z
                   << std::endl;
-    }
-    for (auto vertex : text_coords) {
-        std::cout << "vt " << vertex.x << " "<< vertex.y << std::endl;
     }
     unsigned counter = 0;
     for (auto vertex : indices) {
@@ -95,13 +95,14 @@ void print_results(std::vector<utility::vec3> &vertices,
     }
 }
 
-static void index_object(std::vector<utility::vec3> &vertices,
-                         std::vector<utility::vec3> &normals,
-                         std::vector<utility::vec2> &text_coords,
-                         std::vector<s_vertex_idx> &indices,
-                         std::vector<utility::vec3> &out_v,
-                         std::vector<utility::vec3> &out_n,
-                         std::vector<utility::vec2> &out_t)
+static void
+index_object(std::vector<utility::vec3> &vertices,
+             std::vector<utility::vec3> &normals,
+             std::vector<utility::vec2> &text_coords,
+             std::vector<s_vertex_idx> &indices,
+             std::vector<utility::vec3> &out_v,
+             std::vector<utility::vec3> &out_n,
+             std::vector<utility::vec2> &out_t)
 {
     for (unsigned i = 0; i < indices.size(); ++i) {
 
@@ -115,6 +116,25 @@ static void index_object(std::vector<utility::vec3> &vertices,
         out_t.push_back(text_coords[t_idx]);
     }
 }
+
+static void
+print_trinagles( std::vector<utility::vec3> &vertices,
+                 std::vector<utility::vec3> &normals,
+                 std::vector<utility::vec2> &text_coords)
+{
+    std::cout.setf(std::ios::fixed);
+    if (vertices.size() != normals.size() || vertices.size() == text_coords.size())
+        std::cout << "Object loader generated different size objects" << std::endl;
+
+    for (unsigned i = 0; i < vertices.size(); ++i) {
+        std::cout << vertices[i].x << ", " << vertices[i].y << ", "
+                  << vertices[i].z << "\t";
+        std::cout << normals[i].x << ", " << normals[i].y << ", "
+                  << normals[i].z << "\t";
+        std::cout << text_coords[i].x << ", " << text_coords[i].y << std::endl;
+    }
+}
+
 void
 load_obj(const char *file,
          std::vector<utility::vec3> &out_v,

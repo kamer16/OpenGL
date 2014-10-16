@@ -26,8 +26,8 @@ void load_obj(const char *file,
 // Print out vector in the mesh format
 // Mesh will only contain triangles
 void print_results(std::vector<utility::vec3> &vertices,
-                   std::vector<utility::vec3> &normals,
                    std::vector<utility::vec2> &text_coords,
+                   std::vector<utility::vec3> &normals,
                    std::vector<s_vertex_idx> &indices);
 
 #endif // OBJ_LOADER_HPP
