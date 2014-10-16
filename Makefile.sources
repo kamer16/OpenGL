@@ -4,6 +4,7 @@ SOURCES=main.cpp \
 	shader.cpp \
 	render_scene.cpp \
 	polygon.cpp \
+	obj_loader.cpp \
 	textfile.cpp
 
 OBJS=$(patsubst %.cpp, _build/%.o, $(SOURCES))

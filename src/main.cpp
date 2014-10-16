@@ -13,6 +13,8 @@
 #include "render_scene.hpp" // renderScene()
 #include "polygon.hpp" // polygons
 
+#include "obj_loader.hpp"
+
 void enableEnv();
 void handle_mouse_position(GLFWwindow *w, double x, double y);
 void handle_keyboard(GLFWwindow *w, int key, int scancode, int action, int mods);
@@ -126,6 +128,8 @@ int main(int argc, char *argv[])
   polygon *ground = polygon::quad_xz_new(program_ids[1]);
   glfwSetKeyCallback(window, handle_keyboard);
   glfwSetCursorPosCallback(window, handle_mouse_position);
+
+  load_obj("data/Cube.obj");
   if (monitor)
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   else // TODO somehow not working, Bug in GLFW ??
