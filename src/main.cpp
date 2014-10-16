@@ -44,7 +44,7 @@ void handle_keyboard(GLFWwindow *w, int key, int scancode, int action, int mods)
     (void) action;
     (void) mods;
     const float incr = 0.4f;
-    const float pi = 3.141592653589;
+    const float pi = 3.141592653589f;
     if (action !=  GLFW_PRESS && action != GLFW_REPEAT)
         return;
     // Left arraw
