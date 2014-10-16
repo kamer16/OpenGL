@@ -26,7 +26,7 @@ polygon::coordinate_new(GLuint program_id)
   std::array<unsigned int, 6> cube_idxs = {{
     0, 1, 0, 2, 0, 3
   }};
-  std::array<color_vert, 4> cube_verts = {{
+  std::array<utility::color_vert, 4> cube_verts = {{
       /* Vertex coord     ,  Vertex color */
     { { 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 0.5f } },
     { { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
@@ -45,7 +45,7 @@ polygon::quad_xz_new(GLuint program_id)
   std::array<unsigned int, 6> cube_idxs = {{
     0, 1, 2, 2, 0, 3
   }};
-  std::array<color_vert, 4> cube_verts = {{
+  std::array<utility::color_vert, 4> cube_verts = {{
       /* Vertex coord     ,  Vertex color */
     { { -0.5f, 0.0f, -0.5f }, { 0.5f, 0.0f, 0.0f } },
     { { 0.5f, 0.0f, -0.5f }, { 0.0f, 0.0f, 0.5f } },

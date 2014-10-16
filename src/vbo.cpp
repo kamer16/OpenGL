@@ -23,7 +23,7 @@ GLuint load_vertex_buffer(GLuint program_id, std::array<T, N> &cubeVerts)
 
   // Sets shaders attribute for texture coordinates
   glEnableVertexAttribArray(uv_idx); // Matches layout (location = 1)
-  GLvoid *offset = reinterpret_cast<GLvoid *>(sizeof (Vec3));
+  GLvoid *offset = reinterpret_cast<GLvoid *>(sizeof (utility::vec3));
   glVertexAttribPointer(uv_idx, 2, GL_FLOAT, GL_FALSE, sizeof (T), offset);
 
   return vertBufferID;
@@ -54,7 +54,7 @@ void BindArrays(GLuint program_id, GLuint *vaoID)
     3, 7, 6, 3, 6, 2  // Back
   }};
 
-  std::array<Vert, 8> cubeVerts = {{
+  std::array<utility::vert, 8> cubeVerts = {{
     { {  0.5f,  0.5f,  0.5f }, { 1.0f, 0.0f } }, { {  0.5f,  0.5f, -0.5f }, { 0.0f, 0.0f } },
     { {  0.5f, -0.5f, -0.5f }, { 0.0f, 1.0f } }, { {  0.5f, -0.5f,  0.5f }, { 0.0f, 0.0f } },
     { { -0.5f,  0.5f,  0.5f }, { 0.0f, 0.0f } }, { { -0.5f,  0.5f, -0.5f }, { 0.0f, 1.0f } },
@@ -70,7 +70,7 @@ void BindArrays(GLuint program_id, GLuint *vaoID)
   std::array<unsigned int, 6> cubeIdxs2 = {{
     0, 1, 0, 2, 0, 3
   }};
-  std::array<Vert, 8> cubeVerts2 = {{
+  std::array<utility::vert, 8> cubeVerts2 = {{
     { {  0.0f,  0.0f,  0.0f }, { 0.5f, 0.5f } }, { {  1.0f,  0.0f, 0.0f }, { 1.0f, 0.0f } },
     { { 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f } }, { { 0.0f, 0.0f,  1.0f }, { 1.0f, 1.0f } }
   }};
