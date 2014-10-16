@@ -15,6 +15,8 @@
 
 #include "obj_loader.hpp"
 
+#include <iostream>
+
 void enableEnv();
 void handle_mouse_position(GLFWwindow *w, double x, double y);
 void handle_keyboard(GLFWwindow *w, int key, int scancode, int action, int mods);
@@ -129,10 +131,12 @@ int main(int argc, char *argv[])
   glfwSetKeyCallback(window, handle_keyboard);
   glfwSetCursorPosCallback(window, handle_mouse_position);
 
-  std::vector<utility::vec4> vertices;
+  std::vector<utility::vec3> vertices;
   std::vector<utility::vec3> normals;
-  std::vector<utility::vec3> text_coords;
+  std::vector<utility::vec2> text_coords;
   load_obj("data/Cube.obj", vertices, normals, text_coords);
+  GLuint mesh_vao_id;
+  bind_object(program_ids[0], &mesh_vao_id, vertices, normals, text_coords);
   if (monitor)
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   else // TODO somehow not working, Bug in GLFW ??
@@ -147,7 +151,8 @@ int main(int argc, char *argv[])
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       glUseProgram(program_ids[0]);
       set_model_view_matrix(program_ids[0], aspect_ration);
-      renderScene(vaoID);
+      render_elements(vaoID, 36);
+      render_arrays(&mesh_vao_id, (int) vertices.size());
       glUseProgram(program_ids[1]);
       set_model_view_matrix(program_ids[1], aspect_ration);
       coord->draw();

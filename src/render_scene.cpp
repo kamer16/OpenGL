@@ -30,10 +30,16 @@ void set_model_view_matrix(GLuint program_id, float aspect_ratio)
   glUniformMatrix4fv(modelMatIdx, 1, GL_FALSE, glm::value_ptr(modelMat));
 }
 
-void renderScene(GLuint *vaoID)
+void render_arrays(GLuint *vaoID, int nb_elt)
 {
   glBindVertexArray(vaoID[0]);
-  glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+  glDrawArrays(GL_TRIANGLES, 0, nb_elt);
+  glBindVertexArray(0);
+}
 
+void render_elements(GLuint *vaoID, int nb_elt)
+{
+  glBindVertexArray(vaoID[0]);
+  glDrawElements(GL_TRIANGLES, nb_elt, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 }

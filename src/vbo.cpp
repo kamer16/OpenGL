@@ -87,3 +87,48 @@ void BindArrays(GLuint program_id, GLuint *vaoID)
   // unbind current vertex array
   glBindVertexArray(0);
 }
+
+
+void bind_object(GLuint program_id, GLuint *vaoID,
+                 std::vector<utility::vec3> vertices,
+                 std::vector<utility::vec3> normals,
+                 std::vector<utility::vec2> text_coords)
+{
+  glGenVertexArrays(1, vaoID);
+  glBindVertexArray( *vaoID);
+
+
+  // Sets shaders attribute for vertices positions
+  {
+  GLuint vertex_buffer_id;
+  glGenBuffers(1, &vertex_buffer_id);
+  glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
+  long unsigned byte_size = sizeof (float) * vertices.size();
+  glBufferData(GL_ARRAY_BUFFER, byte_size, vertices.data(), GL_STATIC_DRAW);
+  GLint pos_location = glGetAttribLocation(program_id, "in_position");
+  glEnableVertexAttribArray(pos_location); // Matches layout (location = 0)
+  glVertexAttribPointer(pos_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  // TODO leaking buffer
+  (void) vertex_buffer_id;
+  }
+
+
+  // Sets shaders attribute for texture coordinates
+  {
+  GLuint text_coord_id;
+  glGenBuffers(1, &text_coord_id);
+  glBindBuffer(GL_ARRAY_BUFFER, text_coord_id);
+  long unsigned byte_size = sizeof (float) * text_coords.size();
+  glBufferData(GL_ARRAY_BUFFER, byte_size, text_coords.data(), GL_STATIC_DRAW);
+  GLint uv_idx = glGetAttribLocation(program_id, "in_uv");
+  glEnableVertexAttribArray(uv_idx); // Matches layout (location = 1)
+  glVertexAttribPointer(uv_idx, 2, GL_FLOAT, GL_FALSE, 0, 0);
+  // TODO leaking buffer
+  (void) text_coord_id;
+  }
+
+  // TODO normals not handled
+  (void) normals;
+
+  glBindVertexArray(0);
+}

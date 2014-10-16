@@ -44,49 +44,44 @@ static void add_normals(std::vector<utility::vec3> &normals, std::istringstream 
     normals.push_back(normal);
 }
 
-static void add_texture_coords(std::vector<utility::vec3> &text_coords,
+static void add_texture_coords(std::vector<utility::vec2> &text_coords,
                                std::istringstream &iss)
 {
-    utility::vec3 texture;
-    texture.z = 0;
+    utility::vec2 texture;
     iss >> texture.x >> texture.y;
     if (iss.fail())
         std::cerr << "Missing argument for texture coords" << std::endl;
-    iss >> texture.z;
     text_coords.push_back(texture);
 }
 
-static void add_vertices(std::vector<utility::vec4> &vertices, std::istringstream &iss)
+static void add_vertices(std::vector<utility::vec3> &vertices, std::istringstream &iss)
 {
-    utility::vec4 vertex;
-    vertex.w = 1;
+    utility::vec3 vertex;
     iss >> vertex.x >> vertex.y >> vertex.z;
     if (iss.fail())
         std::cerr << "Missing argument for texture coords" << std::endl;
-    iss >> vertex.w;
     vertices.push_back(vertex);
 }
 
 
 // Print out vector in the mesh format
 // Mesh will only contain triangles
-void print_results(std::vector<utility::vec4> &vertices,
+void print_results(std::vector<utility::vec3> &vertices,
                    std::vector<utility::vec3> &normals,
-                   std::vector<utility::vec3> &text_coords,
+                   std::vector<utility::vec2> &text_coords,
                    std::vector<s_vertex_idx> &indices)
 {
     std::cout.setf(std::ios::fixed);
     for (auto vertex : vertices) {
         std::cout << "v " << vertex.x << " "<< vertex.y << " " << vertex.z
-                  << " " << vertex.w << std::endl;
+                  <<  std::endl;
     }
     for (auto vertex : normals) {
         std::cout << "vn " << vertex.x << " "<< vertex.y << " " << vertex.z
                   << std::endl;
     }
     for (auto vertex : text_coords) {
-        std::cout << "vt " << vertex.x << " "<< vertex.y << " " << vertex.z
-                  << std::endl;
+        std::cout << "vt " << vertex.x << " "<< vertex.y << std::endl;
     }
     unsigned counter = 0;
     for (auto vertex : indices) {
@@ -100,19 +95,20 @@ void print_results(std::vector<utility::vec4> &vertices,
     }
 }
 
-static void index_object(std::vector<utility::vec4> &vertices,
+static void index_object(std::vector<utility::vec3> &vertices,
                          std::vector<utility::vec3> &normals,
-                         std::vector<utility::vec3> &text_coords,
+                         std::vector<utility::vec2> &text_coords,
                          std::vector<s_vertex_idx> &indices,
-                         std::vector<utility::vec4> &out_v,
+                         std::vector<utility::vec3> &out_v,
                          std::vector<utility::vec3> &out_n,
-                         std::vector<utility::vec3> &out_t)
+                         std::vector<utility::vec2> &out_t)
 {
     for (unsigned i = 0; i < indices.size(); ++i) {
 
-        unsigned v_idx = indices[i].v;
-        unsigned n_idx = indices[i].n;
-        unsigned t_idx = indices[i].t;
+        // Our base idx is 0, not 1 like in the mesh files
+        unsigned v_idx = indices[i].v - 1;
+        unsigned n_idx = indices[i].n - 1;
+        unsigned t_idx = indices[i].t - 1;
 
         out_v.push_back(vertices[v_idx]);
         out_n.push_back(normals[n_idx]);
@@ -121,13 +117,13 @@ static void index_object(std::vector<utility::vec4> &vertices,
 }
 void
 load_obj(const char *file,
-         std::vector<utility::vec4> &out_v,
+         std::vector<utility::vec3> &out_v,
          std::vector<utility::vec3> &out_n,
-         std::vector<utility::vec3> &out_t)
+         std::vector<utility::vec2> &out_t)
 {
-    std::vector<utility::vec4> vertices;
+    std::vector<utility::vec3> vertices;
     std::vector<utility::vec3> normals;
-    std::vector<utility::vec3> text_coords;
+    std::vector<utility::vec2> text_coords;
     std::vector<s_vertex_idx> indices;
 
     std::ifstream instr;
