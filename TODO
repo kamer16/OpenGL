@@ -7,3 +7,6 @@ Buffers: Keep track of resources when generating buffers.  Currently these are
 
 Lighting: Compute specular, diffuse and ambiant lighting i-e (phong shading)
 Material: Add material to objects such as color, and light reflection color
+
+Texture: Current value of shadert texture coordinates not used generated an
+invalid value in glGetError()
