@@ -1,0 +1,16 @@
+deffred shading
+aritecture entity component
+multi-light
+normal mapping (mais pas tester)
+ asset convertor + asset manager
+- C++11, OpenGL 4.1
+- Entity component system based architecture
+- Multi-threaded execution pipeline (Gameplay, culling, pre-render, rendering)
+- Bullet Physics Library integration
+- Flexible scene organization and possibility to run multiple scenes at the same time
+- Tile based forward rendering (no implemented yet)
+- Assets conversion pipeline and assets edition at runtime (only .obj, .mtl, .tga supported at the moment, animations are not implemented yet)
+- Entities and component serialization (using [Cereal](https://github.com/USCiLab/cereal) )
+- Raycast (basic implementation for FP raycast)
+- 3D sound (basic implemetation using FMOD)
+- Post FX
