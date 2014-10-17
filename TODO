@@ -1,0 +1,9 @@
+MeshLoader: Handle .obj files with only vertices
+MeshLoader: Handle material definition
+MeshLoader: Handling multiple textures in object
+
+Buffers: Keep track of resources when generating buffers.  Currently these are
+         leaked
+
+Lighting: Compute specular, diffuse and ambiant lighting i-e (phong shading)
+Material: Add material to objects such as color, and light reflection color
