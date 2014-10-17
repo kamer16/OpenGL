@@ -118,7 +118,7 @@ void bind_object(GLuint program_id, GLuint *vaoID,
   GLuint text_coord_id;
   glGenBuffers(1, &text_coord_id);
   glBindBuffer(GL_ARRAY_BUFFER, text_coord_id);
-  long unsigned byte_size = sizeof (utility::vec3) * text_coords.size();
+  long unsigned byte_size = sizeof (utility::vec2) * text_coords.size();
   glBufferData(GL_ARRAY_BUFFER, byte_size, text_coords.data(), GL_STATIC_DRAW);
   GLint uv_idx = glGetAttribLocation(program_id, "in_uv");
   glEnableVertexAttribArray(uv_idx); // Matches layout (location = 1)
