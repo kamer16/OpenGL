@@ -139,10 +139,16 @@ index_object(std::vector<utility::vec3> &vertices,
           glm::vec3 v1 = glm::vec3(out_v[i - 2].x, out_v[i - 2].y, out_v[i - 2].z);
           glm::vec3 v2 = glm::vec3(out_v[i - 1].x, out_v[i - 1].y, out_v[i - 1].z);
           glm::vec3 v3 = glm::vec3(out_v[i].x, out_v[i].y, out_v[i].z);
-          glm::vec3 res = glm::normalize(glm::cross(v2 - v1, v3 - v1));
-          out_n.push_back({ res.x, res.y, res.z });
-          out_n.push_back({ res.x, res.y, res.z });
-          out_n.push_back({ res.x, res.y, res.z });
+
+          glm::vec3 cross = glm::cross(v2 - v1, v3 - v1);
+          if (fabs(cross.x) > 0.0001f || fabs(cross.y) > 0.0001f ||
+              fabs(cross.z) > 0.0001f)
+              cross = glm::normalize(cross);
+          else
+              std::cerr << "Undefined normal for triangular line\n";
+          out_n.push_back({ cross.x, cross.y, cross.z });
+          out_n.push_back({ cross.x, cross.y, cross.z });
+          out_n.push_back({ cross.x, cross.y, cross.z });
         }
     }
 }
@@ -222,10 +228,14 @@ load_obj(const char *file,
         std::getline(instr, buff);
         token.clear();
     }
-    if (vertices.size() == normals.size() && vertices.size() == text_coords.size())
-        index_object(vertices, normals, text_coords, indices, out_v, out_n, out_t);
-    else if (vertices.size() == normals.size())
+    if (vertices.size() == 0)
+        std::cerr << "File does not define any vertices\n";
+    if (normals.size() != 0 && text_coords.size() == 0)
         index_object(vertices, normals, indices, out_v, out_n);
-    else
+    else if (normals.size() == 0 && text_coords.size() != 0)
         index_object(vertices, text_coords, indices, out_v, out_n, out_t);
+    else if (text_coords.size() != 0)
+        index_object(vertices, normals, text_coords, indices, out_v, out_n, out_t);
+    else
+        std::cerr << "Neither textures nor normals were found ;-(\n";
 }
