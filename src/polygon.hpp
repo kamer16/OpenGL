@@ -4,8 +4,6 @@
 # include <GL/glew.h>
 # include <array>
 
-# include "render_scene.hpp"
-
 class polygon
 {
 public:

@@ -2,8 +2,6 @@
 
 #include "render_scene.hpp"
 
-#include "devices.hpp"
-
 scene::scene(GLuint program_id, float aspect_ratio, GLFWwindow *window)
     : program_id_(program_id),
       proj_mat_(glm::perspective(glm::radians(56.25f), aspect_ratio, 0.1f, 10000.0f)),
@@ -15,7 +13,17 @@ scene::scene(GLuint program_id, float aspect_ratio, GLFWwindow *window)
 }
 
 void
-scene::set_light_source()
+scene::update()
+{
+    const devices_state &device = devices_state::get_instance(window_);
+    update_rotation(device);
+    update_position(device);
+    update_light_source();
+    set_model_view_matrix();
+}
+
+void
+scene::update_light_source()
 {
   GLint light_dir_idx = glGetUniformLocation(program_id_, "light_dir");
 
@@ -57,27 +65,29 @@ scene::set_model_view_matrix()
 }
 
 void
-scene::render_arrays(GLuint *vaoID, int nb_elt)
+scene::render_arrays(GLuint vao_id, int nb_elt)
 {
-  glBindVertexArray(vaoID[0]);
+  glBindVertexArray(vao_id);
   glDrawArrays(GL_TRIANGLES, 0, nb_elt);
   glBindVertexArray(0);
 }
 
 void
-scene::render_elements(GLuint *vaoID, int nb_elt)
+scene::render_elements(GLuint vao_id, int nb_elt)
 {
-  glBindVertexArray(vaoID[0]);
+  glBindVertexArray(vao_id);
   glDrawElements(GL_TRIANGLES, nb_elt, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 }
 
 void
-scene::update_rotation()
+scene::update_rotation(const devices_state &device)
 {
+    double xpos, ypos;
+    device.get_mouse_movement(&xpos, &ypos);
+
     static double old_x = 0;
     static double old_y = 0;
-    double xpos, ypos;
     int height, width;
     glfwGetWindowSize(window_, &width, &height);
     glfwGetCursorPos(window_, &xpos, &ypos);
@@ -91,9 +101,8 @@ scene::update_rotation()
 }
 
 void
-scene::update_position()
+scene::update_position(const devices_state &device)
 {
-    devices &device = devices::get_instance();
     const float pos_incr = 10.0f;
     const float rot_incr = 0.07f;
     const float pi = 3.141592653589f;

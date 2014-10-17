@@ -3,7 +3,7 @@ SOURCES=main.cpp \
 	texture.cpp \
 	shader.cpp \
 	render_scene.cpp \
-	devices.cpp \
+	devices_state.cpp \
 	polygon.cpp \
 	obj_loader.cpp \
 	textfile.cpp
