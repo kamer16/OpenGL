@@ -1,9 +1,25 @@
 //[FRAGMENT SHADER]
 #version 330
 
+struct light_param {
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+    vec4 shininess;
+};
+struct light_source {
+    light_param param;
+    vec4 position;
+    // vector in between light_source and eye position
+    vec4 half_vector;
+};
+
 uniform vec3 light_dir;
 uniform sampler2D texture0;
 uniform sampler2D texture1;
+
+uniform light_param light;
+uniform light_param material;
 
 in vec2 uv;
 in vec3 normal;

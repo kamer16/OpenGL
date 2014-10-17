@@ -1,6 +1,13 @@
 //[VERTEX SHADER]
 #version 330
 
+struct light_param {
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+    vec4 shininess;
+};
+
 uniform mat4 projMat;
 uniform mat4 model_view_mat;
 

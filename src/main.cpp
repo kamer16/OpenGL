@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
   GLFWmonitor *monitor = argc > 1 ? glfwGetPrimaryMonitor() : NULL;
   int width = 880;
   int height = 520;
-  float aspect_ration = static_cast<float>(width) / static_cast<float>(height);
+  float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
   window = glfwCreateWindow(width, height, "Hello World", monitor, NULL);
   if (!window)
     {
@@ -207,17 +207,21 @@ int main(int argc, char *argv[])
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window))
     {
+        scene scene1(program_ids[0], aspect_ratio);
+        scene scene2(program_ids[1], aspect_ratio);
       /* Render here */
         update_position();
 
       /* Swap front and back buffers */
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       glUseProgram(program_ids[0]);
-      set_model_view_matrix(program_ids[0], aspect_ration);
-      render_elements(vaoID, 36);
-      render_arrays(&mesh_vao_id, static_cast<int>(vertices.size()));
+      scene1.set_model_view_matrix();
+      scene1.set_light_source();
+      scene1.render_elements(vaoID, 36);
+      scene1.render_arrays(&mesh_vao_id, static_cast<int>(vertices.size()));
+
       glUseProgram(program_ids[1]);
-      set_model_view_matrix(program_ids[1], aspect_ration);
+      scene2.set_model_view_matrix();
       coord->draw();
       ground->draw();
       glfwSwapBuffers(window);
