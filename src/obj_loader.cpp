@@ -4,13 +4,19 @@
 #include <vector>
 #include <cassert>
 
+#define GLM_FORCE_RADIANS
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp> /* lookAt, perspective */
+#include <glm/gtc/type_ptr.hpp> /* value_ptr */
+
 #include "obj_loader.hpp"
 #include "utility.hpp"
 
 static void add_indices(std::vector<s_vertex_idx> &indices, std::istringstream &iss)
 {
     std::string vertex;
-    s_vertex_idx v_idx[3] = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0} };
+    s_vertex_idx v_idx[3] = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1} };
     for (unsigned idx = 0; idx < 3; ++idx) {
         iss >> vertex;
         sscanf(vertex.c_str(), "%u/%u/%u", &v_idx[idx].v, &v_idx[idx].t,
@@ -22,7 +28,7 @@ static void add_indices(std::vector<s_vertex_idx> &indices, std::istringstream &
     iss >> vertex;
     // If face is composed of 4 vertices, than create 2 triangles
     if (!iss.fail()) {
-        s_vertex_idx v = { 0, 0, 0 };
+        s_vertex_idx v = { 1, 1, 1 };
         sscanf(vertex.c_str(), "%u/%u/%u", &v.v, &v.t, &v.n);
         indices.push_back(v);
         indices.push_back(v_idx[0]);
@@ -98,6 +104,51 @@ void print_results(std::vector<utility::vec3> &vertices,
 static void
 index_object(std::vector<utility::vec3> &vertices,
              std::vector<utility::vec3> &normals,
+             std::vector<s_vertex_idx> &indices,
+             std::vector<utility::vec3> &out_v,
+             std::vector<utility::vec3> &out_n)
+{
+    for (unsigned i = 0; i < indices.size(); ++i) {
+
+        // Our base idx is 0, not 1 like in the mesh files
+        unsigned v_idx = indices[i].v - 1;
+        unsigned n_idx = indices[i].n - 1;
+
+        out_v.push_back(vertices[v_idx]);
+        out_n.push_back(normals[n_idx]);
+    }
+}
+
+static void
+index_object(std::vector<utility::vec3> &vertices,
+             std::vector<utility::vec2> &text_coords,
+             std::vector<s_vertex_idx> &indices,
+             std::vector<utility::vec3> &out_v,
+             std::vector<utility::vec3> &out_n,
+             std::vector<utility::vec2> &out_t)
+{
+    for (unsigned i = 0; i < indices.size(); ++i) {
+
+        // Our base idx is 0, not 1 like in the mesh files
+        unsigned v_idx = indices[i].v - 1;
+        unsigned t_idx = indices[i].t - 1;
+
+        out_v.push_back(vertices[v_idx]);
+        out_t.push_back(text_coords[t_idx]);
+        if (i % 3 == 2) {
+          glm::vec3 v1 = glm::vec3(out_v[i - 2].x, out_v[i - 2].y, out_v[i - 2].z);
+          glm::vec3 v2 = glm::vec3(out_v[i - 1].x, out_v[i - 1].y, out_v[i - 1].z);
+          glm::vec3 v3 = glm::vec3(out_v[i].x, out_v[i].y, out_v[i].z);
+          glm::vec3 res = glm::normalize(glm::cross(v2 - v1, v3 - v1));
+          out_n.push_back({ res.x, res.y, res.z });
+          out_n.push_back({ res.x, res.y, res.z });
+          out_n.push_back({ res.x, res.y, res.z });
+        }
+    }
+}
+static void
+index_object(std::vector<utility::vec3> &vertices,
+             std::vector<utility::vec3> &normals,
              std::vector<utility::vec2> &text_coords,
              std::vector<s_vertex_idx> &indices,
              std::vector<utility::vec3> &out_v,
@@ -117,7 +168,7 @@ index_object(std::vector<utility::vec3> &vertices,
     }
 }
 
-static void
+void
 print_trinagles( std::vector<utility::vec3> &vertices,
                  std::vector<utility::vec3> &normals,
                  std::vector<utility::vec2> &text_coords)
@@ -171,5 +222,10 @@ load_obj(const char *file,
         std::getline(instr, buff);
         token.clear();
     }
-    index_object(vertices, normals, text_coords, indices, out_v, out_n, out_t);
+    if (vertices.size() == normals.size() && vertices.size() == text_coords.size())
+        index_object(vertices, normals, text_coords, indices, out_v, out_n, out_t);
+    else if (vertices.size() == normals.size())
+        index_object(vertices, normals, indices, out_v, out_n);
+    else
+        index_object(vertices, text_coords, indices, out_v, out_n, out_t);
 }

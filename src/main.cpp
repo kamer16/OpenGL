@@ -45,7 +45,7 @@ void handle_keyboard(GLFWwindow *w, int key, int scancode, int action, int mods)
     (void) key;
     (void) action;
     (void) mods;
-    const float incr = 0.4f;
+    const float incr = 10.4f;
     const float pi = 3.141592653589f;
     if (action !=  GLFW_PRESS && action != GLFW_REPEAT)
         return;
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
       glUseProgram(program_ids[0]);
       set_model_view_matrix(program_ids[0], aspect_ration);
       render_elements(vaoID, 36);
-      render_arrays(&mesh_vao_id, (int) vertices.size());
+      render_arrays(&mesh_vao_id, static_cast<int>(vertices.size()));
       glUseProgram(program_ids[1]);
       set_model_view_matrix(program_ids[1], aspect_ration);
       coord->draw();

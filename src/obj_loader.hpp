@@ -30,4 +30,10 @@ void print_results(std::vector<utility::vec3> &vertices,
                    std::vector<utility::vec3> &normals,
                    std::vector<s_vertex_idx> &indices);
 
+// Dump out the contents of each vector
+void
+print_trinagles(std::vector<utility::vec3> &vertices,
+                 std::vector<utility::vec3> &normals,
+                 std::vector<utility::vec2> &text_coords);
+
 #endif // OBJ_LOADER_HPP
