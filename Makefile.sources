@@ -1,5 +1,6 @@
 SOURCES=main.cpp \
 	vbo.cpp \
+	options.cpp \
 	texture.cpp \
 	shader.cpp \
 	render_scene.cpp \

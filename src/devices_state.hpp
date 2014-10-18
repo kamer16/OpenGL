@@ -38,6 +38,9 @@ private:
     void operator=(devices_state const&);
     void update_keyboard_state(GLFWwindow *window);
     void update_mouse_state(GLFWwindow *window);
+
+    double old_x_ = 0;
+    double old_y_ = 0;
 };
 
 #endif // DEVICES_STATE_HPP

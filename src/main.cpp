@@ -12,6 +12,7 @@
 #include "vbo.hpp" // BindArrays()
 #include "render_scene.hpp" // renderScene()
 #include "polygon.hpp" // polygons
+#include "options.hpp" // polygons
 
 #include "obj_loader.hpp"
 
@@ -27,6 +28,8 @@ void enableEnv()
 int main(int argc, char *argv[])
 {
     (void) argv;
+    options opt;
+    opt.parse_args(argc, argv);
     GLFWwindow* window;
 
     /* Initialize the library */
@@ -38,11 +41,11 @@ int main(int argc, char *argv[])
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    GLFWmonitor *monitor = argc > 1 ? glfwGetPrimaryMonitor() : NULL;
-    int width = 880;
-    int height = 520;
-    float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
-    window = glfwCreateWindow(width, height, "Hello World", monitor, NULL);
+    GLFWmonitor *monitor = opt.fullscreen ? glfwGetPrimaryMonitor() : NULL;
+    float aspect_ratio = static_cast<float>(opt.window_width) /
+                         static_cast<float>(opt.window_height);
+    window = glfwCreateWindow(opt.window_width, opt.window_height, "OpenGL",
+                              monitor, NULL);
     if (!window) {
         glfwTerminate();
         return -1;
@@ -75,7 +78,7 @@ int main(int argc, char *argv[])
     std::vector<utility::vec3> vertices;
     std::vector<utility::vec3> normals;
     std::vector<utility::vec2> text_coords;
-    load_obj("data/teapot/teapot.obj", vertices, normals, text_coords);
+    load_obj(opt.mesh_file.c_str(), vertices, normals, text_coords);
     GLuint mesh_vao_id;
     bind_object(program_ids[0], &mesh_vao_id, vertices, normals, text_coords);
     if (monitor)
