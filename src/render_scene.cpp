@@ -10,6 +10,7 @@ scene::scene(GLuint program_id, float aspect_ratio, GLFWwindow *window)
       rotation_(glm::vec3(0, 0, 0)),
       window_(window)
 {
+    (void) padding_;
 }
 
 void

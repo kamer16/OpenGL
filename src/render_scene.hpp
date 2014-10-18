@@ -49,6 +49,7 @@ private:
     glm::vec3 translation_;
     glm::vec2 rotation_;
 
+    float padding_;
     GLFWwindow *window_;
 };
 
