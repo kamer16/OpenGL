@@ -15,3 +15,6 @@ RenderScene:  Should create a wrapper class that contains object information and
 which can then be attached to a scene (A scene contains a list of objects).
 Then a simple update() to the scene draws each objects and also updates the
 position of each object.
+
+Texture: texture.cpp currently useless, maybe removing it in the future.
+Currently all it does is load images to a program_id.

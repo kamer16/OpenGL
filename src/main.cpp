@@ -9,7 +9,7 @@
 
 #include "shader.hpp" // loadShaders()
 #include "texture.hpp" // loadTextures()
-#include "vbo.hpp" // BindArrays()
+#include "vbo.hpp" // bind_object()
 #include "render_scene.hpp" // renderScene()
 #include "polygon.hpp" // polygons
 #include "options.hpp" // polygons
@@ -69,8 +69,7 @@ int main(int argc, char *argv[])
     loadShaders("src/shaders/color.vert", "src/shaders/color.frag",
                 &program_ids[1]);
 
-    GLuint vao_ids[16];
-    BindArrays(program_ids[0], vao_ids);
+    // TODO loads texture but not used
     loadTextures(program_ids[0]);
     polygon *coord = make_coordinate_polygon(program_ids[1]);
     polygon *ground = make_quad_xz_polygon(program_ids[1]);
@@ -99,7 +98,6 @@ int main(int argc, char *argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(program_ids[0]);
         scene1.update(device);
-        scene1.render_elements(vao_ids[0], 36);
         scene1.render_arrays(mesh_vao_id, static_cast<int>(vertices.size()));
 
         glUseProgram(program_ids[1]);
