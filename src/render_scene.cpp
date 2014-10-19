@@ -32,11 +32,11 @@ void
 scene::update_light_source()
 {
     GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
-    glm::vec3 light_dir(1, 0, 0.8);
+    glm::vec3 light_dir(0, -0.1, 0.8);
     // When world moves, light moves with it, therefore we multiply it by a normal
-    // matrix
+    // matrix.  When light is directionel however we don't multiply
     glUniform3fv(light_dir_idx, 1,
-                 glm::value_ptr(glm::normalize(normal_mat_ * light_dir)));
+                 glm::value_ptr(glm::normalize(light_dir)));
 }
 
 void scene::set_light_color()
@@ -72,6 +72,10 @@ scene::set_material_color()
     glm::vec4 ambient(0.5f, 0.5f, 0.5f, 1.0f);
     GLint ambient_idx = glGetUniformLocation(program_id_, "material.ambient");
     glUniform4fv(ambient_idx, 1, glm::value_ptr(ambient));
+
+    float shininess = 30.0f;
+    GLint shininess_idx = glGetUniformLocation(program_id_, "material.shininess");
+    glUniform1f(shininess_idx, shininess);
 }
 
 void

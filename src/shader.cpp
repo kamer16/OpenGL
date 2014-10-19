@@ -3,7 +3,7 @@
 #include "textfile.hpp"
 #include "shader.hpp"
 
-static void printShaderInfoLog(GLuint obj)
+static void printShaderInfoLog(GLuint obj, const char *file)
 {
   int infologLength = 0;
   int charsWritten  = 0;
@@ -15,7 +15,7 @@ static void printShaderInfoLog(GLuint obj)
     {
       infoLog = new char[infologLength];
       glGetShaderInfoLog(obj, infologLength, &charsWritten, infoLog);
-      printf("Shader Log:%s\n",infoLog);
+      printf("%s shader Log:%s\n",file, infoLog);
       delete[] infoLog;
     }
 }
@@ -61,8 +61,8 @@ void loadShaders(const char *vert_file, const char *frag_file,
   glCompileShader(v);
   glCompileShader(f);
 
-  printShaderInfoLog(v);
-  printShaderInfoLog(f);
+  printShaderInfoLog(v, "Vertex");
+  printShaderInfoLog(f, "Fragment");
 
   *program_id = glCreateProgram();
   glAttachShader(*program_id,v);

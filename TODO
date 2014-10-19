@@ -10,3 +10,8 @@ Material: Add material to objects such as color, and light reflection color
 
 Texture: Current value of shadert texture coordinates not used generated an
 invalid value in glGetError()
+
+RenderScene:  Should create a wrapper class that contains object information and
+which can then be attached to a scene (A scene contains a list of objects).
+Then a simple update() to the scene draws each objects and also updates the
+position of each object.
