@@ -9,6 +9,7 @@ scene::scene(GLuint program_id, float aspect_ratio)
       translation_(glm::vec3(0, -100.0f, -100.0f)),
       rotation_(glm::vec3(0, 0, 0))
 {
+    (void) padding_;
     glUseProgram(program_id_);
     set_light_color();
     set_material_color();
@@ -16,17 +17,18 @@ scene::scene(GLuint program_id, float aspect_ratio)
 }
 
 void
-scene::update(const devices_state &device)
+scene::update_and_draw(const devices_state &device)
 {
-    // TODO make update function do all the drawing
     update_rotation(device);
     update_position(device);
-    update_model_view_matrix();
-    update_light_source();
+    set_model_view_matrix();
+    set_light_source();
+    for (auto obj : objects_)
+        obj->draw();
 }
 
 void
-scene::update_light_source()
+scene::set_light_source()
 {
     // create directional light
     GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
@@ -76,7 +78,7 @@ scene::set_material_color()
 }
 
 void
-scene::update_model_view_matrix()
+scene::set_model_view_matrix()
 {
     GLint projMatIdx = glGetUniformLocation(program_id_, "projMat");
     GLint model_view_idx = glGetUniformLocation(program_id_, "model_view_mat");
@@ -158,4 +160,10 @@ scene::update_position(const devices_state &device)
     if (device.key_state.d_pressed) {
         rotation_.y += rot_incr;
     }
+}
+
+void
+scene::add_object(polygon *object)
+{
+    objects_.push_back(object);
 }

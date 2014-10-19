@@ -2,6 +2,7 @@
 # define RENDER_SCENE_CPP
 
 # include <GL/glew.h> // GLuint
+# include <vector>
 
 # define GLM_FORCE_RADIANS
 
@@ -12,6 +13,7 @@
 # include <GLFW/glfw3.h>
 
 # include "devices_state.hpp"
+# include "polygon.hpp"
 
 class scene
 {
@@ -24,7 +26,9 @@ public:
     // accordingly.
     // Set the shaders with the updated transformation matrix and light
     // position.
-    void update(const devices_state &device);
+    // Draw each object
+    void update_and_draw(const devices_state &device);
+    void add_object(polygon *object);
 
 private:
     // Update model matrix to move world around
@@ -33,9 +37,9 @@ private:
 
     // Transforms light position into eye coordinate space and send it to shader
     // Activate ambiant, specular, diffuse parameter in shader
-    void update_light_source();
+    void set_light_source();
 
-    void update_model_view_matrix();
+    void set_model_view_matrix();
     // Activate ambiant, specular, diffuse parameter for light in shader
     void set_light_color();
     // Activate ambiant, specular, diffuse parameter for material in shader
@@ -49,6 +53,9 @@ private:
 
     glm::vec3 translation_;
     glm::vec2 rotation_;
+
+    float padding_;
+    std::vector<polygon *> objects_;
 };
 
 #endif // RENDER_SCENE_CPP

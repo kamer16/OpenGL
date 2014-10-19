@@ -27,7 +27,6 @@ void enableEnv()
 
 int main(int argc, char *argv[])
 {
-    (void) argv;
     options opt;
     opt.parse_args(argc, argv);
     GLFWwindow* window;
@@ -71,9 +70,6 @@ int main(int argc, char *argv[])
 
     // TODO loads texture but not used
     loadTextures(program_ids[0]);
-    polygon *coord = make_coordinate_polygon(program_ids[1]);
-    polygon *ground = make_quad_xz_polygon(program_ids[1]);
-    polygon *cube = make_cube_polygon(program_ids[1]);
 
     std::vector<utility::vec3> vertices;
     std::vector<utility::vec3> normals;
@@ -89,6 +85,10 @@ int main(int argc, char *argv[])
     /* Loop until the user closes the window */
     scene scene1(program_ids[0], aspect_ratio);
     scene scene2(program_ids[1], aspect_ratio);
+    scene2.add_object(make_coordinate_polygon(program_ids[1]));
+    scene2.add_object(make_quad_xz_polygon(program_ids[1]));
+    scene2.add_object(make_cube_polygon(program_ids[1]));
+
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
@@ -97,14 +97,12 @@ int main(int argc, char *argv[])
         /* Swap front and back buffers */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(program_ids[0]);
-        scene1.update(device);
+        scene1.update_and_draw(device);
         scene1.render_arrays(mesh_vao_id, static_cast<int>(vertices.size()));
 
         glUseProgram(program_ids[1]);
-        scene2.update(device);
-        coord->draw();
-        ground->draw();
-        cube->draw();
+        // update and draw scene2
+        scene2.update_and_draw(device);
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
