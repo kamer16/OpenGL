@@ -30,6 +30,8 @@ public:
     // Everytime an instance is called, the state of the device is updated
     static const devices_state &get_instance(GLFWwindow *window);
 
+    // Returns normalize value of mouse movement since last device state.
+    // i-e xpos == 1 means mouse has crossed all window width
     void get_mouse_movement(double *xpos, double *ypos) const;
 
 private:

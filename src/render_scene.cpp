@@ -18,25 +18,24 @@ scene::scene(GLuint program_id, float aspect_ratio, GLFWwindow *window)
 }
 
 void
-scene::update()
+scene::update(const devices_state &device)
 {
     // TODO make update function do all the drawing
-    const devices_state &device = devices_state::get_instance(window_);
     update_rotation(device);
     update_position(device);
-    update_light_source();
     update_model_view_matrix();
+    update_light_source();
 }
 
 void
 scene::update_light_source()
 {
+    // create directional light
     GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
     glm::vec3 light_dir(0, -0.1, 0.8);
-    // When world moves, light moves with it, therefore we multiply it by a normal
-    // matrix.  When light is directionel however we don't multiply
-    glUniform3fv(light_dir_idx, 1,
-                 glm::value_ptr(glm::normalize(light_dir)));
+    // When world moves, lights direction moves with it, therefore we multiply
+    // it by a normal matrix.
+    glUniform3fv(light_dir_idx, 1, glm::value_ptr(glm::normalize(light_dir)));
 }
 
 void scene::set_light_color()
@@ -120,17 +119,17 @@ scene::update_rotation(const devices_state &device)
     double xpos, ypos;
     device.get_mouse_movement(&xpos, &ypos);
 
-    static double old_x = 0;
-    static double old_y = 0;
-    int height, width;
-    glfwGetWindowSize(window_, &width, &height);
-    glfwGetCursorPos(window_, &xpos, &ypos);
+    //static double old_x = 0;
+    //static double old_y = 0;
+    //int height, width;
+    //glfwGetWindowSize(window_, &width, &height);
+    //glfwGetCursorPos(window_, &xpos, &ypos);
     // When mouse moves along y axis, the scene is rotated along x axis.
-    rotation_.x += static_cast<float>((ypos - old_y) / (height));
+    rotation_.x += static_cast<float>(ypos);
     // When mouse moves along x axis, the scene is rotated along y axis.
-    rotation_.y += static_cast<float>((xpos - old_x) / (width));
-    old_x = xpos;
-    old_y = ypos;
+    rotation_.y += static_cast<float>(xpos);
+    //old_x = xpos;
+    //old_y = ypos;
 
 }
 

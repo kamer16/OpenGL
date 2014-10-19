@@ -50,15 +50,16 @@ devices_state::get_mouse_movement(double *xpos, double *ypos) const
 void
 devices_state::update_mouse_state(GLFWwindow *window)
 {
+    double static xpos, ypos;
     int height, width;
     // Called each time in case size of window changes
     glfwGetWindowSize(window, &width, &height);
 
-    old_x_ = mouse_state.x_axis;
-    old_y_ = mouse_state.y_axis;
+    old_x_ = xpos;
+    old_y_ = ypos;
 
-    glfwGetCursorPos(window, &mouse_state.x_axis, &mouse_state.y_axis);
+    glfwGetCursorPos(window, &xpos, &ypos);
 
-    mouse_state.x_axis = (mouse_state.x_axis - old_x_) / (width);
-    mouse_state.y_axis = (mouse_state.y_axis - old_y_) / (height);
+    mouse_state.x_axis = (xpos - old_x_) / (width);
+    mouse_state.y_axis = (ypos - old_y_) / (height);
 }

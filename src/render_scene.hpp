@@ -24,7 +24,7 @@ public:
     // accordingly.
     // Set the shaders with the updated transformation matrix and light
     // position.
-    void update();
+    void update(const devices_state &device);
 
 private:
     // Update model matrix to move world around

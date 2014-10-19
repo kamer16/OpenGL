@@ -92,16 +92,17 @@ int main(int argc, char *argv[])
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
+        const devices_state &device = devices_state::get_instance(window);
 
         /* Swap front and back buffers */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(program_ids[0]);
-        scene1.update();
+        scene1.update(device);
         scene1.render_elements(vao_ids[0], 36);
         scene1.render_arrays(mesh_vao_id, static_cast<int>(vertices.size()));
 
         glUseProgram(program_ids[1]);
-        scene2.update();
+        scene2.update(device);
         coord->draw();
         ground->draw();
         glfwSwapBuffers(window);
