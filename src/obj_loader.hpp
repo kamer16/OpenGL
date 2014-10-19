@@ -9,11 +9,11 @@
 struct s_vertex_idx
 {
     // Vertex index
-    unsigned v;
+    size_t v;
     // Texture index
-    unsigned t;
+    size_t t;
     // Normal index
-    unsigned n;
+    size_t n;
 };
 
 // Reads an Obj files and stores vertices, normals, and texture coords.

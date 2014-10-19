@@ -13,14 +13,35 @@
 #include "obj_loader.hpp"
 #include "utility.hpp"
 
-static void add_indices(std::vector<s_vertex_idx> &indices, std::istringstream &iss)
+static void get_vertex(const char *str, s_vertex_idx &v_idx, size_t nb_vertices)
+{
+    int v = 1;
+    int t = 1;
+    int n = 1;
+    sscanf(str, "%d/%d/%d", &v, &t, &n);
+    if (v < 0)
+        v_idx.v = nb_vertices - static_cast<size_t>(-v) + 1;
+    else
+        v_idx.v = static_cast<size_t>(v);
+    if (t < 0)
+        v_idx.t = nb_vertices - static_cast<size_t>(-t) + 1;
+    else
+        v_idx.t = static_cast<size_t>(t);
+    if (n < 0)
+        v_idx.n = nb_vertices - static_cast<size_t>(-t) + 1;
+    else
+        v_idx.n = static_cast<size_t>(n);
+}
+
+static void add_indices(std::vector<s_vertex_idx> &indices, size_t nb_vertices,
+                        std::istringstream &iss)
 {
     std::string vertex;
     s_vertex_idx v_idx[3] = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1} };
     for (unsigned idx = 0; idx < 3; ++idx) {
         iss >> vertex;
-        sscanf(vertex.c_str(), "%u/%u/%u", &v_idx[idx].v, &v_idx[idx].t,
-               &v_idx[idx].n);
+        get_vertex(vertex.c_str(), v_idx[idx], nb_vertices);
+
         indices.push_back(v_idx[idx]);
     }
     if (iss.fail())
@@ -29,7 +50,7 @@ static void add_indices(std::vector<s_vertex_idx> &indices, std::istringstream &
     // If face is composed of 4 vertices, than create 2 triangles
     if (!iss.fail()) {
         s_vertex_idx v = { 1, 1, 1 };
-        sscanf(vertex.c_str(), "%u/%u/%u", &v.v, &v.t, &v.n);
+        get_vertex(vertex.c_str(), v, nb_vertices);
         indices.push_back(v);
         indices.push_back(v_idx[0]);
         indices.push_back(v_idx[2]);
@@ -101,6 +122,7 @@ void print_results(std::vector<utility::vec3> &vertices,
     }
 }
 
+// Vertices and Normals
 static void
 index_object(std::vector<utility::vec3> &vertices,
              std::vector<utility::vec3> &normals,
@@ -111,14 +133,50 @@ index_object(std::vector<utility::vec3> &vertices,
     for (unsigned i = 0; i < indices.size(); ++i) {
 
         // Our base idx is 0, not 1 like in the mesh files
-        unsigned v_idx = indices[i].v - 1;
-        unsigned n_idx = indices[i].n - 1;
+        size_t v_idx = indices[i].v - 1;
+        size_t n_idx = indices[i].n - 1;
 
         out_v.push_back(vertices[v_idx]);
         out_n.push_back(normals[n_idx]);
     }
 }
 
+// Vertices
+static void
+index_object(std::vector<utility::vec3> &vertices,
+             std::vector<s_vertex_idx> &indices,
+             std::vector<utility::vec3> &out_v,
+             std::vector<utility::vec3> &out_n,
+             std::vector<utility::vec2> &out_t)
+{
+    for (unsigned i = 0; i < indices.size(); ++i) {
+
+        // Our base idx is 0, not 1 like in the mesh files
+        size_t v_idx = indices[i].v - 1;
+
+        out_v.push_back(vertices[v_idx]);
+        // Default texture is vertex value
+        // TODO make caller check for empty textures
+        out_t.push_back({0, 0});
+        if (i % 3 == 2) {
+          glm::vec3 v1 = glm::vec3(out_v[i - 2].x, out_v[i - 2].y, out_v[i - 2].z);
+          glm::vec3 v2 = glm::vec3(out_v[i - 1].x, out_v[i - 1].y, out_v[i - 1].z);
+          glm::vec3 v3 = glm::vec3(out_v[i].x, out_v[i].y, out_v[i].z);
+
+          glm::vec3 cross = glm::cross(v2 - v1, v3 - v1);
+          if (fabs(cross.x) > 0.0001f || fabs(cross.y) > 0.0001f ||
+              fabs(cross.z) > 0.0001f)
+              cross = glm::normalize(cross);
+          else
+              std::cerr << "Undefined normal for triangular line\n";
+          out_n.push_back({ cross.x, cross.y, cross.z });
+          out_n.push_back({ cross.x, cross.y, cross.z });
+          out_n.push_back({ cross.x, cross.y, cross.z });
+        }
+    }
+}
+
+// Vertices and Textures
 static void
 index_object(std::vector<utility::vec3> &vertices,
              std::vector<utility::vec2> &text_coords,
@@ -130,8 +188,8 @@ index_object(std::vector<utility::vec3> &vertices,
     for (unsigned i = 0; i < indices.size(); ++i) {
 
         // Our base idx is 0, not 1 like in the mesh files
-        unsigned v_idx = indices[i].v - 1;
-        unsigned t_idx = indices[i].t - 1;
+        size_t v_idx = indices[i].v - 1;
+        size_t t_idx = indices[i].t - 1;
 
         out_v.push_back(vertices[v_idx]);
         out_t.push_back(text_coords[t_idx]);
@@ -152,6 +210,8 @@ index_object(std::vector<utility::vec3> &vertices,
         }
     }
 }
+
+// Vertices and Normals and Textures
 static void
 index_object(std::vector<utility::vec3> &vertices,
              std::vector<utility::vec3> &normals,
@@ -164,9 +224,9 @@ index_object(std::vector<utility::vec3> &vertices,
     for (unsigned i = 0; i < indices.size(); ++i) {
 
         // Our base idx is 0, not 1 like in the mesh files
-        unsigned v_idx = indices[i].v - 1;
-        unsigned n_idx = indices[i].n - 1;
-        unsigned t_idx = indices[i].t - 1;
+        size_t v_idx = indices[i].v - 1;
+        size_t n_idx = indices[i].n - 1;
+        size_t t_idx = indices[i].t - 1;
 
         out_v.push_back(vertices[v_idx]);
         out_n.push_back(normals[n_idx]);
@@ -175,13 +235,13 @@ index_object(std::vector<utility::vec3> &vertices,
 }
 
 void
-print_trinagles( std::vector<utility::vec3> &vertices,
-                 std::vector<utility::vec3> &normals,
-                 std::vector<utility::vec2> &text_coords)
+print_trinagles(std::vector<utility::vec3> &vertices,
+                std::vector<utility::vec3> &normals,
+                std::vector<utility::vec2> &text_coords)
 {
     std::cout.setf(std::ios::fixed);
-    if (vertices.size() != normals.size() || vertices.size() == text_coords.size())
-        std::cout << "Object loader generated different size objects" << std::endl;
+    if (vertices.size() != normals.size() || vertices.size() != text_coords.size())
+        std::cerr << "Object loader generated different size objects" << std::endl;
 
     for (unsigned i = 0; i < vertices.size(); ++i) {
         std::cout << vertices[i].x << ", " << vertices[i].y << ", "
@@ -223,19 +283,23 @@ load_obj(const char *file,
         else if (!token.compare("vn"))
             add_normals(normals, iss);
         else if (!token.compare("f"))
-            add_indices(indices, iss);
+            add_indices(indices, vertices.size(), iss);
 
         std::getline(instr, buff);
         token.clear();
     }
     if (vertices.size() == 0)
         std::cerr << "File does not define any vertices\n";
+    // Vertices and Normals
     if (normals.size() != 0 && text_coords.size() == 0)
         index_object(vertices, normals, indices, out_v, out_n);
+    // Vertices and Textures
     else if (normals.size() == 0 && text_coords.size() != 0)
         index_object(vertices, text_coords, indices, out_v, out_n, out_t);
+    // Vertices and Normals and Textures
     else if (text_coords.size() != 0)
         index_object(vertices, normals, text_coords, indices, out_v, out_n, out_t);
     else
-        std::cerr << "Neither textures nor normals were found ;-(\n";
+    // Vertices
+        index_object(vertices, indices, out_v, out_n, out_t);
 }

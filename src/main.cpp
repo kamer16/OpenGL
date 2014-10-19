@@ -114,5 +114,6 @@ int main(int argc, char *argv[])
     }
 
     glfwTerminate();
+    glDeleteProgram(program_ids[0]);
     return 0;
 }
