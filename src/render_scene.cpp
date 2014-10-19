@@ -2,19 +2,17 @@
 
 #include "render_scene.hpp"
 
-scene::scene(GLuint program_id, float aspect_ratio, GLFWwindow *window)
+scene::scene(GLuint program_id, float aspect_ratio)
     : program_id_(program_id),
       proj_mat_(glm::perspective(glm::radians(56.25f), aspect_ratio, 0.1f, 10000.0f)),
       view_mat_(glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, -70, -100.0), glm::vec3(0, 1, 0))),
       translation_(glm::vec3(0, -100.0f, -100.0f)),
-      rotation_(glm::vec3(0, 0, 0)),
-      window_(window)
+      rotation_(glm::vec3(0, 0, 0))
 {
     glUseProgram(program_id_);
     set_light_color();
     set_material_color();
     glUseProgram(0);
-    (void) padding_;
 }
 
 void
@@ -118,18 +116,10 @@ scene::update_rotation(const devices_state &device)
 {
     double xpos, ypos;
     device.get_mouse_movement(&xpos, &ypos);
-
-    //static double old_x = 0;
-    //static double old_y = 0;
-    //int height, width;
-    //glfwGetWindowSize(window_, &width, &height);
-    //glfwGetCursorPos(window_, &xpos, &ypos);
     // When mouse moves along y axis, the scene is rotated along x axis.
     rotation_.x += static_cast<float>(ypos);
     // When mouse moves along x axis, the scene is rotated along y axis.
     rotation_.y += static_cast<float>(xpos);
-    //old_x = xpos;
-    //old_y = ypos;
 
 }
 

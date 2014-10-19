@@ -16,7 +16,7 @@
 class scene
 {
 public:
-    scene(GLuint program_id, float aspect_ratio, GLFWwindow *window);
+    scene(GLuint program_id, float aspect_ratio);
     // Draw objects contained by the vertex array object
     void render_arrays(GLuint vao_id, int nb_elt);
     void render_elements(GLuint vao_id, int nb_elt);
@@ -49,9 +49,6 @@ private:
 
     glm::vec3 translation_;
     glm::vec2 rotation_;
-
-    float padding_;
-    GLFWwindow *window_;
 };
 
 #endif // RENDER_SCENE_CPP

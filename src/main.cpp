@@ -87,8 +87,8 @@ int main(int argc, char *argv[])
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     /* Loop until the user closes the window */
-    scene scene1(program_ids[0], aspect_ratio, window);
-    scene scene2(program_ids[1], aspect_ratio, window);
+    scene scene1(program_ids[0], aspect_ratio);
+    scene scene2(program_ids[1], aspect_ratio);
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
