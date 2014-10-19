@@ -24,14 +24,16 @@ polygon::coordinate_new(GLuint program_id)
 {
   polygon *coord = new polygon(GL_LINES);
   std::array<unsigned int, 6> cube_idxs = {{
-    0, 1, 0, 2, 0, 3
+    0, 1, 2, 3, 4, 5
   }};
-  std::array<utility::color_vert, 4> cube_verts = {{
+  std::array<utility::color_vert, 6> cube_verts = {{
       /* Vertex coord     ,  Vertex color */
-    { { 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 0.5f } },
-    { { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
-    { { 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
-    { { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }
+    { { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
+    { { 800.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
+    { { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
+    { { 0.0f, 800.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
+    { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } },
+    { { 0.0f, 0.0f, 800.0f }, { 0.0f, 0.0f, 1.0f } }
   }};
   coord->load_vertex_buffer(program_id, cube_verts);
   coord->load_index_buffer(cube_idxs);
@@ -48,9 +50,9 @@ polygon::quad_xz_new(GLuint program_id)
   std::array<utility::color_vert, 4> cube_verts = {{
       /* Vertex coord     ,  Vertex color */
     { { -0.5f, 0.0f, -0.5f }, { 0.5f, 0.0f, 0.0f } },
-    { { 0.5f, 0.0f, -0.5f }, { 0.0f, 0.0f, 0.5f } },
-    { { 0.5f, 0.0f, 0.5f }, { 0.0f, 0.5f, 0.0f } },
-    { { -0.5f, 0.0f, 0.5f }, { 0.5f, 0.5f, 0.5f } }
+    { {  0.5f, 0.0f, -0.5f }, { 0.0f, 0.0f, 0.5f } },
+    { {  0.5f, 0.0f,  0.5f }, { 0.0f, 0.5f, 0.0f } },
+    { { -0.5f, 0.0f,  0.5f }, { 0.5f, 0.5f, 0.5f } }
   }};
   coord->load_vertex_buffer(program_id, cube_verts);
   coord->load_index_buffer(cube_idxs);
