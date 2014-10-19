@@ -26,9 +26,6 @@ public:
     // position.
     void update();
 
-    // Activate ambiant, specular, diffuse parameter for material in shader
-    void set_material_color();
-
 private:
     // Update model matrix to move world around
     void update_position(const devices_state &device);
@@ -38,7 +35,11 @@ private:
     // Activate ambiant, specular, diffuse parameter in shader
     void update_light_source();
 
-    void set_model_view_matrix();
+    void update_model_view_matrix();
+    // Activate ambiant, specular, diffuse parameter for light in shader
+    void set_light_color();
+    // Activate ambiant, specular, diffuse parameter for material in shader
+    void set_material_color();
 
     GLuint program_id_;
 
