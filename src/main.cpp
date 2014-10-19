@@ -72,8 +72,9 @@ int main(int argc, char *argv[])
     GLuint vao_ids[16];
     BindArrays(program_ids[0], vao_ids);
     loadTextures(program_ids[0]);
-    polygon *coord = polygon::coordinate_new(program_ids[1]);
-    polygon *ground = polygon::quad_xz_new(program_ids[1]);
+    polygon *coord = make_coordinate_polygon(program_ids[1]);
+    polygon *ground = make_quad_xz_polygon(program_ids[1]);
+    polygon *cube = make_cube_polygon(program_ids[1]);
 
     std::vector<utility::vec3> vertices;
     std::vector<utility::vec3> normals;
@@ -105,6 +106,7 @@ int main(int argc, char *argv[])
         scene2.update(device);
         coord->draw();
         ground->draw();
+        cube->draw();
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
