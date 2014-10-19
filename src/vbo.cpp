@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <array>
+#include <cassert>
 
 #include "vbo.hpp"
 #include "utility.hpp"
@@ -118,7 +119,10 @@ void bind_object(GLuint program_id, GLuint *vaoID,
     load_data(program_id, vertices, "in_position");
 
     // Sets shaders attribute for texture coordinates
-    load_data(program_id, text_coords, "in_uv");
+    if (text_coords.size() == vertices.size())
+        load_data(program_id, text_coords, "in_uv");
+    else
+        assert(text_coords.size() == 0);
 
     // Sets shaders attribute for texture coordinates
     load_data(program_id, normals, "in_norm");

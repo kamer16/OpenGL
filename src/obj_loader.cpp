@@ -146,8 +146,7 @@ static void
 index_object(std::vector<utility::vec3> &vertices,
              std::vector<s_vertex_idx> &indices,
              std::vector<utility::vec3> &out_v,
-             std::vector<utility::vec3> &out_n,
-             std::vector<utility::vec2> &out_t)
+             std::vector<utility::vec3> &out_n)
 {
     for (unsigned i = 0; i < indices.size(); ++i) {
 
@@ -155,9 +154,6 @@ index_object(std::vector<utility::vec3> &vertices,
         size_t v_idx = indices[i].v - 1;
 
         out_v.push_back(vertices[v_idx]);
-        // Default texture is vertex value
-        // TODO make caller check for empty textures
-        out_t.push_back({0, 0});
         if (i % 3 == 2) {
           glm::vec3 v1 = glm::vec3(out_v[i - 2].x, out_v[i - 2].y, out_v[i - 2].z);
           glm::vec3 v2 = glm::vec3(out_v[i - 1].x, out_v[i - 1].y, out_v[i - 1].z);
@@ -301,5 +297,5 @@ load_obj(const char *file,
         index_object(vertices, normals, text_coords, indices, out_v, out_n, out_t);
     else
     // Vertices
-        index_object(vertices, indices, out_v, out_n, out_t);
+        index_object(vertices, indices, out_v, out_n);
 }
