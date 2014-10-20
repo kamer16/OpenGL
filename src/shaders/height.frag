@@ -39,7 +39,7 @@ void main()
     float n_dot_l = max(dot(n, normalize(light_dir)), 0);
     out_color += n_dot_l * light.param.diffuse * material.diffuse;
 
-    if (n_dot_l > 0) {
+    if (n_dot_l > 0.01f) {
         float e_dot_r = max(dot(normalize(eye), normalize(reflection)), 0);
         out_color += light.param.specular * material.specular *
                      pow(e_dot_r, material.shininess);
