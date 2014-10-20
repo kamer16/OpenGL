@@ -21,14 +21,14 @@ uniform vec4 global_ambient;
 
 in vec2 uv;
 in vec3 normal;
-in vec3 half_vector;
+in vec3 reflection;
 
 out vec4 out_color;
 in vec3 light_dir;
+in vec3 eye;
 
 void main()
 {
-    vec3 half_v = normalize(half_vector);
     vec3 n = normalize(normal);
     vec4 tex1 = texture(texture0, uv);
     vec4 tex2 = texture(texture1, uv);
@@ -40,8 +40,8 @@ void main()
     out_color += n_dot_l * light.param.diffuse * material.diffuse;
 
     if (n_dot_l > 0) {
-        float n_dot_hv = max(dot(normalize(vec3(-gl_FragCoord)), half_v), 0);
+        float e_dot_r = max(dot(normalize(eye), normalize(reflection)), 0);
         out_color += light.param.specular * material.specular *
-            pow(n_dot_hv, material.shininess);
+                     pow(e_dot_r, material.shininess);
     }
 }

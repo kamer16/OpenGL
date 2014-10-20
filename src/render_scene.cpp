@@ -90,6 +90,7 @@ scene::set_model_view_matrix(const glm::mat4& model_mat)
     GLint projMatIdx = glGetUniformLocation(program_id_, "projMat");
     GLint model_view_idx = glGetUniformLocation(program_id_, "model_view_mat");
     GLint normal_mat_idx = glGetUniformLocation(program_id_, "normal_mat");
+    GLint view_mat_idx = glGetUniformLocation(program_id_, "view_mat");
 
     const glm::mat4& view_mat = camera_.get_view_mat();
     const glm::mat4& proj_mat = camera_.get_proj_mat();
@@ -99,6 +100,9 @@ scene::set_model_view_matrix(const glm::mat4& model_mat)
     glUniformMatrix4fv(projMatIdx, 1, GL_FALSE, glm::value_ptr(proj_mat));
     glUniformMatrix4fv(model_view_idx, 1, GL_FALSE, glm::value_ptr(model_view_mat));
     glUniformMatrix3fv(normal_mat_idx, 1, GL_FALSE, glm::value_ptr(normal_mat));
+    // Shaders needs view matrix to transform each vertex to camera space
+    // allowing the sader to compute the direction vector from the vertex to cam
+    glUniformMatrix4fv(view_mat_idx, 1, GL_FALSE, glm::value_ptr(view_mat));
 }
 
 void
