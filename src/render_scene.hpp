@@ -14,6 +14,7 @@
 
 # include "devices_state.hpp"
 # include "polygon.hpp"
+# include "camera.hpp"
 
 class scene
 {
@@ -31,10 +32,6 @@ public:
     void add_object(polygon *object);
 
 private:
-    // Update model matrix to move world around
-    void update_position(const devices_state &device);
-    void update_rotation(const devices_state &device);
-
     // Transforms light position into eye coordinate space and send it to shader
     // Activate ambiant, specular, diffuse parameter in shader
     void set_light_source();
@@ -47,12 +44,7 @@ private:
 
     GLuint program_id_;
 
-    glm::mat3 normal_mat_;
-    glm::mat4 proj_mat_;
-    glm::mat4 view_mat_;
-
-    glm::vec3 translation_;
-    glm::vec2 rotation_;
+    camera camera_;
 
     float padding_;
     std::vector<polygon *> objects_;
