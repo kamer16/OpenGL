@@ -23,3 +23,8 @@ Lighting: Compute normal matrix is user code not in GPU code
 
 Model Matrix: The rendered oject should each contain a model matrix, and send it
 to the gpu before drawing
+
+RenderScene:  We shouldn't have any rendring method, a scene contains objects
+but does not know anything about the objects. all it does is call their draw
+method.  Current mesh objects are rendered by the scene and need a didicate
+update method from render scene. IN the future these will be removed

@@ -4,6 +4,7 @@ SOURCES=main.cpp \
 	options.cpp \
 	camera.cpp \
 	texture.cpp \
+	object.cpp \
 	shader.cpp \
 	render_scene.cpp \
 	devices_state.cpp \

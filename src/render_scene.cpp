@@ -17,10 +17,21 @@ void
 scene::update_and_draw(const devices_state &device)
 {
     camera_.update(device);
-    set_model_view_matrix();
-    set_light_source();
-    for (auto obj : objects_)
+    for (auto obj : objects_) {
+        const glm::mat4& model_mat = obj->get_model_mat();
+        set_model_view_matrix(model_mat);
+        set_light_source();
         obj->draw();
+    }
+}
+
+void
+scene::update(const devices_state &device)
+{
+    camera_.update(device);
+    glm::mat4 model_mat;
+    set_model_view_matrix(model_mat);
+    set_light_source();
 }
 
 void
@@ -74,14 +85,12 @@ scene::set_material_color()
 }
 
 void
-scene::set_model_view_matrix()
+scene::set_model_view_matrix(const glm::mat4& model_mat)
 {
     GLint projMatIdx = glGetUniformLocation(program_id_, "projMat");
     GLint model_view_idx = glGetUniformLocation(program_id_, "model_view_mat");
     GLint normal_mat_idx = glGetUniformLocation(program_id_, "normal_mat");
 
-    // TODO model_mat should be set from object
-    glm::mat4 model_mat;
     const glm::mat4& view_mat = camera_.get_view_mat();
     const glm::mat4& proj_mat = camera_.get_proj_mat();
     glm::mat4 model_view_mat = view_mat * model_mat;
@@ -109,7 +118,7 @@ scene::render_elements(GLuint vao_id, int nb_elt)
 }
 
 void
-scene::add_object(polygon *object)
+scene::add_object(object *object)
 {
     objects_.push_back(object);
 }

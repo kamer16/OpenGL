@@ -9,6 +9,11 @@ polygon::polygon(GLenum mode)
   glGenBuffers(1, &index_buffer_id_);
   glGenBuffers(1, &vert_buffer_id_);
   mode_ = mode;
+  (void) padding_;
+}
+
+polygon::~polygon()
+{
 }
 
 void polygon::draw()
@@ -18,7 +23,7 @@ void polygon::draw()
   glBindVertexArray(0);
 }
 
-polygon *
+object *
 make_coordinate_polygon(GLuint program_id)
 {
   polygon *coord = new polygon(GL_LINES);
@@ -39,7 +44,7 @@ make_coordinate_polygon(GLuint program_id)
   return coord;
 }
 
-polygon *
+object *
 make_quad_xz_polygon(GLuint program_id)
 {
   polygon *quad_xz = new polygon(GL_TRIANGLES);
@@ -58,7 +63,7 @@ make_quad_xz_polygon(GLuint program_id)
   return quad_xz;
 }
 
-polygon *
+object *
 make_cube_polygon(GLuint program_id)
 {
     polygon *cube = new polygon(GL_TRIANGLES);

@@ -4,34 +4,34 @@
 # include <GL/glew.h>
 # include <array>
 
-class polygon;
+# include "object.hpp"
 
-polygon *make_coordinate_polygon(GLuint program_id);
-polygon *make_quad_xz_polygon(GLuint program_id);
-polygon *make_cube_polygon(GLuint program_id);
+object *make_coordinate_polygon(GLuint program_id);
+object *make_quad_xz_polygon(GLuint program_id);
+object *make_cube_polygon(GLuint program_id);
 
-class polygon
+class polygon : public object
 {
 public:
     polygon(GLenum mode);
-    void draw();
+    virtual ~polygon() override;
+    virtual void draw() override;
 
+private:
+    friend object *make_coordinate_polygon(GLuint program_id);
+    friend object *make_quad_xz_polygon(GLuint program_id);
+    friend object *make_cube_polygon(GLuint program_id);
     template <typename T, std::size_t N>
     void load_index_buffer(std::array<T, N> &cubeIdxs);
-
     template <typename T, std::size_t N> void
     load_vertex_buffer(GLuint program_id, std::array<T, N> &cubeVerts);
 
-    friend polygon *make_coordinate_polygon(GLuint program_id);
-    friend polygon *make_quad_xz_polygon(GLuint program_id);
-    friend polygon *make_cube_polygon(GLuint program_id);
-
-private:
     GLint nb_elt_;
     GLuint vao_id_;
     GLuint index_buffer_id_;
     GLuint vert_buffer_id_;
     GLenum mode_;
+    float padding_;
 };
 
 # include "polygon.hxx"

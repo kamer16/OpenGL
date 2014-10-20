@@ -23,6 +23,7 @@ void enableEnv();
 void enableEnv()
 {
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
 
 int main(int argc, char *argv[])
@@ -97,7 +98,7 @@ int main(int argc, char *argv[])
         /* Swap front and back buffers */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(program_ids[0]);
-        scene1.update_and_draw(device);
+        scene1.update(device);
         scene1.render_arrays(mesh_vao_id, static_cast<int>(vertices.size()));
 
         glUseProgram(program_ids[1]);
