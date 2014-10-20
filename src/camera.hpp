@@ -13,7 +13,6 @@ class camera
 {
 public:
     camera(float aspect_ratio);
-    const glm::mat4& get_model_mat();
     const glm::mat4& get_proj_mat();
     const glm::mat4& get_view_mat();
 
@@ -21,13 +20,23 @@ public:
 private:
     glm::mat4 proj_mat_;
     glm::mat4 view_mat_;
-    glm::mat4 model_mat_;
 
-    // Memorize global translation value to compute translation values
-    glm::vec3 translation;
-    glm::vec2 rotation_;
-    //
+    // Camera's world coordinate position
     glm::vec3 position_;
+    // Camera's spherical coordinates i-e horizontal, vertical angles
+    glm::vec2 rotation_;
+
+    // The camera's z axis and direction being looked at
+    glm::vec3 forward_;
+    // the camera's x axis
+    glm::vec3 right_;
+    // the camera's y axis
+    glm::vec3 up_;
+
+    // windows width ratio to windows height
+    float aspect_ratio_;
+    // Field of view of camera which can simulate zooming
+    float fov_;
 
     // Update model matrix to move world around
     void update_position(const devices_state &device);

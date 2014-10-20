@@ -18,3 +18,8 @@ position of each object.
 
 Texture: texture.cpp currently useless, maybe removing it in the future.
 Currently all it does is load images to a program_id.
+
+Lighting: Compute normal matrix is user code not in GPU code
+
+Model Matrix: The rendered oject should each contain a model matrix, and send it
+to the gpu before drawing

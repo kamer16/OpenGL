@@ -30,7 +30,7 @@ scene::set_light_source()
     GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
     glm::vec3 light_dir(0, -0.1, 0.8);
     // When world moves, lights direction moves with it, therefore we multiply
-    // it by a normal matrix.
+    // it by a normal matrix. // TODO do this HERE and not in shader
     glUniform3fv(light_dir_idx, 1, glm::value_ptr(glm::normalize(light_dir)));
 }
 
@@ -80,7 +80,8 @@ scene::set_model_view_matrix()
     GLint model_view_idx = glGetUniformLocation(program_id_, "model_view_mat");
     GLint normal_mat_idx = glGetUniformLocation(program_id_, "normal_mat");
 
-    glm::mat4 model_mat;// = camera_.get_model_mat();
+    // TODO model_mat should be set from object
+    glm::mat4 model_mat;
     const glm::mat4& view_mat = camera_.get_view_mat();
     const glm::mat4& proj_mat = camera_.get_proj_mat();
     glm::mat4 model_view_mat = view_mat * model_mat;
