@@ -23,7 +23,7 @@ void enableEnv();
 void enableEnv()
 {
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 }
 
 int main(int argc, char *argv[])
@@ -88,7 +88,10 @@ int main(int argc, char *argv[])
     scene scene2(program_ids[1], aspect_ratio);
     scene2.add_object(make_coordinate_polygon(program_ids[1]));
     scene2.add_object(make_quad_xz_polygon(program_ids[1]));
-    scene2.add_object(make_cube_polygon(program_ids[1]));
+    object* cube = make_cube_polygon(program_ids[1]);
+    cube->scale(glm::vec3(10, 10, 10));
+    cube->translate(glm::vec3(0, 0, 20));
+    scene2.add_object(cube);
 
     while (!glfwWindowShouldClose(window))
     {

@@ -5,12 +5,14 @@
 
 # include <glm/glm.hpp>
 # include <glm/gtc/matrix_transform.hpp> /* lookAt, perspective */
+# include <glm/gtx/transform.hpp> /* lookAt, perspective */
 # include <glm/gtc/type_ptr.hpp> /* value_ptr */
 
 class object
 {
 public:
     void translate(const glm::vec3& dir);
+    void scale(const glm::vec3& vec);
     void rotate(float degrees, const glm::vec3& dir);
     virtual void draw() = 0;
     void set_model_mat(glm::mat4& model_mat);

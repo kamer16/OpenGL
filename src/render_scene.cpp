@@ -39,7 +39,7 @@ scene::set_light_source()
 {
     // create directional light
     GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
-    glm::vec3 light_dir(0, -0.1, 0.8);
+    glm::vec3 light_dir(0, 0.0, 0.8);
     // When world moves, lights direction moves with it, therefore we multiply
     // it by a normal matrix. // TODO do this HERE and not in shader
     glUniform3fv(light_dir_idx, 1, glm::value_ptr(glm::normalize(light_dir)));
