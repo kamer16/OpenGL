@@ -26,6 +26,7 @@ out vec2 uv;
 out vec3 normal;
 // vector in between light_source and eye position
 out vec3 half_vector;
+out vec3 light_dir;
 
 void main()
 {
@@ -35,4 +36,7 @@ void main()
     half_vector = normalize(light.position - vec3(normalize(gl_Position)));
     uv = in_uv;
     normal = normalize(normal_mat * in_norm);
+    light_dir = normalize(normal_mat * light.position);
+
+    half_vector = reflect(vec3(light.position), normal);
 }
