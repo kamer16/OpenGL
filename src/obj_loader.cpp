@@ -141,79 +141,65 @@ index_object(std::vector<glm::vec3> &vertices,
 }
 
 static void
-compute_normals(std::vector<glm::vec3>& out_v,
-                std::vector<glm::vec3>& out_n,
+compute_flat_shading(std::vector<glm::vec3>& normals, unsigned i,
+                     glm::vec3& cross, std::vector<s_vertex_idx>& indices)
+{
+    normals.push_back(cross);
+    indices[i - 2].n = normals.size();
+    indices[i - 1].n = normals.size();
+    indices[i].n = normals.size();
+}
+
+static void
+compute_smooth_shading(std::vector<glm::vec3>& normals,
+                       std::vector<float>& normals_count,
+                       size_t idx1, size_t idx2, size_t idx3,
+                       glm::vec3& cross, std::vector<s_vertex_idx>& indices,
+                       unsigned i)
+{
+    normals[idx1] *= (normals_count[idx1] - 1) / normals_count[idx1];
+    normals[idx1] += cross / normals_count[idx1];
+    normals[idx2] *= (normals_count[idx2] - 1) / normals_count[idx2];
+    normals[idx2] += cross / normals_count[idx2];
+    normals[idx3] *= (normals_count[idx3] - 1) / normals_count[idx3];
+    normals[idx3] += cross / normals_count[idx3];
+    indices[i - 2].n = idx1 + 1;
+    indices[i - 1].n = idx2 + 1;
+    indices[i].n = idx3 + 1;
+}
+
+static void
+compute_normals(std::vector<glm::vec3>& vertices,
                 std::vector<glm::vec3>& normals,
-                std::vector<char>& normals_count,
-                unsigned i,
-                size_t v_idxs[3])
+                std::vector<s_vertex_idx>& indices,
+                char flat_shading = 0)
 {
-    normals_count[v_idxs[0]]++;
-    normals_count[v_idxs[1]]++;
-    normals_count[v_idxs[2]]++;
-    glm::vec3 v1 = glm::vec3(out_v[i - 2].x, out_v[i - 2].y, out_v[i - 2].z);
-    glm::vec3 v2 = glm::vec3(out_v[i - 1].x, out_v[i - 1].y, out_v[i - 1].z);
-    glm::vec3 v3 = glm::vec3(out_v[i].x, out_v[i].y, out_v[i].z);
+    std::vector<float> normals_count(vertices.size());
+    // Each vertex has a unique normal
+    if (!flat_shading)
+        normals.resize(vertices.size());
 
-    glm::vec3 cross = glm::cross(v2 - v1, v3 - v1);
-    if (fabs(cross.x) > 0.0001f || fabs(cross.y) > 0.0001f ||
-        fabs(cross.z) > 0.0001f)
-        cross = glm::normalize(cross);
-    else
-        std::cerr << "Undefined normal for triangular line\n";
-    out_n.push_back({ cross.x, cross.y, cross.z });
-    out_n.push_back({ cross.x, cross.y, cross.z });
-    out_n.push_back({ cross.x, cross.y, cross.z });
-    //normals[v_idxs[0]] *= (normals_count[v_idxs[0]] - 1) / normals_count[v_idxs[0]]
-    //normals[v_idxs[0]] += cross / normals_count[v_idxs[0]]
-}
-
-// Vertices
-static void
-index_object(std::vector<glm::vec3> &vertices,
-             std::vector<s_vertex_idx> &indices,
-             std::vector<glm::vec3> &out_v,
-             std::vector<glm::vec3> &out_n)
-{
-    std::vector<glm::vec3> normals(vertices.size());
-    std::vector<char> normals_count(vertices.size());
-    size_t v_idxs[3];
-    for (unsigned i = 0; i < indices.size(); ++i) {
-
-        // Our base idx is 0, not 1 like in the mesh files
-        size_t v_idx = indices[i].v - 1;
-        out_v.push_back(vertices[v_idx]);
-        v_idxs[i % 3] = v_idx;
-        if (i % 3 == 2) {
-            compute_normals(out_v, out_n, normals, normals_count, i, v_idxs);
-        }
-    }
-}
-
-// Vertices and Textures
-static void
-index_object(std::vector<glm::vec3> &vertices,
-             std::vector<glm::vec2> &text_coords,
-             std::vector<s_vertex_idx> &indices,
-             std::vector<glm::vec3> &out_v,
-             std::vector<glm::vec3> &out_n,
-             std::vector<glm::vec2> &out_t)
-{
-    std::vector<glm::vec3> normals(vertices.size());
-    std::vector<char> normals_count(vertices.size());
-    size_t v_idxs[3];
-    for (unsigned i = 0; i < indices.size(); ++i) {
-
-        // Our base idx is 0, not 1 like in the mesh files
-        size_t v_idx = indices[i].v - 1;
-        size_t t_idx = indices[i].t - 1;
-
-        out_v.push_back(vertices[v_idx]);
-        out_t.push_back(text_coords[t_idx]);
-        v_idxs[i % 3] = v_idx;
-        if (i % 3 == 2) {
-            compute_normals(out_v, out_n, normals, normals_count, i, v_idxs);
-        }
+    for (unsigned i = 2; i < indices.size(); i += 3) {
+        size_t idx1 = indices[i -  2].v - 1;
+        size_t idx2 = indices[i -  1].v - 1;
+        size_t idx3 = indices[i].v - 1;
+        glm::vec3 v1 = vertices[idx1];
+        glm::vec3 v2 = vertices[idx2];
+        glm::vec3 v3 = vertices[idx3];
+        normals_count[idx1]++;
+        normals_count[idx2]++;
+        normals_count[idx3]++;
+        glm::vec3 cross = glm::cross(v2 - v1, v3 - v1);
+        if (fabs(cross.x) > 0.0001f || fabs(cross.y) > 0.0001f ||
+            fabs(cross.z) > 0.0001f)
+            cross = glm::normalize(cross);
+        else
+            std::cerr << "Undefined normal for triangular line\n";
+        if (flat_shading)
+            compute_flat_shading(normals, i, cross, indices);
+        else
+            compute_smooth_shading(normals, normals_count, idx1, idx2, idx3, cross,
+                           indices, i);
     }
 }
 
@@ -294,18 +280,14 @@ load_obj(const char *file,
         std::getline(instr, buff);
         token.clear();
     }
+    if (normals.size() == 0)
+        compute_normals(vertices, normals, indices, 0);
     if (vertices.size() == 0)
         std::cerr << "File does not define any vertices\n";
     // Vertices and Normals
     if (normals.size() != 0 && text_coords.size() == 0)
         index_object(vertices, normals, indices, out_v, out_n);
-    // Vertices and Textures
-    else if (normals.size() == 0 && text_coords.size() != 0)
-        index_object(vertices, text_coords, indices, out_v, out_n, out_t);
     // Vertices and Normals and Textures
     else if (text_coords.size() != 0)
         index_object(vertices, normals, text_coords, indices, out_v, out_n, out_t);
-    else
-    // Vertices
-        index_object(vertices, indices, out_v, out_n);
 }
