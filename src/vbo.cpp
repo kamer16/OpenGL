@@ -3,7 +3,6 @@
 #include <cassert>
 
 #include "vbo.hpp"
-#include "utility.hpp"
 
 template <typename T>
 static void
@@ -23,9 +22,9 @@ load_data(GLuint program_id, std::vector<T> &data, const char *name)
 }
 
 void bind_object(GLuint program_id, GLuint *vaoID,
-                 std::vector<utility::vec3> &vertices,
-                 std::vector<utility::vec3> &normals,
-                 std::vector<utility::vec2> &text_coords)
+                 std::vector<glm::vec3> &vertices,
+                 std::vector<glm::vec3> &normals,
+                 std::vector<glm::vec2> &text_coords)
 {
     glGenVertexArrays(1, vaoID);
     glBindVertexArray(*vaoID);

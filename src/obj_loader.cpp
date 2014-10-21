@@ -11,7 +11,6 @@
 #include <glm/gtc/type_ptr.hpp> /* value_ptr */
 
 #include "obj_loader.hpp"
-#include "utility.hpp"
 
 static void get_vertex(const char *str, s_vertex_idx &v_idx, size_t nb_vertices)
 {
@@ -62,28 +61,28 @@ static void add_indices(std::vector<s_vertex_idx> &indices, size_t nb_vertices,
                   << std::endl;
 }
 
-static void add_normals(std::vector<utility::vec3> &normals, std::istringstream &iss)
+static void add_normals(std::vector<glm::vec3> &normals, std::istringstream &iss)
 {
-    utility::vec3 normal;
+    glm::vec3 normal;
     iss >> normal.x>> normal.y >> normal.z;
     if (iss.fail())
         std::cerr << "Missing argument for normals" << std::endl;
     normals.push_back(normal);
 }
 
-static void add_texture_coords(std::vector<utility::vec2> &text_coords,
+static void add_texture_coords(std::vector<glm::vec2> &text_coords,
                                std::istringstream &iss)
 {
-    utility::vec2 texture;
+    glm::vec2 texture;
     iss >> texture.x >> texture.y;
     if (iss.fail())
         std::cerr << "Missing argument for texture coords" << std::endl;
     text_coords.push_back(texture);
 }
 
-static void add_vertices(std::vector<utility::vec3> &vertices, std::istringstream &iss)
+static void add_vertices(std::vector<glm::vec3> &vertices, std::istringstream &iss)
 {
-    utility::vec3 vertex;
+    glm::vec3 vertex;
     iss >> vertex.x >> vertex.y >> vertex.z;
     if (iss.fail())
         std::cerr << "Missing argument for texture coords" << std::endl;
@@ -93,9 +92,9 @@ static void add_vertices(std::vector<utility::vec3> &vertices, std::istringstrea
 
 // Print out vector in the mesh format
 // Mesh will only contain triangles
-void print_results(std::vector<utility::vec3> &vertices,
-                   std::vector<utility::vec2> &text_coords,
-                   std::vector<utility::vec3> &normals,
+void print_results(std::vector<glm::vec3> &vertices,
+                   std::vector<glm::vec2> &text_coords,
+                   std::vector<glm::vec3> &normals,
                    std::vector<s_vertex_idx> &indices)
 {
     std::cout.setf(std::ios::fixed);
@@ -124,11 +123,11 @@ void print_results(std::vector<utility::vec3> &vertices,
 
 // Vertices and Normals
 static void
-index_object(std::vector<utility::vec3> &vertices,
-             std::vector<utility::vec3> &normals,
+index_object(std::vector<glm::vec3> &vertices,
+             std::vector<glm::vec3> &normals,
              std::vector<s_vertex_idx> &indices,
-             std::vector<utility::vec3> &out_v,
-             std::vector<utility::vec3> &out_n)
+             std::vector<glm::vec3> &out_v,
+             std::vector<glm::vec3> &out_n)
 {
     for (unsigned i = 0; i < indices.size(); ++i) {
 
@@ -142,9 +141,9 @@ index_object(std::vector<utility::vec3> &vertices,
 }
 
 static void
-compute_normals(std::vector<utility::vec3>& out_v,
-                std::vector<utility::vec3>& out_n,
-                std::vector<utility::vec3>& normals,
+compute_normals(std::vector<glm::vec3>& out_v,
+                std::vector<glm::vec3>& out_n,
+                std::vector<glm::vec3>& normals,
                 std::vector<char>& normals_count,
                 unsigned i,
                 size_t v_idxs[3])
@@ -171,12 +170,12 @@ compute_normals(std::vector<utility::vec3>& out_v,
 
 // Vertices
 static void
-index_object(std::vector<utility::vec3> &vertices,
+index_object(std::vector<glm::vec3> &vertices,
              std::vector<s_vertex_idx> &indices,
-             std::vector<utility::vec3> &out_v,
-             std::vector<utility::vec3> &out_n)
+             std::vector<glm::vec3> &out_v,
+             std::vector<glm::vec3> &out_n)
 {
-    std::vector<utility::vec3> normals(vertices.size());
+    std::vector<glm::vec3> normals(vertices.size());
     std::vector<char> normals_count(vertices.size());
     size_t v_idxs[3];
     for (unsigned i = 0; i < indices.size(); ++i) {
@@ -193,14 +192,14 @@ index_object(std::vector<utility::vec3> &vertices,
 
 // Vertices and Textures
 static void
-index_object(std::vector<utility::vec3> &vertices,
-             std::vector<utility::vec2> &text_coords,
+index_object(std::vector<glm::vec3> &vertices,
+             std::vector<glm::vec2> &text_coords,
              std::vector<s_vertex_idx> &indices,
-             std::vector<utility::vec3> &out_v,
-             std::vector<utility::vec3> &out_n,
-             std::vector<utility::vec2> &out_t)
+             std::vector<glm::vec3> &out_v,
+             std::vector<glm::vec3> &out_n,
+             std::vector<glm::vec2> &out_t)
 {
-    std::vector<utility::vec3> normals(vertices.size());
+    std::vector<glm::vec3> normals(vertices.size());
     std::vector<char> normals_count(vertices.size());
     size_t v_idxs[3];
     for (unsigned i = 0; i < indices.size(); ++i) {
@@ -220,13 +219,13 @@ index_object(std::vector<utility::vec3> &vertices,
 
 // Vertices and Normals and Textures
 static void
-index_object(std::vector<utility::vec3> &vertices,
-             std::vector<utility::vec3> &normals,
-             std::vector<utility::vec2> &text_coords,
+index_object(std::vector<glm::vec3> &vertices,
+             std::vector<glm::vec3> &normals,
+             std::vector<glm::vec2> &text_coords,
              std::vector<s_vertex_idx> &indices,
-             std::vector<utility::vec3> &out_v,
-             std::vector<utility::vec3> &out_n,
-             std::vector<utility::vec2> &out_t)
+             std::vector<glm::vec3> &out_v,
+             std::vector<glm::vec3> &out_n,
+             std::vector<glm::vec2> &out_t)
 {
     for (unsigned i = 0; i < indices.size(); ++i) {
 
@@ -242,9 +241,9 @@ index_object(std::vector<utility::vec3> &vertices,
 }
 
 void
-print_trinagles(std::vector<utility::vec3> &vertices,
-                std::vector<utility::vec3> &normals,
-                std::vector<utility::vec2> &text_coords)
+print_triangles(std::vector<glm::vec3> &vertices,
+                std::vector<glm::vec3> &normals,
+                std::vector<glm::vec2> &text_coords)
 {
     std::cout.setf(std::ios::fixed);
     if (vertices.size() != normals.size() || vertices.size() != text_coords.size())
@@ -261,13 +260,13 @@ print_trinagles(std::vector<utility::vec3> &vertices,
 
 void
 load_obj(const char *file,
-         std::vector<utility::vec3> &out_v,
-         std::vector<utility::vec3> &out_n,
-         std::vector<utility::vec2> &out_t)
+         std::vector<glm::vec3> &out_v,
+         std::vector<glm::vec3> &out_n,
+         std::vector<glm::vec2> &out_t)
 {
-    std::vector<utility::vec3> vertices;
-    std::vector<utility::vec3> normals;
-    std::vector<utility::vec2> text_coords;
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> text_coords;
     std::vector<s_vertex_idx> indices;
 
     std::ifstream instr;

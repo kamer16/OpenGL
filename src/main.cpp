@@ -72,9 +72,9 @@ int main(int argc, char *argv[])
     // TODO loads texture but not used
     loadTextures(program_ids[0]);
 
-    std::vector<utility::vec3> vertices;
-    std::vector<utility::vec3> normals;
-    std::vector<utility::vec2> text_coords;
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> text_coords;
     load_obj(opt.mesh_file.c_str(), vertices, normals, text_coords);
     GLuint mesh_vao_id;
     bind_object(program_ids[0], &mesh_vao_id, vertices, normals, text_coords);
