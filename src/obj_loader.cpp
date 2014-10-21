@@ -141,6 +141,34 @@ index_object(std::vector<utility::vec3> &vertices,
     }
 }
 
+static void
+compute_normals(std::vector<utility::vec3>& out_v,
+                std::vector<utility::vec3>& out_n,
+                std::vector<utility::vec3>& normals,
+                std::vector<char>& normals_count,
+                unsigned i,
+                size_t v_idxs[3])
+{
+    normals_count[v_idxs[0]]++;
+    normals_count[v_idxs[1]]++;
+    normals_count[v_idxs[2]]++;
+    glm::vec3 v1 = glm::vec3(out_v[i - 2].x, out_v[i - 2].y, out_v[i - 2].z);
+    glm::vec3 v2 = glm::vec3(out_v[i - 1].x, out_v[i - 1].y, out_v[i - 1].z);
+    glm::vec3 v3 = glm::vec3(out_v[i].x, out_v[i].y, out_v[i].z);
+
+    glm::vec3 cross = glm::cross(v2 - v1, v3 - v1);
+    if (fabs(cross.x) > 0.0001f || fabs(cross.y) > 0.0001f ||
+        fabs(cross.z) > 0.0001f)
+        cross = glm::normalize(cross);
+    else
+        std::cerr << "Undefined normal for triangular line\n";
+    out_n.push_back({ cross.x, cross.y, cross.z });
+    out_n.push_back({ cross.x, cross.y, cross.z });
+    out_n.push_back({ cross.x, cross.y, cross.z });
+    //normals[v_idxs[0]] *= (normals_count[v_idxs[0]] - 1) / normals_count[v_idxs[0]]
+    //normals[v_idxs[0]] += cross / normals_count[v_idxs[0]]
+}
+
 // Vertices
 static void
 index_object(std::vector<utility::vec3> &vertices,
@@ -148,26 +176,17 @@ index_object(std::vector<utility::vec3> &vertices,
              std::vector<utility::vec3> &out_v,
              std::vector<utility::vec3> &out_n)
 {
+    std::vector<utility::vec3> normals(vertices.size());
+    std::vector<char> normals_count(vertices.size());
+    size_t v_idxs[3];
     for (unsigned i = 0; i < indices.size(); ++i) {
 
         // Our base idx is 0, not 1 like in the mesh files
         size_t v_idx = indices[i].v - 1;
-
         out_v.push_back(vertices[v_idx]);
+        v_idxs[i % 3] = v_idx;
         if (i % 3 == 2) {
-          glm::vec3 v1 = glm::vec3(out_v[i - 2].x, out_v[i - 2].y, out_v[i - 2].z);
-          glm::vec3 v2 = glm::vec3(out_v[i - 1].x, out_v[i - 1].y, out_v[i - 1].z);
-          glm::vec3 v3 = glm::vec3(out_v[i].x, out_v[i].y, out_v[i].z);
-
-          glm::vec3 cross = glm::cross(v2 - v1, v3 - v1);
-          if (fabs(cross.x) > 0.0001f || fabs(cross.y) > 0.0001f ||
-              fabs(cross.z) > 0.0001f)
-              cross = glm::normalize(cross);
-          else
-              std::cerr << "Undefined normal for triangular line\n";
-          out_n.push_back({ cross.x, cross.y, cross.z });
-          out_n.push_back({ cross.x, cross.y, cross.z });
-          out_n.push_back({ cross.x, cross.y, cross.z });
+            compute_normals(out_v, out_n, normals, normals_count, i, v_idxs);
         }
     }
 }
@@ -181,6 +200,9 @@ index_object(std::vector<utility::vec3> &vertices,
              std::vector<utility::vec3> &out_n,
              std::vector<utility::vec2> &out_t)
 {
+    std::vector<utility::vec3> normals(vertices.size());
+    std::vector<char> normals_count(vertices.size());
+    size_t v_idxs[3];
     for (unsigned i = 0; i < indices.size(); ++i) {
 
         // Our base idx is 0, not 1 like in the mesh files
@@ -189,20 +211,9 @@ index_object(std::vector<utility::vec3> &vertices,
 
         out_v.push_back(vertices[v_idx]);
         out_t.push_back(text_coords[t_idx]);
+        v_idxs[i % 3] = v_idx;
         if (i % 3 == 2) {
-          glm::vec3 v1 = glm::vec3(out_v[i - 2].x, out_v[i - 2].y, out_v[i - 2].z);
-          glm::vec3 v2 = glm::vec3(out_v[i - 1].x, out_v[i - 1].y, out_v[i - 1].z);
-          glm::vec3 v3 = glm::vec3(out_v[i].x, out_v[i].y, out_v[i].z);
-
-          glm::vec3 cross = glm::cross(v2 - v1, v3 - v1);
-          if (fabs(cross.x) > 0.0001f || fabs(cross.y) > 0.0001f ||
-              fabs(cross.z) > 0.0001f)
-              cross = glm::normalize(cross);
-          else
-              std::cerr << "Undefined normal for triangular line\n";
-          out_n.push_back({ cross.x, cross.y, cross.z });
-          out_n.push_back({ cross.x, cross.y, cross.z });
-          out_n.push_back({ cross.x, cross.y, cross.z });
+            compute_normals(out_v, out_n, normals, normals_count, i, v_idxs);
         }
     }
 }

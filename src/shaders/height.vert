@@ -14,7 +14,7 @@ struct light_source {
 
 uniform mat4 projMat;
 uniform mat4 model_view_mat;
-uniform mat4 view_mat;;
+uniform mat4 view_mat;
 uniform mat3 normal_mat;
 uniform light_source light;
 
