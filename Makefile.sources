@@ -1,6 +1,7 @@
 SOURCES=main.cpp \
 	vbo.cpp \
 	utility.cpp \
+	material.cpp \
 	options.cpp \
 	camera.cpp \
 	texture.cpp \

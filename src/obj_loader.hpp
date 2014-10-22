@@ -2,6 +2,9 @@
 # define OBJ_LOADER_HPP
 
 # include <vector>
+# include <iostream>
+# include <sstream>
+# include <fstream>
 
 // A structure used for storing the indices of each vertex in the face
 // declaration of a polygon.
@@ -15,24 +18,50 @@ struct s_vertex_idx
     size_t n;
 };
 
-// Reads an Obj files and stores vertices, normals, and texture coords.
-// A simple call to glDrawArarys will render the object.
-void load_obj(const char *file,
-              std::vector<glm::vec3> &out_v,
-              std::vector<glm::vec3> &out_n,
-              std::vector<glm::vec2> &out_t);
+class obj_loader
+{
+public:
+    using container3 = std::vector<glm::vec3>;
+    using container2 = std::vector<glm::vec3>;
+    // Reads an Obj files and stores vertices, normals, and texture coords.
+    // A simple call to glDrawArarys will render the object.
+    void load_obj(const char *file,
+                  std::vector<glm::vec3> &out_v,
+                  std::vector<glm::vec3> &out_n,
+                  std::vector<glm::vec2> &out_t);
 
-// Print out vector in the mesh format
-// Mesh will only contain triangles
-void print_results(std::vector<glm::vec3> &vertices,
-                   std::vector<glm::vec2> &text_coords,
-                   std::vector<glm::vec3> &normals,
-                   std::vector<s_vertex_idx> &indices);
+    // Print out vector in the mesh format
+    // Mesh will only contain triangles
+    void print_results();
 
-// Dump out the contents of each vector
-void
-print_triangles(std::vector<glm::vec3> &vertices,
-                 std::vector<glm::vec3> &normals,
-                 std::vector<glm::vec2> &text_coords);
+    // Dump out the contents of each vector
+    void
+    print_triangles();
+private:
+    void get_vertex(const char *str, s_vertex_idx &v_idx, size_t nb_vertices);
+    void add_indices(size_t nb_vertices);
+    void add_normals();
+    void add_texture_coords();
+    void add_vertices();
+    void index_object(std::vector<glm::vec3> &out_v,
+                      std::vector<glm::vec3> &out_n);
+    void compute_flat_shading(unsigned i,
+                              glm::vec3& cross);
+    void compute_smooth_shading(std::vector<float>& normals_count,
+                                size_t idx1, size_t idx2, size_t idx3,
+                                glm::vec3& cross,
+                                unsigned i);
+    void compute_normals(char flat_shading);
+    void index_object(std::vector<glm::vec3> &out_v,
+                      std::vector<glm::vec3> &out_n,
+                      std::vector<glm::vec2> &out_t);
+
+    std::vector<glm::vec3> vertices_;
+    std::vector<glm::vec3> normals_;
+    std::vector<glm::vec2> text_coords_;
+    std::vector<s_vertex_idx> indices_;
+    std::istringstream iss_;
+    std::ifstream ifs_;
+};
 
 #endif // OBJ_LOADER_HPP
