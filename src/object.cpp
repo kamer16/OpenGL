@@ -1,5 +1,10 @@
 #include "object.hpp"
 
+object::object()
+    :material_(nullptr)
+{
+}
+
 const glm::mat4&
 object::get_model_mat()
 {
@@ -33,4 +38,10 @@ object::scale(const glm::vec3& vec)
 
 object::~object()
 {
+}
+
+void
+object::set_material(std::shared_ptr<const material> material)
+{
+    material_ = material;
 }

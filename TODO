@@ -28,3 +28,20 @@ RenderScene:  We shouldn't have any rendring method, a scene contains objects
 but does not know anything about the objects. all it does is call their draw
 method.  Current mesh objects are rendered by the scene and need a didicate
 update method from render scene. IN the future these will be removed
+
+MeshObject:  A basic object class that knows how to render a file loaded from a
+mesh file.  not implemented yet.
+
+MaterialLib:  Need to parse the material library.
+
+RenderScene:  Need to add mesh_obj to vector of objects in render scene.
+
+DataLoader:  A seperate class should be in charge of loading data from objects
+onto the GPU memory, thit loader class should also have access to a texture
+loader class which loads texture files.
+
+ObjectLoader:  Loading functions should create a group of objects, and create an
+object for each material in *.obj file.  Then these objects are return allong
+and the caller is responsible for freeing them.  Each object is knows about a
+material information,  these can be shared among several objects hence the usage
+of std::shared_ptr for material ownership.

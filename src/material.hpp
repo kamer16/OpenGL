@@ -2,8 +2,11 @@
 # define MATERIAL_HPP
 
 # include <string>
+# include <memory>
 # include <sstream>
 # include <glm/glm.hpp>
+
+#include <unordered_map>
 
 struct material
 {
@@ -26,13 +29,19 @@ struct material
     // Bump  ==> bump
     const char* bump;
     float dissolve;
+    float padding_;
 };
 
 class material_lib
 {
 public:
+    using materials = std::unordered_map<std::string, std::shared_ptr<material>>;
     // The material library using filename in the string stream
     void load_material_lib(std::istringstream& iss);
+    // Returns pointer to a material for a given name or nullptr when not found.
+    std::shared_ptr<material> get_material(std::istringstream& iss);
+private:
+    materials materials_;
 };
 
 #endif // MATERIAL_HPP

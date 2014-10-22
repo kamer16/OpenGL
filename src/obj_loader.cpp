@@ -12,6 +12,7 @@
 
 #include "obj_loader.hpp"
 #include "material.hpp"
+#include "mesh_object.hpp"
 
 void
 obj_loader::get_vertex(const char *str, s_vertex_idx &v_idx, size_t nb_vertices_)
@@ -124,8 +125,7 @@ obj_loader::print_results()
 
 // Vertices and Normals
 void
-obj_loader::index_object(std::vector<glm::vec3> &out_v,
-                         std::vector<glm::vec3> &out_n)
+obj_loader::index_object(container3 &out_v, container3 &out_n)
 {
     for (unsigned i = 0; i < indices_.size(); ++i) {
 
@@ -197,9 +197,7 @@ obj_loader::compute_normals(char flat_shading)
 
 // Vertices and Normals and Textures
 void
-obj_loader::index_object(std::vector<glm::vec3> &out_v,
-                         std::vector<glm::vec3> &out_n,
-                         std::vector<glm::vec2> &out_t)
+obj_loader::index_object(container3 &out_v, container3 &out_n, container2 &out_t)
 {
     for (unsigned i = 0; i < indices_.size(); ++i) {
 
@@ -230,12 +228,11 @@ obj_loader::print_triangles()
     }
 }
 
-void
-obj_loader::load_obj(const char *file,
-                     std::vector<glm::vec3> &out_v,
-                     std::vector<glm::vec3> &out_n,
-                     std::vector<glm::vec2> &out_t)
+auto
+obj_loader::load_obj(const char *file, container3 &out_v, container3 &out_n,
+                     container2 &out_t) -> objects*
 {
+    objects* res = new objects();
     material_lib mat_lib;
 
     std::string token;
@@ -243,9 +240,10 @@ obj_loader::load_obj(const char *file,
     std::string buff;
     if (!ifs_.good()) {
         std::cerr << file << ": not found" << std::endl;
-        return;
+        return nullptr;
     }
     std::getline(ifs_, buff);
+    object* obj = nullptr;
     while (!ifs_.eof()) {
         iss_.str(buff);
         iss_ >> token;
@@ -260,6 +258,10 @@ obj_loader::load_obj(const char *file,
             add_indices(vertices_.size());
         else if (!token.compare("mtllib"))
             mat_lib.load_material_lib(iss_);
+        else if (!token.compare("usemtl")) {
+            obj = new mesh_object();
+            obj->set_material(mat_lib.get_material(iss_));
+        }
 
         std::getline(ifs_, buff);
         token.clear();
@@ -276,4 +278,5 @@ obj_loader::load_obj(const char *file,
     else if (text_coords_.size() != 0)
         index_object(out_v, out_n, out_t);
     ifs_.close();
+    return res;
 }

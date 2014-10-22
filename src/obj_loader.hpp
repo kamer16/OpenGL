@@ -6,6 +6,8 @@
 # include <sstream>
 # include <fstream>
 
+# include "object.hpp"
+
 // A structure used for storing the indices of each vertex in the face
 // declaration of a polygon.
 struct s_vertex_idx
@@ -21,30 +23,28 @@ struct s_vertex_idx
 class obj_loader
 {
 public:
+    using objects = std::vector<object*>;
     using container3 = std::vector<glm::vec3>;
-    using container2 = std::vector<glm::vec3>;
+    using container2 = std::vector<glm::vec2>;
+    using container_idx = std::vector<s_vertex_idx>;
     // Reads an Obj files and stores vertices, normals, and texture coords.
     // A simple call to glDrawArarys will render the object.
-    void load_obj(const char *file,
-                  std::vector<glm::vec3> &out_v,
-                  std::vector<glm::vec3> &out_n,
-                  std::vector<glm::vec2> &out_t);
+    objects* load_obj(const char *file, container3 &out_v, container3 &out_n,
+                      container2 &out_t);
 
     // Print out vector in the mesh format
     // Mesh will only contain triangles
     void print_results();
 
     // Dump out the contents of each vector
-    void
-    print_triangles();
+    void print_triangles();
 private:
     void get_vertex(const char *str, s_vertex_idx &v_idx, size_t nb_vertices);
     void add_indices(size_t nb_vertices);
     void add_normals();
     void add_texture_coords();
     void add_vertices();
-    void index_object(std::vector<glm::vec3> &out_v,
-                      std::vector<glm::vec3> &out_n);
+    void index_object(container3 &out_v, container3 &out_n);
     void compute_flat_shading(unsigned i,
                               glm::vec3& cross);
     void compute_smooth_shading(std::vector<float>& normals_count,
@@ -52,14 +52,12 @@ private:
                                 glm::vec3& cross,
                                 unsigned i);
     void compute_normals(char flat_shading);
-    void index_object(std::vector<glm::vec3> &out_v,
-                      std::vector<glm::vec3> &out_n,
-                      std::vector<glm::vec2> &out_t);
+    void index_object(container3 &out_v, container3 &out_n, container2 &out_t);
 
-    std::vector<glm::vec3> vertices_;
-    std::vector<glm::vec3> normals_;
-    std::vector<glm::vec2> text_coords_;
-    std::vector<s_vertex_idx> indices_;
+    container3 vertices_;
+    container3 normals_;
+    container2 text_coords_;
+    container_idx indices_;
     std::istringstream iss_;
     std::ifstream ifs_;
 };
