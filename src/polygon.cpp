@@ -32,12 +32,12 @@ make_coordinate_polygon(GLuint program_id)
   }};
   std::array<utility::color_vert, 6> coord_verts = {{
       /* Vertex coord     ,  Vertex color */
-    { { 0.0f, 0.0f, 0.0f },   { 1.0f, 0.0f, 0.0f } },
-    { { 800.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
-    { { 0.0f, 0.0f, 0.0f },   { 0.0f, 1.0f, 0.0f } },
-    { { 0.0f, 800.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
-    { { 0.0f, 0.0f, 0.0f },   { 0.0f, 0.0f, 1.0f } },
-    { { 0.0f, 0.0f, 800.0f }, { 0.0f, 0.0f, 1.0f } }
+    { glm::vec3(0.0f, 0.0f, 0.0f   ), glm::vec3(1.0f, 0.0f, 0.0f) },
+    { glm::vec3(800.0f, 0.0f, 0.0f ), glm::vec3(1.0f, 0.0f, 0.0f) },
+    { glm::vec3(0.0f, 0.0f, 0.0f   ), glm::vec3(0.0f, 1.0f, 0.0f) },
+    { glm::vec3(0.0f, 800.0f, 0.0f ), glm::vec3(0.0f, 1.0f, 0.0f) },
+    { glm::vec3(0.0f, 0.0f, 0.0f   ), glm::vec3(0.0f, 0.0f, 1.0f) },
+    { glm::vec3(0.0f, 0.0f, 800.0f ), glm::vec3(0.0f, 0.0f, 1.0f) }
   }};
   coord->load_vertex_buffer(program_id, coord_verts);
   coord->load_index_buffer(coord_idxs);
@@ -53,10 +53,10 @@ make_quad_xz_polygon(GLuint program_id)
   }};
   std::array<utility::color_vert, 4> quad_verts = {{
       /* Vertex quad_xz     ,  Vertex color */
-    { { -9.5f, 0.0f, -9.5f }, { 0.5f, 0.0f, 0.0f } },
-    { {  9.5f, 0.0f, -9.5f }, { 0.0f, 0.0f, 0.5f } },
-    { {  9.5f, 0.0f,  9.5f }, { 0.0f, 0.5f, 0.0f } },
-    { { -9.5f, 0.0f,  9.5f }, { 0.5f, 0.5f, 0.5f } }
+    { glm::vec3(-9.5f, 0.0f, -9.5f), glm::vec3(0.5f, 0.0f, 0.0f) },
+    { glm::vec3( 9.5f, 0.0f, -9.5f), glm::vec3(0.0f, 0.0f, 0.5f) },
+    { glm::vec3( 9.5f, 0.0f,  9.5f), glm::vec3(0.0f, 0.5f, 0.0f) },
+    { glm::vec3(-9.5f, 0.0f,  9.5f), glm::vec3(0.5f, 0.5f, 0.5f) }
   }};
   quad_xz->load_vertex_buffer(program_id, quad_verts);
   quad_xz->load_index_buffer(quad_idxs);
@@ -77,14 +77,14 @@ make_cube_polygon(GLuint program_id)
     }};
 
     std::array<utility::color_vert, 8> cube_verts = {{
-        { {  0.5f,  0.5f,  0.5f }, { 1.0f, 0.0f, 0.0f } },
-        { {  0.5f,  0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f } },
-        { {  0.5f, -0.5f, -0.5f }, { 1.0f, 1.0f, 0.0f } },
-        { {  0.5f, -0.5f,  0.5f }, { 1.0f, 0.0f, 0.0f } },
-        { { -0.5f,  0.5f,  0.5f }, { 1.0f, 0.0f, 0.0f } },
-        { { -0.5f,  0.5f, -0.5f }, { 1.0f, 1.0f, 0.0f } },
-        { { -0.5f, -0.5f, -0.5f }, { 1.0f, 1.0f, 0.0f } },
-        { { -0.5f, -0.5f,  0.5f }, { 1.0f, 1.0f, 0.0f } }
+        { glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec3(1.0f, 0.0f, 0.0f) },
+        { glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 0.0f) },
+        { glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec3(1.0f, 1.0f, 0.0f) },
+        { glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec3(1.0f, 0.0f, 0.0f) },
+        { glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(1.0f, 0.0f, 0.0f) },
+        { glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(1.0f, 1.0f, 0.0f) },
+        { glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(1.0f, 1.0f, 0.0f) },
+        { glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(1.0f, 1.0f, 0.0f) }
     }};
 
     cube->load_vertex_buffer(program_id, cube_verts);
