@@ -14,3 +14,23 @@ normal mapping (mais pas tester)
 - Raycast (basic implementation for FP raycast)
 - 3D sound (basic implemetation using FMOD)
 - Post FX
+
+SSAO screen space ambient occlusion
+Demoscene : Small binaries containing sexy graphics 2 years ahead Videa games
+God rays
+
+Normal map:  pertubation.x = (r - 0.5 ) * 2
+             pertubation.y = (g - 0.5 ) * 2
+             pertubation.z = (b - 1.0 ) * 2
+normal = (normal ^ pertubation) + normal;
+normal = (normal cross pertubation) + normal;
+
+shadow volume
+Old method: matrix de prjection d'applatissement XXXX, 0000, XXXX, XXXX
+stencil buffer to know which pixel to set to black i-e a binary mask. One
+texture per plan.
+shadow map;light space, use depth buffer to draw shadow
+When computing z-buffer its in logarithm so watch out.
+to avoid pixelized results use cascadet shadow map i-e check other shadow map
+with differente resolution.
+
