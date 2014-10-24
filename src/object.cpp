@@ -5,6 +5,21 @@ object::object()
 {
 }
 
+auto object::get_vertices() -> container3&
+{
+    return vertices_;
+}
+
+auto object::get_normals() -> container3&
+{
+    return normals_;
+}
+
+auto object::get_text_coord() -> container2&
+{
+    return text_coords_;
+}
+
 const glm::mat4&
 object::get_model_mat()
 {
