@@ -28,8 +28,6 @@ public:
     // position.
     // Draw each object
     void update_and_draw(const devices_state &device);
-    // TODO only used to set shader for main mesh
-    void update(const devices_state &device);
     void add_object(object *object);
 
 private:

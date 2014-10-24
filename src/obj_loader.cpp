@@ -18,9 +18,11 @@
 void
 obj_loader::get_vertex(const char *str, s_vertex_idx &v_idx, size_t nb_vertices_)
 {
-    int v = 1;
-    int t = 1;
-    int n = 1;
+    // 0 is a reserved value, which is used to check if index for attributes
+    // v,or n exists
+    int v = 0;
+    int t = 0;
+    int n = 0;
     sscanf(str, "%d/%d/%d", &v, &t, &n);
     if (v < 0)
         v_idx.v = nb_vertices_ - static_cast<size_t>(-v) + 1;
@@ -184,32 +186,34 @@ obj_loader::index_object(container3 &out_v, container3 &out_n, container2 &out_t
 }
 
 void
-obj_loader::print_triangles()
+obj_loader::print_triangles(container3& vertices, container2& text_coords,
+                            container3& normals)
 {
     std::cout.setf(std::ios::fixed);
-    if (vertices_.size() != normals_.size() || vertices_.size() != text_coords_.size())
+    if (vertices.size() != normals.size() || vertices.size() != text_coords.size())
         std::cerr << "Object loader generated different size objects" << std::endl;
 
-    for (unsigned i = 0; i < vertices_.size(); ++i) {
-        std::cout << vertices_[i].x << ", " << vertices_[i].y << ", "
-                  << vertices_[i].z << "\t";
-        std::cout << normals_[i].x << ", " << normals_[i].y << ", "
-                  << normals_[i].z << "\t";
-        std::cout << text_coords_[i].x << ", " << text_coords_[i].y << std::endl;
+    for (unsigned i = 0; i < vertices.size(); ++i) {
+        std::cout << vertices[i].x << ", " << vertices[i].y << ", "
+                  << vertices[i].z << "\t";
+        std::cout << normals[i].x << ", " << normals[i].y << ", "
+                  << normals[i].z << "\t";
+        std::cout << text_coords[i].x << ", " << text_coords[i].y << std::endl;
     }
 }
 
 void obj_loader::set_object_attribute(object* obj)
 {
-    if (normals_.size() == 0)
+    if (indices_[0].n == 0)
         compute_normals(0);
     if (vertices_.size() == 0)
         std::cerr << "File does not define any vertices\n";
+    assert(indices_[0].n && "We always hove normals");
     // Vertices and Normals
-    if (normals_.size() != 0 && text_coords_.size() == 0)
+    if (indices_[0].t == 0)
         index_object(obj->get_vertices(), obj->get_normals());
     // Vertices and Normals and Textures
-    else if (text_coords_.size() != 0)
+    else
         index_object(obj->get_vertices(), obj->get_normals(),
                      obj->get_text_coord());
 }
@@ -261,6 +265,8 @@ obj_loader::load_obj(std::string& file) -> objects*
         token.clear();
         iss_.clear();
     }
+    set_object_attribute(obj);
+    res->push_back(obj);
     ifs_.close();
     return res;
 }

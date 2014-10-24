@@ -36,7 +36,8 @@ public:
     void print_results();
 
     // Dump out the contents of each vector
-    void print_triangles();
+    void print_triangles(container3& vertices, container2& text_coord,
+                         container3& normals);
 private:
     void get_vertex(const char *str, s_vertex_idx &v_idx, size_t nb_vertices);
     void add_indices(size_t nb_vertices);

@@ -26,15 +26,6 @@ scene::update_and_draw(const devices_state &device)
 }
 
 void
-scene::update(const devices_state &device)
-{
-    camera_.update(device);
-    glm::mat4 model_mat;
-    set_model_view_matrix(model_mat);
-    set_light_source();
-}
-
-void
 scene::set_light_source()
 {
     // create directional light

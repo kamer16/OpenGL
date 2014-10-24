@@ -11,8 +11,11 @@ material_lib::load_material_lib(std::istringstream& iss, std::string&& dir)
     std::string filename, token;
     iss >> filename;
     ifs_.open(dir + filename);
-    if (!ifs_.good())
-        std::cerr << "Unable loading mat. lib" << dir + filename << std::endl;
+    if (!ifs_.good()) {
+        std::cerr << "Unable loading material lib : " << dir + filename
+                  << std::endl;
+        return;
+    }
     std::string buff;
     std::getline(ifs_, buff);
     std::shared_ptr<material> mtl = nullptr;

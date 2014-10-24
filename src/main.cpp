@@ -105,7 +105,6 @@ int main(int argc, char *argv[])
         /* Swap front and back buffers */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(program_ids[0]);
-        scene1.update(device);
         scene1.update_and_draw(device);
 
         glUseProgram(program_ids[1]);
