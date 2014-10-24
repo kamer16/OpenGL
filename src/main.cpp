@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> text_coords;
     obj_loader loader;
-    loader.load_obj(opt.mesh_file.c_str(), vertices, normals, text_coords);
+    loader.load_obj(opt.mesh_file, vertices, normals, text_coords);
     GLuint mesh_vao_id;
     bind_object(program_ids[0], &mesh_vao_id, vertices, normals, text_coords);
     if (monitor)

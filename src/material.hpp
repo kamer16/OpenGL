@@ -1,17 +1,17 @@
 #ifndef MATERIAL_HPP
 # define MATERIAL_HPP
 
+# include <glm/glm.hpp>
 # include <string>
 # include <memory>
 # include <sstream>
-# include <glm/glm.hpp>
-
-#include <unordered_map>
+# include <fstream>
+# include <unordered_map>
 
 struct material
 {
     // Ns
-    float shininess;
+    float shininess = 1.0f;
     // Ka
     glm::vec3 ambient;
     // Kd
@@ -19,16 +19,18 @@ struct material
     // Ks
     glm::vec3 specular;
     // ambient texture map ==> map_Ka
-    const char* ambient_map;
+    std::string ambient_map;
     // diffuse texture map ==> map_Kd
-    const char* diffuse_map;
+    std::string diffuse_map;
     // specular texture map ==> map_Ks
-    const char* specular_map;
+    std::string specular_map;
     // Bump texture map ==> map_bump
-    const char* bump_map;
+    std::string bump_map;
     // Bump  ==> bump
-    const char* bump;
-    float dissolve;
+    std::string bump;
+    // dissolve map  ==> map_d
+    std::string dissolve_map;
+    float dissolve = 1.0f;
     float padding_;
 };
 
@@ -37,11 +39,14 @@ class material_lib
 public:
     using materials = std::unordered_map<std::string, std::shared_ptr<material>>;
     // The material library using filename in the string stream
-    void load_material_lib(std::istringstream& iss);
+    void load_material_lib(std::istringstream& iss, std::string&& dir);
     // Returns pointer to a material for a given name or nullptr when not found.
     std::shared_ptr<material> get_material(std::istringstream& iss);
+    void dump();
 private:
     materials materials_;
+    std::istringstream iss_;
+    std::ifstream ifs_;
 };
 
 #endif // MATERIAL_HPP

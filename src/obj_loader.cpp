@@ -13,6 +13,7 @@
 #include "obj_loader.hpp"
 #include "material.hpp"
 #include "mesh_object.hpp"
+#include "utility.hpp"
 
 void
 obj_loader::get_vertex(const char *str, s_vertex_idx &v_idx, size_t nb_vertices_)
@@ -63,36 +64,6 @@ obj_loader::add_indices(size_t nb_vertices_)
         std::cerr << "Faces with more than 4 vertices_ are not handled"
                   << std::endl;
 }
-
-void
-obj_loader::add_normals()
-{
-    glm::vec3 normal;
-    iss_ >> normal.x>> normal.y >> normal.z;
-    if (iss_.fail())
-        std::cerr << "Miss_ing argument for normals_" << std::endl;
-    normals_.push_back(normal);
-}
-
-void
-obj_loader::add_texture_coords()
-{
-    glm::vec2 texture;
-    iss_ >> texture.x >> texture.y;
-    if (iss_.fail())
-        std::cerr << "Miss_ing argument for texture coords" << std::endl;
-    text_coords_.push_back(texture);
-}
-
-void obj_loader::add_vertices()
-{
-    glm::vec3 vertex;
-    iss_ >> vertex.x >> vertex.y >> vertex.z;
-    if (iss_.fail())
-        std::cerr << "Miss_ing argument for texture coords" << std::endl;
-    vertices_.push_back(vertex);
-}
-
 
 // Print out vector in the mesh format
 // Mesh will only contain triangles
@@ -229,7 +200,7 @@ obj_loader::print_triangles()
 }
 
 auto
-obj_loader::load_obj(const char *file, container3 &out_v, container3 &out_n,
+obj_loader::load_obj(std::string& file, container3 &out_v, container3 &out_n,
                      container2 &out_t) -> objects*
 {
     objects* res = new objects();
@@ -249,15 +220,16 @@ obj_loader::load_obj(const char *file, container3 &out_v, container3 &out_n,
         iss_ >> token;
 
         if (!token.compare("v"))
-            add_vertices();
+            vertices_.push_back(utility::make_vec3(iss_, "Vertices"));
         else if (!token.compare("vt"))
-            add_texture_coords();
+            text_coords_.push_back(utility::make_vec2(iss_, "Texture_coord"));
         else if (!token.compare("vn"))
-            add_normals();
+            normals_.push_back(utility::make_vec3(iss_, "Normals"));
         else if (!token.compare("f"))
             add_indices(vertices_.size());
-        else if (!token.compare("mtllib"))
-            mat_lib.load_material_lib(iss_);
+        else if (!token.compare("mtllib")) {
+            mat_lib.load_material_lib(iss_, file.substr(0, file.find_last_of('/') + 1));
+        }
         else if (!token.compare("usemtl")) {
             obj = new mesh_object();
             obj->set_material(mat_lib.get_material(iss_));
