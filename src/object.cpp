@@ -15,6 +15,42 @@ auto object::get_normals() -> container3&
     return normals_;
 }
 
+template <typename T>
+void
+object::load_data(GLuint program_id, std::vector<T> &data, const char *name,
+                  GLuint* buffer_id)
+{
+    glGenBuffers(1, buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER, *buffer_id);
+    long unsigned byte_size = sizeof (T) * data.size();
+    glBufferData(GL_ARRAY_BUFFER, byte_size, data.data(), GL_STATIC_DRAW);
+    GLint location_idx = glGetAttribLocation(program_id, name);
+    glEnableVertexAttribArray(location_idx); // Matches layout (location = 1)
+    size_t nb_elt = sizeof (T) / sizeof (typename T::value_type);
+    glVertexAttribPointer(location_idx, nb_elt, GL_FLOAT, GL_FALSE, 0, 0);
+}
+
+void
+object::bind(GLuint program_id)
+{
+    glGenVertexArrays(1, &vao_id_);
+    glBindVertexArray(vao_id_);
+
+    // Sets shaders attribute for vertices positions
+    load_data(program_id, vertices_, "in_position", &vert_buffer_id_);
+
+    // Sets shaders attribute for texture coordinates
+    if (text_coords_.size() == vertices_.size())
+        load_data(program_id, text_coords_, "in_uv", &text_buffer_id_);
+    else
+        assert(text_coords_.size() == 0);
+
+    // Sets shaders attribute for texture coordinates
+    load_data(program_id, normals_, "in_norm", &norm_buffer_id_);
+
+    glBindVertexArray(0);
+}
+
 auto object::get_text_coord() -> container2&
 {
     return text_coords_;

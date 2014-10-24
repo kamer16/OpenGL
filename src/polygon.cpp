@@ -9,7 +9,6 @@ polygon::polygon(GLenum mode)
   glGenBuffers(1, &index_buffer_id_);
   glGenBuffers(1, &vert_buffer_id_);
   mode_ = mode;
-  (void) padding_;
 }
 
 polygon::~polygon()

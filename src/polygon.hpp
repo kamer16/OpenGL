@@ -27,11 +27,8 @@ private:
     load_vertex_buffer(GLuint program_id, std::array<T, N> &cubeVerts);
 
     GLint nb_elt_;
-    GLuint vao_id_;
     GLuint index_buffer_id_;
-    GLuint vert_buffer_id_;
     GLenum mode_;
-    float padding_;
 };
 
 # include "polygon.hxx"

@@ -76,9 +76,10 @@ int main(int argc, char *argv[])
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> text_coords;
     obj_loader loader;
-    loader.load_obj(opt.mesh_file, vertices, normals, text_coords);
-    GLuint mesh_vao_id;
-    bind_object(program_ids[0], &mesh_vao_id, vertices, normals, text_coords);
+    using objects = std::vector<object*>;
+    objects* objs = loader.load_obj(opt.mesh_file);
+    for (auto obj : *objs)
+        obj->bind(program_ids[0]);
     if (monitor)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     else // TODO somehow not working, Bug in GLFW ??
@@ -86,6 +87,8 @@ int main(int argc, char *argv[])
 
     /* Loop until the user closes the window */
     scene scene1(program_ids[0], aspect_ratio);
+    for (auto obj : *objs)
+        scene1.add_object(obj);
     scene scene2(program_ids[1], aspect_ratio);
     scene2.add_object(make_coordinate_polygon(program_ids[1]));
     scene2.add_object(make_quad_xz_polygon(program_ids[1]));
@@ -103,7 +106,7 @@ int main(int argc, char *argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(program_ids[0]);
         scene1.update(device);
-        scene1.render_arrays(mesh_vao_id, static_cast<int>(vertices.size()));
+        scene1.update_and_draw(device);
 
         glUseProgram(program_ids[1]);
         // update and draw scene2

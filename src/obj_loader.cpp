@@ -199,9 +199,23 @@ obj_loader::print_triangles()
     }
 }
 
+void obj_loader::set_object_attribute(object* obj)
+{
+    if (normals_.size() == 0)
+        compute_normals(0);
+    if (vertices_.size() == 0)
+        std::cerr << "File does not define any vertices\n";
+    // Vertices and Normals
+    if (normals_.size() != 0 && text_coords_.size() == 0)
+        index_object(obj->get_vertices(), obj->get_normals());
+    // Vertices and Normals and Textures
+    else if (text_coords_.size() != 0)
+        index_object(obj->get_vertices(), obj->get_normals(),
+                     obj->get_text_coord());
+}
+
 auto
-obj_loader::load_obj(std::string& file, container3 &out_v, container3 &out_n,
-                     container2 &out_t) -> objects*
+obj_loader::load_obj(std::string& file) -> objects*
 {
     objects* res = new objects();
     material_lib mat_lib;
@@ -214,23 +228,31 @@ obj_loader::load_obj(std::string& file, container3 &out_v, container3 &out_n,
         return nullptr;
     }
     std::getline(ifs_, buff);
-    object* obj = nullptr;
+    object* obj = new mesh_object();
     while (!ifs_.eof()) {
+        using namespace utility;
         iss_.str(buff);
         iss_ >> token;
 
         if (!token.compare("v"))
-            vertices_.push_back(utility::make_vec3(iss_, "Vertices"));
+            vertices_.push_back(make_vec3(iss_, "Vertices"));
         else if (!token.compare("vt"))
-            text_coords_.push_back(utility::make_vec2(iss_, "Texture_coord"));
+            text_coords_.push_back(make_vec2(iss_, "Text_coord"));
         else if (!token.compare("vn"))
-            normals_.push_back(utility::make_vec3(iss_, "Normals"));
+            normals_.push_back(make_vec3(iss_, "Normals"));
         else if (!token.compare("f"))
             add_indices(vertices_.size());
         else if (!token.compare("mtllib")) {
             mat_lib.load_material_lib(iss_, file.substr(0, file.find_last_of('/') + 1));
         }
         else if (!token.compare("usemtl")) {
+            if (obj && indices_.size()) {
+                set_object_attribute(obj);
+                res->push_back(obj);
+            }
+            else
+                delete obj;
+            indices_.clear();
             obj = new mesh_object();
             obj->set_material(mat_lib.get_material(iss_));
         }
@@ -239,16 +261,6 @@ obj_loader::load_obj(std::string& file, container3 &out_v, container3 &out_n,
         token.clear();
         iss_.clear();
     }
-    if (normals_.size() == 0)
-        compute_normals(0);
-    if (vertices_.size() == 0)
-        std::cerr << "File does not define any vertices\n";
-    // Vertices and Normals
-    if (normals_.size() != 0 && text_coords_.size() == 0)
-        index_object(out_v, out_n);
-    // Vertices and Normals and Textures
-    else if (text_coords_.size() != 0)
-        index_object(out_v, out_n, out_t);
     ifs_.close();
     return res;
 }

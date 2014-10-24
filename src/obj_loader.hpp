@@ -29,8 +29,7 @@ public:
     using container_idx = std::vector<s_vertex_idx>;
     // Reads an Obj files and stores vertices, normals, and texture coords.
     // A simple call to glDrawArarys will render the object.
-    objects* load_obj(std::string& file, container3 &out_v, container3 &out_n,
-                      container2 &out_t);
+    objects* load_obj(std::string& file);
 
     // Print out vector in the mesh format
     // Mesh will only contain triangles
@@ -50,6 +49,7 @@ private:
                                 unsigned i);
     void compute_normals(char flat_shading);
     void index_object(container3 &out_v, container3 &out_n, container2 &out_t);
+    void set_object_attribute(object* obj);
 
     container3 vertices_;
     container3 normals_;

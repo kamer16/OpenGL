@@ -8,6 +8,8 @@
 # include <glm/gtx/transform.hpp> /* lookAt, perspective */
 # include <glm/gtc/type_ptr.hpp> /* value_ptr */
 
+# include <GL/glew.h>
+
 # include <memory>
 # include <vector>
 
@@ -30,13 +32,22 @@ public:
     container3& get_vertices();
     container3& get_normals();
     container2& get_text_coord();
+    void bind(GLuint program_id);
     virtual ~object();
-private:
-    glm::mat4 model_mat_;
-    std::shared_ptr<const material> material_;
+protected:
+    GLuint vert_buffer_id_;
+    GLuint text_buffer_id_;
+    GLuint norm_buffer_id_;
+    GLuint vao_id_;
     container3 vertices_;
     container3 normals_;
     container2 text_coords_;
+private:
+    template <typename T>
+    void load_data(GLuint program_id, std::vector<T> &data, const char *name,
+                   GLuint* buffer_id);
+    glm::mat4 model_mat_;
+    std::shared_ptr<const material> material_;
 };
 
 #endif // OBJECT_HPP
