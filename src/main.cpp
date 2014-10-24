@@ -13,6 +13,7 @@
 #include "render_scene.hpp" // renderScene()
 #include "polygon.hpp" // polygons
 #include "options.hpp" // polygons
+#include "fps_manager.hpp" // print_fps
 
 #include "obj_loader.hpp"
 
@@ -94,6 +95,7 @@ int main(int argc, char *argv[])
     cube->translate(glm::vec3(0, 0, 20));
     scene2.add_object(cube);
 
+    fps_manager fps_manager;
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
@@ -115,6 +117,7 @@ int main(int argc, char *argv[])
         GLenum error = glGetError();
         if (error)
             std::cerr << gluErrorString(error) << std::endl;
+        fps_manager.update_and_set_window_title(window, "OpenGL");
     }
 
     glfwTerminate();

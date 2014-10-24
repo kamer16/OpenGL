@@ -45,3 +45,13 @@ object for each material in *.obj file.  Then these objects are return allong
 and the caller is responsible for freeing them.  Each object is knows about a
 material information,  these can be shared among several objects hence the usage
 of std::shared_ptr for material ownership.
+
+
+
+**********
+BENCHARKING
+************
+Experimental Branch for bench
+
+Try to merge textures, normals and vertices in one buffer, using one VAO, to see
+if the FPS rate increases.
