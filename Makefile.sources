@@ -5,6 +5,7 @@ SOURCES=main.cpp \
 	material.cpp \
 	options.cpp \
 	camera.cpp \
+	fps_manager.cpp \
 	texture.cpp \
 	object.cpp \
 	shader.cpp \

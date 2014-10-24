@@ -45,3 +45,28 @@ object for each material in *.obj file.  Then these objects are return allong
 and the caller is responsible for freeing them.  Each object is knows about a
 material information,  these can be shared among several objects hence the usage
 of std::shared_ptr for material ownership.
+
+
+**********************************
+BENCHMARKING:
+Using sponza, by computing a VAO per object using a seperate material, the
+performaincses decreases by 4. 4000fps -- 1000fps with GTX Titan
+
+
+*******************************
+Disabling vsync
+http://stackoverflow.com/questions/17196117/disable-vertical-sync-for-glxgears
+nvidia-settings : X Screen 0 / OpenGL Settings / Sync to VBlank
+or configure
+echo "0/SyncToVBlank=0" >> ~/.nvidia-settings-rc
+nvidia-settings --load-config-only
+Or just
+nvidia-settings --load-config-only --assign="SyncToVBlank=0"
+
+AMD/ATI:
+/etx/X11/xorg.conf
+Driver "fglrx"
+Driver "radeon"
+Driver "intel"
+Option     "SwapbuffersWait"       "false"
+$ vblank_mode=0 ./my_program
