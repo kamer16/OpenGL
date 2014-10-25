@@ -31,15 +31,15 @@ struct material
     // dissolve map  ==> map_d
     std::string dissolve_map;
     float dissolve = 1.0f;
-    float padding_;
 };
 
 class material_lib
 {
 public:
     using materials = std::unordered_map<std::string, std::shared_ptr<material>>;
+    material_lib(std::string&& dir);
     // The material library using filename in the string stream
-    void load_material_lib(std::istringstream& iss, std::string&& dir);
+    void load_material_lib(std::istringstream& iss);
     // Returns pointer to a material for a given name or nullptr when not found.
     std::shared_ptr<material> get_material(std::istringstream& iss);
     void dump();
@@ -47,6 +47,7 @@ private:
     materials materials_;
     std::istringstream iss_;
     std::ifstream ifs_;
+    std::string dir_;
 };
 
 #endif // MATERIAL_HPP

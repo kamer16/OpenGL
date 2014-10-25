@@ -222,7 +222,7 @@ auto
 obj_loader::load_obj(std::string& file) -> objects*
 {
     objects* res = new objects();
-    material_lib mat_lib;
+    material_lib mat_lib(file.substr(0, file.find_last_of('/') + 1));
 
     std::string token;
     ifs_.open(file);
@@ -247,7 +247,7 @@ obj_loader::load_obj(std::string& file) -> objects*
         else if (!token.compare("f"))
             add_indices(vertices_.size());
         else if (!token.compare("mtllib")) {
-            mat_lib.load_material_lib(iss_, file.substr(0, file.find_last_of('/') + 1));
+            mat_lib.load_material_lib(iss_);
         }
         else if (!token.compare("usemtl")) {
             if (obj && indices_.size()) {

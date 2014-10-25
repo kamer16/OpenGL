@@ -5,14 +5,19 @@
 #include <fstream>
 #include <iostream>
 
+material_lib::material_lib(std::string&& dir)
+    : dir_(dir)
+{
+}
+
 void
-material_lib::load_material_lib(std::istringstream& iss, std::string&& dir)
+material_lib::load_material_lib(std::istringstream& iss)
 {
     std::string filename, token;
     iss >> filename;
-    ifs_.open(dir + filename);
+    ifs_.open(dir_ + filename);
     if (!ifs_.good()) {
-        std::cerr << "Unable loading material lib : " << dir + filename
+        std::cerr << "Unable loading material lib : " << dir_ + filename
                   << std::endl;
         return;
     }
@@ -29,17 +34,17 @@ material_lib::load_material_lib(std::istringstream& iss, std::string&& dir)
         }
         else if (mtl) {
             if (!token.compare("map_Ka"))
-                mtl->ambient_map = utility::unix_file(iss_);
+                mtl->ambient_map = dir_ + utility::unix_file(iss_);
             else if (!token.compare("map_Kd"))
-                mtl->diffuse_map = utility::unix_file(iss_);
+                mtl->diffuse_map = dir_ + utility::unix_file(iss_);
             else if (!token.compare("map_Ks"))
-                mtl->specular_map = utility::unix_file(iss_);
+                mtl->specular_map = dir_ + utility::unix_file(iss_);
             else if (!token.compare("map_bump"))
-                mtl->bump_map = utility::unix_file(iss_);
+                mtl->bump_map = dir_ + utility::unix_file(iss_);
             else if (!token.compare("map_d"))
-                mtl->dissolve_map = utility::unix_file(iss_);
+                mtl->dissolve_map = dir_ + utility::unix_file(iss_);
             else if (!token.compare("bump"))
-                mtl->bump = utility::unix_file(iss_);
+                mtl->bump = dir_ + utility::unix_file(iss_);
             else if (!token.compare("Ka"))
                 mtl->ambient = utility::make_vec3(iss_, "ambiant_mat");
             else if (!token.compare("Kd"))

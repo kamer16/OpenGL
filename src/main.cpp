@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
     using objects = std::vector<object*>;
     objects* objs = loader.load_obj(opt.mesh_file);
     for (auto obj : *objs)
-        obj->bind(program_ids[0]);
+        obj->bind_vao(program_ids[0]);
     if (monitor)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     else // TODO somehow not working, Bug in GLFW ??
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 
         glUseProgram(program_ids[1]);
         // update and draw scene2
-        scene2.update_and_draw(device);
+        //scene2.update_and_draw(device);
         glfwSwapBuffers(window);
 
         /* Poll for and process events */

@@ -34,7 +34,7 @@ std::string unix_file(std::istringstream& iss)
 {
     std::string file;
     iss >> file;
-    for (auto c : file) {
+    for (auto& c : file) {
         if (c == '\\')
             c = '/';
     }
