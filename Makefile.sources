@@ -1,12 +1,10 @@
 SOURCES=main.cpp \
-	vbo.cpp \
 	utility.cpp \
 	mesh_object.cpp \
 	material.cpp \
 	options.cpp \
 	camera.cpp \
 	fps_manager.cpp \
-	texture.cpp \
 	object.cpp \
 	shader.cpp \
 	render_scene.cpp \

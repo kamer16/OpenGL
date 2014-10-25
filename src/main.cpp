@@ -8,8 +8,6 @@
 #include <glm/gtc/type_ptr.hpp> /* value_ptr */
 
 #include "shader.hpp" // loadShaders()
-#include "texture.hpp" // loadTextures()
-#include "vbo.hpp" // bind_object()
 #include "render_scene.hpp" // renderScene()
 #include "polygon.hpp" // polygons
 #include "options.hpp" // parse_args
@@ -69,9 +67,6 @@ int main(int argc, char *argv[])
                 &program_ids[0]);
     loadShaders("src/shaders/color.vert", "src/shaders/color.frag",
                 &program_ids[1]);
-
-    // TODO loads texture but not used
-    loadTextures(program_ids[0]);
 
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
