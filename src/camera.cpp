@@ -1,6 +1,7 @@
 #include "camera.hpp"
 
 #include "utility.hpp"
+#include "fps_manager.hpp"
 
 camera::camera(float aspect_ratio)
     : position_(0, 100, 100.0),
@@ -48,18 +49,24 @@ void
 camera::update_rotation(const devices_state &device)
 {
     double xpos, ypos;
+    fps_manager& fps = fps_manager::get_instance();
     device.get_mouse_movement(&xpos, &ypos);
+    // Better mouse mouvement
+    xpos *= 200.0;
+    ypos *= 200.0;
     // When mouse moves along y axis, the scene is rotated along x axis.
-    rotation_.x -= static_cast<float>(ypos);
+    rotation_.x -= static_cast<float>(ypos) * fps.get_sec_per_frame();
     // When mouse moves along x axis, the scene is rotated along y axis.
-    rotation_.y -= static_cast<float>(xpos);
+    rotation_.y -= static_cast<float>(xpos) * fps.get_sec_per_frame();
 }
 
 void
 camera::update_position(const devices_state &device)
 {
-    const float pos_incr = 10.0f;
-    const float rot_incr = 0.07f;
+    fps_manager& fps = fps_manager::get_instance();
+    float ms = static_cast<float>(fps.get_sec_per_frame());
+    float pos_incr = 500.0f * ms;
+    float rot_incr = 2.0f * ms;
 
     if (device.key_state.left_pressed) {
         position_ -= right_ * pos_incr;

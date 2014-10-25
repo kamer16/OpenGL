@@ -3,12 +3,22 @@
 #include <iostream>
 #include <sstream>
 
-fps_manager::fps_manager(double frequency)
-    : old_time_(glfwGetTime()),
-      fps_(0),
-      frame_count_(0),
-      frequency_(frequency)
+void
+fps_manager::set_frequency(double frequency)
 {
+    frequency_ = frequency;
+}
+
+fps_manager &fps_manager::get_instance()
+{
+    static fps_manager instance;
+    return instance;
+}
+
+double
+fps_manager::get_sec_per_frame()
+{
+    return sec_per_frame_;
 }
 
 double
@@ -16,6 +26,8 @@ fps_manager::update_fps()
 {
     ++frame_count_;
     double new_time = glfwGetTime();
+    sec_per_frame_ = (new_time - old_time_sec_);
+    old_time_sec_ = new_time;
     double elapsed_time = new_time - old_time_;
     if (elapsed_time > frequency_) {
         fps_ = frame_count_ / elapsed_time;

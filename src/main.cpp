@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     cube->translate(glm::vec3(0, 0, 20));
     scene2.add_object(cube);
 
-    fps_manager fps_manager;
+    fps_manager& fps_manager = fps_manager::get_instance();
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
