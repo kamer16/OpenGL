@@ -1,5 +1,6 @@
 #include "material.hpp"
 #include "utility.hpp"
+#include "texture_manager.hpp"
 
 #include <string>
 #include <fstream>
@@ -8,6 +9,38 @@
 material_lib::material_lib(std::string&& dir)
     : dir_(dir)
 {
+}
+
+void material_lib::update_material(material_ptr mtl, std::string& token)
+{
+    using namespace texture_manager;
+    using namespace utility;
+
+    if (!token.compare("map_Ka"))
+        mtl->ambient_map = dir_ + unix_file(iss_);
+    else if (!token.compare("map_Kd")) {
+        std::string kd_name = unix_file(iss_);
+        mtl->diffuse_map = dir_ + kd_name;
+        mtl->diffuse_map_id = load_texture(dir_ + kd_name, GL_TEXTURE0);
+    }
+    else if (!token.compare("map_Ks"))
+        mtl->specular_map = dir_ + unix_file(iss_);
+    else if (!token.compare("map_bump"))
+        mtl->bump_map = dir_ + unix_file(iss_);
+    else if (!token.compare("map_d"))
+        mtl->dissolve_map = dir_ + unix_file(iss_);
+    else if (!token.compare("bump"))
+        mtl->bump = dir_ + unix_file(iss_);
+    else if (!token.compare("Ka"))
+        mtl->ambient = make_vec3(iss_, "ambiant_mat");
+    else if (!token.compare("Kd"))
+        mtl->diffuse = make_vec3(iss_, "diffuse_mat");
+    else if (!token.compare("Ks"))
+        mtl->specular = make_vec3(iss_, "specular_mat");
+    else if (!token.compare("Ns"))
+        mtl->shininess = make_float(iss_, "shininess");
+    else if (!token.compare("d"))
+        mtl->dissolve = make_float(iss_, "dissolve");
 }
 
 void
@@ -23,7 +56,7 @@ material_lib::load_material_lib(std::istringstream& iss)
     }
     std::string buff;
     std::getline(ifs_, buff);
-    std::shared_ptr<material> mtl = nullptr;
+    material_ptr mtl = nullptr;
     while (!ifs_.eof()) {
         iss_.str(buff);
         iss_ >> token;
@@ -33,35 +66,13 @@ material_lib::load_material_lib(std::istringstream& iss)
             materials_[token] = mtl;
         }
         else if (mtl) {
-            if (!token.compare("map_Ka"))
-                mtl->ambient_map = dir_ + utility::unix_file(iss_);
-            else if (!token.compare("map_Kd"))
-                mtl->diffuse_map = dir_ + utility::unix_file(iss_);
-            else if (!token.compare("map_Ks"))
-                mtl->specular_map = dir_ + utility::unix_file(iss_);
-            else if (!token.compare("map_bump"))
-                mtl->bump_map = dir_ + utility::unix_file(iss_);
-            else if (!token.compare("map_d"))
-                mtl->dissolve_map = dir_ + utility::unix_file(iss_);
-            else if (!token.compare("bump"))
-                mtl->bump = dir_ + utility::unix_file(iss_);
-            else if (!token.compare("Ka"))
-                mtl->ambient = utility::make_vec3(iss_, "ambiant_mat");
-            else if (!token.compare("Kd"))
-                mtl->diffuse = utility::make_vec3(iss_, "diffuse_mat");
-            else if (!token.compare("Ks"))
-                mtl->specular = utility::make_vec3(iss_, "specular_mat");
-            else if (!token.compare("Ns"))
-                mtl->shininess = utility::make_float(iss_, "shininess");
-            else if (!token.compare("d"))
-                mtl->dissolve = utility::make_float(iss_, "dissolve");
+            update_material(mtl, token);
         }
 
         std::getline(ifs_, buff);
         token.clear();
         iss_.clear();
     }
-
     ifs_.close();
 }
 

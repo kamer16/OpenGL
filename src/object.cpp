@@ -33,36 +33,18 @@ object::load_data(GLuint program_id, std::vector<T> &data, const char *name,
 }
 
 #include <iostream>
-void
-object::load_texture(GLuint program_id, const std::string& file)
-{
-  int width;
-  int height;
-  int channel;
-  unsigned char *image;
-  // Set current program object for modification
-  glGenTextures(2, &texture_);
 
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, texture_);
-  image = SOIL_load_image(file.c_str(), &width, &height, &channel, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB ,GL_UNSIGNED_BYTE, image);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  GLint loc0 = glGetUniformLocation(program_id, "texture0");
-  glUniform1i(loc0, 0);
-}
-
-#include <iostream>
-void object::bind_material(GLuint program_id)
+void object::bind_material()
 {
-    if (!i_ && material_) {
-        load_texture(program_id, material_->diffuse_map);
-    }
+    // TODO bind one texture for all objects of same type
+    static GLuint tex = 0;
+    if (tex == material_->diffuse_map_id)
+        ;
     else {
-        glBindTexture(GL_TEXTURE_2D, texture_);
+        glBindTexture(GL_TEXTURE_2D, material_->diffuse_map_id);
+        tex = material_->diffuse_map_id;
     }
-    if (!i_)
-        i_ = 0;
+
 
 }
 

@@ -12,6 +12,7 @@
 #include "polygon.hpp" // polygons
 #include "options.hpp" // parse_args
 #include "fps_manager.hpp" // update_and_print_fps
+#include "texture_manager.hpp" // set_shader_uniforms
 
 #include "obj_loader.hpp"
 
@@ -74,6 +75,7 @@ int main(int argc, char *argv[])
     obj_loader loader;
     using objects = std::vector<object*>;
     objects* objs = loader.load_obj(opt.mesh_file);
+    texture_manager::set_shader_uniforms(program_ids[0]);
     for (auto obj : *objs)
         obj->bind_vao(program_ids[0]);
     if (monitor)
@@ -114,7 +116,6 @@ int main(int argc, char *argv[])
         GLenum error = glGetError();
         if (error)
             std::cerr << gluErrorString(error) << std::endl;
-        //fps_manager.update_and_print_fps();
         fps_manager.update_and_set_window_title(window, "OpenGL");
     }
 

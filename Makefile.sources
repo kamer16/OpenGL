@@ -1,5 +1,6 @@
 SOURCES=main.cpp \
 	utility.cpp \
+	texture_manager.cpp \
 	mesh_object.cpp \
 	material.cpp \
 	options.cpp \

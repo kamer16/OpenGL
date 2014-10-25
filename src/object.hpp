@@ -34,7 +34,7 @@ public:
     container2& get_text_coord();
     // Generate all required buffers and vao.
     void bind_vao(GLuint program_id);
-    void bind_material(GLuint program_id);
+    void bind_material();
     virtual ~object();
 protected:
     GLuint vert_buffer_id_;
@@ -48,12 +48,8 @@ private:
     template <typename T>
     void load_data(GLuint program_id, std::vector<T> &data, const char *name,
                    GLuint* buffer_id);
-    void load_texture(GLuint program_id, const std::string& file);
     glm::mat4 model_mat_;
     std::shared_ptr<const material> material_;
-    GLuint texture_ = 0;
-    // TODO just testing
-    int i_ = 0;
 };
 
 #endif // OBJECT_HPP

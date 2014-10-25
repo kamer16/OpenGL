@@ -7,6 +7,7 @@
 # include <sstream>
 # include <fstream>
 # include <unordered_map>
+# include <GL/glew.h>
 
 struct material
 {
@@ -22,6 +23,8 @@ struct material
     std::string ambient_map;
     // diffuse texture map ==> map_Kd
     std::string diffuse_map;
+    // Texture id for diffuse_map;
+    GLuint diffuse_map_id;
     // specular texture map ==> map_Ks
     std::string specular_map;
     // Bump texture map ==> map_bump
@@ -37,6 +40,7 @@ class material_lib
 {
 public:
     using materials = std::unordered_map<std::string, std::shared_ptr<material>>;
+    using material_ptr = std::shared_ptr<material>;
     material_lib(std::string&& dir);
     // The material library using filename in the string stream
     void load_material_lib(std::istringstream& iss);
@@ -44,6 +48,7 @@ public:
     std::shared_ptr<material> get_material(std::istringstream& iss);
     void dump();
 private:
+    void update_material(material_ptr mtl, std::string& token);
     materials materials_;
     std::istringstream iss_;
     std::ifstream ifs_;

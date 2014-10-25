@@ -19,7 +19,7 @@ scene::update_and_draw(const devices_state &device)
 {
     camera_.update(device);
     for (auto obj : objects_) {
-        obj->bind_material(program_id_);
+        obj->bind_material();
         const glm::mat4& model_mat = obj->get_model_mat();
         set_model_view_matrix(model_mat);
         set_light_source();
