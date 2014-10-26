@@ -53,6 +53,14 @@ Object rendering : should be done in a smart way, i-e all object bound to the
 same material drawn consecutively, and different materials with same texture
 also should be drawn consecutively.
 
+REFACTORING:
+Currently files :
+    - material.hpp
+    - obj_loader.hpp
+Need looking at.  Currently a meterial contains a list of objects such that we
+bind each material once per frame, and that subsequent materials can be ordered
+to avoid rebinding textures.
+
 
 **********************************
 BENCHMARKING:

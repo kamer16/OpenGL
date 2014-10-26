@@ -7,6 +7,8 @@
 #include <glm/gtc/matrix_transform.hpp> /* lookAt, perspective */
 #include <glm/gtc/type_ptr.hpp> /* value_ptr */
 
+# include <algorithm>
+
 #include "shader.hpp" // loadShaders()
 #include "render_scene.hpp" // renderScene()
 #include "polygon.hpp" // polygons
@@ -24,6 +26,12 @@ void enableEnv()
 {
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
+}
+
+bool sort_materials(material* left, material* right);
+bool sort_materials(material* left, material* right)
+{
+    return left->diffuse_map_id < right->diffuse_map_id;
 }
 
 int main(int argc, char *argv[])
@@ -75,6 +83,7 @@ int main(int argc, char *argv[])
     obj_loader loader;
     using materials = std::vector<material*>;
     materials* mats = loader.load_obj(opt.mesh_file);
+    std::sort(mats->begin(), mats->end(), sort_materials);
     texture_manager tm;
     tm.set_shader_uniforms(program_ids[0]);
     for (auto mat : *mats) {
