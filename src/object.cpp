@@ -47,8 +47,6 @@ void object::bind_material()
         glBindTexture(GL_TEXTURE_2D, material_->diffuse_map_id);
         tex = material_->diffuse_map_id;
     }
-
-
 }
 
 void

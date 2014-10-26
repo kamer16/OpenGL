@@ -13,7 +13,6 @@ material_lib::material_lib(std::string&& dir)
 
 void material_lib::update_material(material_ptr mtl, std::string& token)
 {
-    using namespace texture_manager;
     using namespace utility;
 
     if (!token.compare("map_Ka"))
@@ -21,7 +20,7 @@ void material_lib::update_material(material_ptr mtl, std::string& token)
     else if (!token.compare("map_Kd")) {
         std::string kd_name = unix_file(iss_);
         mtl->diffuse_map = dir_ + kd_name;
-        mtl->diffuse_map_id = load_texture(dir_ + kd_name, GL_TEXTURE0);
+        mtl->diffuse_map_id = tm_.load_texture(dir_ + kd_name, GL_TEXTURE0);
     }
     else if (!token.compare("map_Ks"))
         mtl->specular_map = dir_ + unix_file(iss_);
@@ -65,9 +64,8 @@ material_lib::load_material_lib(std::istringstream& iss)
             iss_ >> token;
             materials_[token] = mtl;
         }
-        else if (mtl) {
+        else if (mtl)
             update_material(mtl, token);
-        }
 
         std::getline(ifs_, buff);
         token.clear();

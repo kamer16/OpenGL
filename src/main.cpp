@@ -75,7 +75,8 @@ int main(int argc, char *argv[])
     obj_loader loader;
     using objects = std::vector<object*>;
     objects* objs = loader.load_obj(opt.mesh_file);
-    texture_manager::set_shader_uniforms(program_ids[0]);
+    texture_manager tm;
+    tm.set_shader_uniforms(program_ids[0]);
     for (auto obj : *objs)
         obj->bind_vao(program_ids[0]);
     if (monitor)

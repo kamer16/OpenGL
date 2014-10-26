@@ -9,6 +9,8 @@
 # include <unordered_map>
 # include <GL/glew.h>
 
+# include "texture_manager.hpp"
+
 struct material
 {
     // Ns
@@ -53,6 +55,7 @@ private:
     std::istringstream iss_;
     std::ifstream ifs_;
     std::string dir_;
+    texture_manager tm_;
 };
 
 #endif // MATERIAL_HPP

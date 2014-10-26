@@ -3,19 +3,13 @@
 #include <SOIL/SOIL.h>
 
 #include <iostream>
-namespace texture_manager
-{
 
-GLuint load_texture(std::string&& file, GLenum texture_unit)
+GLuint
+texture_manager::load_texture(std::string&& file, GLenum texture_unit)
 {
-    // TODO don't reload already loaded images
-    static std::string str = "";
-    static unsigned tex;
-    if (!str.compare(file)) {
-        return tex;
-    }
-    else
-        str = file;
+    auto it = textures_.find(file);
+    if (it != textures_.end())
+        return it->second;
     int width;
     int height;
     int channel;
@@ -36,11 +30,12 @@ GLuint load_texture(std::string&& file, GLenum texture_unit)
                  GL_UNSIGNED_BYTE, image);
     free(image);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    tex = texture;
+    textures_[file] = texture;
     return texture;
 }
 
-void set_shader_uniforms(GLuint program_id)
+void
+texture_manager::set_shader_uniforms(GLuint program_id)
 {
     glUseProgram(program_id);
 
@@ -50,6 +45,4 @@ void set_shader_uniforms(GLuint program_id)
     glUniform1i(loc1, 1);
 
     glUseProgram(0);
-}
-
 }
