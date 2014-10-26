@@ -25,7 +25,7 @@ scene::update_and_draw(const devices_state &device)
         obj->draw();
     }
     for (auto mat : *materials_) {
-        mat->bind();
+        mat->bind(program_id_);
         for (auto obj : mat->objects) {
             const glm::mat4& model_mat = obj->get_model_mat();
             set_model_view_matrix(model_mat);

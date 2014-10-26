@@ -31,11 +31,11 @@ void material_lib::update_material(material_ptr mtl, std::string& token)
     else if (!token.compare("bump"))
         mtl->bump = dir_ + unix_file(iss_);
     else if (!token.compare("Ka"))
-        mtl->ambient = make_vec3(iss_, "ambiant_mat");
+        mtl->ambient = glm::vec4(make_vec3(iss_, "ambiant_mat"), 1);
     else if (!token.compare("Kd"))
-        mtl->diffuse = make_vec3(iss_, "diffuse_mat");
+        mtl->diffuse = glm::vec4(make_vec3(iss_, "diffuse_mat"), 1);
     else if (!token.compare("Ks"))
-        mtl->specular = make_vec3(iss_, "specular_mat");
+        mtl->specular = glm::vec4(make_vec3(iss_, "specular_mat"), 1);
     else if (!token.compare("Ns"))
         mtl->shininess = make_float(iss_, "shininess");
     else if (!token.compare("d"))
@@ -109,7 +109,7 @@ material_lib::get_material(std::string& material_name)
     return (*it).second;
 }
 
-void material::bind()
+void material::bind(GLuint program_id)
 {
     // TODO bind one texture for all objects of same type
     static GLuint tex = 0;
@@ -118,4 +118,15 @@ void material::bind()
         glBindTexture(GL_TEXTURE_2D, diffuse_map_id);
         tex = diffuse_map_id;
     }
+    GLint specular_idx = glGetUniformLocation(program_id, "material.specular");
+    glUniform4fv(specular_idx, 1, glm::value_ptr(specular));
+
+    GLint diffuse_idx = glGetUniformLocation(program_id, "material.diffuse");
+    glUniform4fv(diffuse_idx, 1, glm::value_ptr(diffuse));
+
+    GLint ambient_idx = glGetUniformLocation(program_id, "material.ambient");
+    glUniform4fv(ambient_idx, 1, glm::value_ptr(ambient));
+
+    GLint shininess_idx = glGetUniformLocation(program_id, "material.shininess");
+    glUniform1f(shininess_idx, shininess);
 }

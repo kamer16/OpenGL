@@ -14,16 +14,16 @@
 
 struct material
 {
-    void bind();
+    void bind(GLuint program_id);
     using objects_t = std::vector<object*>;
     // Ns
     float shininess = 1.0f;
     // Ka
-    glm::vec3 ambient;
+    glm::vec4 ambient;
     // Kd
-    glm::vec3 diffuse;
+    glm::vec4 diffuse;
     // Ks
-    glm::vec3 specular;
+    glm::vec4 specular;
     // ambient texture map ==> map_Ka
     std::string ambient_map;
     // diffuse texture map ==> map_Kd
