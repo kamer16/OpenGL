@@ -7,6 +7,7 @@
 # include <fstream>
 
 # include "object.hpp"
+# include "material.hpp"
 
 // A structure used for storing the indices of each vertex in the face
 // declaration of a polygon.
@@ -24,12 +25,13 @@ class obj_loader
 {
 public:
     using objects = std::vector<object*>;
+    using materials = std::vector<material*>;
     using container3 = std::vector<glm::vec3>;
     using container2 = std::vector<glm::vec2>;
     using container_idx = std::vector<s_vertex_idx>;
     // Reads an Obj files and stores vertices, normals, and texture coords.
     // A simple call to glDrawArarys will render the object.
-    objects* load_obj(std::string& file);
+    materials* load_obj(std::string& file);
 
     // Print out vector in the mesh format
     // Mesh will only contain triangles

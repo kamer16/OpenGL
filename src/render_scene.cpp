@@ -19,11 +19,19 @@ scene::update_and_draw(const devices_state &device)
 {
     camera_.update(device);
     for (auto obj : objects_) {
-        obj->bind_material();
         const glm::mat4& model_mat = obj->get_model_mat();
         set_model_view_matrix(model_mat);
         set_light_source();
         obj->draw();
+    }
+    for (auto mat : *materials_) {
+        mat->bind();
+        for (auto obj : mat->objects) {
+            const glm::mat4& model_mat = obj->get_model_mat();
+            set_model_view_matrix(model_mat);
+            set_light_source();
+            obj->draw();
+        }
     }
 }
 
@@ -115,7 +123,14 @@ scene::render_elements(GLuint vao_id, int nb_elt)
 }
 
 void
-scene::add_object(object *object)
+scene::add_object(object* object)
 {
     objects_.push_back(object);
+}
+
+void
+scene::set_materials(std::vector<material*>* mats)
+{
+    materials_ = mats;
+
 }

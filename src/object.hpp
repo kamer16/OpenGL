@@ -13,8 +13,6 @@
 # include <memory>
 # include <vector>
 
-# include "material.hpp"
-
 class object
 {
 public:
@@ -28,13 +26,11 @@ public:
     virtual void draw() = 0;
     void set_model_mat(glm::mat4& model_mat);
     const glm::mat4& get_model_mat();
-    void set_material(std::shared_ptr<const material> material);
     container3& get_vertices();
     container3& get_normals();
     container2& get_text_coord();
     // Generate all required buffers and vao.
     void bind_vao(GLuint program_id);
-    void bind_material();
     virtual ~object();
 protected:
     GLuint vert_buffer_id_;
@@ -49,7 +45,6 @@ private:
     void load_data(GLuint program_id, std::vector<T> &data, const char *name,
                    GLuint* buffer_id);
     glm::mat4 model_mat_;
-    std::shared_ptr<const material> material_;
 };
 
 #endif // OBJECT_HPP

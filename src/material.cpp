@@ -60,7 +60,7 @@ material_lib::load_material_lib(std::istringstream& iss)
         iss_.str(buff);
         iss_ >> token;
         if (!token.compare("newmtl")) {
-            mtl = std::make_shared<material>();
+            mtl = new material;
             iss_ >> token;
             materials_[token] = mtl;
         }
@@ -71,6 +71,9 @@ material_lib::load_material_lib(std::istringstream& iss)
         token.clear();
         iss_.clear();
     }
+    // Use empty string as default material
+    mtl = new material;
+    materials_[""] = mtl;
     ifs_.close();
 }
 
@@ -79,7 +82,7 @@ material_lib::dump()
 {
     for (auto mat : materials_) {
         std::cout << mat.first << std::endl;
-        std::shared_ptr<material> ptr = mat.second;
+        material* ptr = mat.second;
         std::cout << "\tshininess"    << ptr->shininess << std::endl;
         std::cout << "\tambient\t"; utility::print(ptr->ambient);
         std::cout << "\tdiffuse\t"; utility::print(ptr->diffuse);
@@ -93,16 +96,26 @@ material_lib::dump()
     }
 }
 
-std::shared_ptr<material>
-material_lib::get_material(std::istringstream& iss)
+material*
+material_lib::get_material(std::string& material_name)
 {
-    std::string material_name;
-    iss >> material_name;
     auto it = materials_.find(material_name);
     if (it == materials_.end()) {
         std::cerr << "Unable to find material name : " << material_name
                   << std::endl;
-        return nullptr;
+        // Default material when none is found
+        return materials_[""];
     }
     return (*it).second;
+}
+
+void material::bind()
+{
+    // TODO bind one texture for all objects of same type
+    static GLuint tex = 0;
+    // Only bind texture if it wasn't already previously bound
+    if (tex != diffuse_map_id) {
+        glBindTexture(GL_TEXTURE_2D, diffuse_map_id);
+        tex = diffuse_map_id;
+    }
 }

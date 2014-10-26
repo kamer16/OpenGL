@@ -73,12 +73,14 @@ int main(int argc, char *argv[])
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> text_coords;
     obj_loader loader;
-    using objects = std::vector<object*>;
-    objects* objs = loader.load_obj(opt.mesh_file);
+    using materials = std::vector<material*>;
+    materials* mats = loader.load_obj(opt.mesh_file);
     texture_manager tm;
     tm.set_shader_uniforms(program_ids[0]);
-    for (auto obj : *objs)
-        obj->bind_vao(program_ids[0]);
+    for (auto mat : *mats) {
+        for (auto obj : mat->objects)
+            obj->bind_vao(program_ids[0]);
+    }
     if (monitor)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     else // TODO somehow not working, Bug in GLFW ??
@@ -86,8 +88,7 @@ int main(int argc, char *argv[])
 
     /* Loop until the user closes the window */
     scene scene1(program_ids[0], aspect_ratio);
-    for (auto obj : *objs)
-        scene1.add_object(obj);
+    scene1.set_materials(mats);
     scene scene2(program_ids[1], aspect_ratio);
     scene2.add_object(make_coordinate_polygon(program_ids[1]));
     scene2.add_object(make_quad_xz_polygon(program_ids[1]));

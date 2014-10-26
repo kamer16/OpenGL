@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <set>
 #include <cassert>
 
 #define GLM_FORCE_RADIANS
@@ -237,9 +238,10 @@ void obj_loader::set_object_attribute(object* obj)
 }
 
 auto
-obj_loader::load_obj(std::string& file) -> objects*
+obj_loader::load_obj(std::string& file) -> materials*
 {
-    objects* res = new objects();
+    materials* res = new materials();
+    std::set<std::string> lut;
     material_lib mat_lib(file.substr(0, file.find_last_of('/') + 1));
 
     std::string token;
@@ -250,7 +252,7 @@ obj_loader::load_obj(std::string& file) -> objects*
         return nullptr;
     }
     std::getline(ifs_, buff);
-    object* obj = new mesh_object();
+    object* obj = nullptr;
     while (!ifs_.eof()) {
         using namespace utility;
         iss_.str(buff);
@@ -268,23 +270,27 @@ obj_loader::load_obj(std::string& file) -> objects*
             mat_lib.load_material_lib(iss_);
         }
         else if (!token.compare("usemtl")) {
-            if (obj && indices_.size()) {
+            // Finish setting attributes of old object
+            if (obj && indices_.size())
                 set_object_attribute(obj);
-                res->push_back(obj);
-            }
-            else
-                delete obj;
             indices_.clear();
             obj = new mesh_object();
-            obj->set_material(mat_lib.get_material(iss_));
+            std::string mat_name;
+            iss_ >> mat_name;
+            auto mat = mat_lib.get_material(mat_name);
+            // Check if mat already exists or not in resulting vector
+            auto pair = lut.insert(mat_name);
+            if (pair.second)
+                res->push_back(mat);
+            mat->objects.push_back(obj);
         }
 
         std::getline(ifs_, buff);
         token.clear();
         iss_.clear();
     }
+    // Update last object that was added to materials object list
     set_object_attribute(obj);
-    res->push_back(obj);
     ifs_.close();
     return res;
 }
