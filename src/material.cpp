@@ -101,7 +101,10 @@ material_lib::get_material(std::istringstream& iss)
     std::string material_name;
     iss >> material_name;
     auto it = materials_.find(material_name);
-    if (it == materials_.end())
+    if (it == materials_.end()) {
+        std::cerr << "Unable to find material name : " << material_name
+                  << std::endl;
         return nullptr;
+    }
     return (*it).second;
 }

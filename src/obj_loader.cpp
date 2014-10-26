@@ -16,36 +16,54 @@
 #include "utility.hpp"
 
 void
-obj_loader::get_vertex(const char *str, s_vertex_idx &v_idx, size_t nb_vertices_)
+obj_loader::get_vertex(std::string& str, s_vertex_idx &v_idx)
 {
     // 0 is a reserved value, which is used to check if index for attributes
     // v,or n exists
     int v = 0;
     int t = 0;
     int n = 0;
-    sscanf(str, "%d/%d/%d", &v, &t, &n);
+    size_t pos1 = str.find_first_of('/');
+    std::string first = str.substr(0, pos1);
+    std::istringstream iss(first);
+    iss >> v;
+
+    if (pos1 != std::string::npos) {
+        size_t pos2 = str.find_first_of('/', pos1 + 1);
+        std::string second = str.substr(pos1 + 1, pos2 - pos1);
+        iss.clear();
+        iss.str(second);
+        iss >> t;
+        if (pos2 != std::string::npos) {
+            std::string third = str.substr(pos2 + 1, str.size() - pos2);
+            iss.clear();
+            iss.str(third);
+            iss >> n;
+        }
+    }
+    //sscanf(str, "%d/%d/%d", &v, &t, &n);
     if (v < 0)
-        v_idx.v = nb_vertices_ - static_cast<size_t>(-v) + 1;
+        v_idx.v = vertices_.size() - static_cast<size_t>(-v) + 1;
     else
         v_idx.v = static_cast<size_t>(v);
     if (t < 0)
-        v_idx.t = nb_vertices_ - static_cast<size_t>(-t) + 1;
+        v_idx.t = text_coords_.size() - static_cast<size_t>(-t) + 1;
     else
         v_idx.t = static_cast<size_t>(t);
     if (n < 0)
-        v_idx.n = nb_vertices_ - static_cast<size_t>(-t) + 1;
+        v_idx.n = normals_.size() - static_cast<size_t>(-n) + 1;
     else
         v_idx.n = static_cast<size_t>(n);
 }
 
 void
-obj_loader::add_indices(size_t nb_vertices_)
+obj_loader::add_indices()
 {
     std::string vertex;
     s_vertex_idx v_idx[3] = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1} };
     for (unsigned idx = 0; idx < 3; ++idx) {
         iss_ >> vertex;
-        get_vertex(vertex.c_str(), v_idx[idx], nb_vertices_);
+        get_vertex(vertex, v_idx[idx]);
 
         indices_.push_back(v_idx[idx]);
     }
@@ -55,7 +73,7 @@ obj_loader::add_indices(size_t nb_vertices_)
     // If face is composed of 4 vertices_, than create 2 triangles
     if (!iss_.fail()) {
         s_vertex_idx v = { 1, 1, 1 };
-        get_vertex(vertex.c_str(), v, nb_vertices_);
+        get_vertex(vertex, v);
         indices_.push_back(v);
         indices_.push_back(v_idx[0]);
         indices_.push_back(v_idx[2]);
@@ -245,7 +263,7 @@ obj_loader::load_obj(std::string& file) -> objects*
         else if (!token.compare("vn"))
             normals_.push_back(make_vec3(iss_, "Normals"));
         else if (!token.compare("f"))
-            add_indices(vertices_.size());
+            add_indices();
         else if (!token.compare("mtllib")) {
             mat_lib.load_material_lib(iss_);
         }

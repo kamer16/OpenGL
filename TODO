@@ -46,6 +46,13 @@ and the caller is responsible for freeing them.  Each object is knows about a
 material information,  these can be shared among several objects hence the usage
 of std::shared_ptr for material ownership.
 
+Texture manager : should only load an image once and then cache it's texture_id
+and only return that texture id when asked to load a same image again.
+
+Object rendering : should be done in a smart way, i-e all object bound to the
+same material drawn consecutively, and different materials with same texture
+also should be drawn consecutively.
+
 
 **********************************
 BENCHMARKING:

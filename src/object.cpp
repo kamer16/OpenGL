@@ -38,9 +38,12 @@ void object::bind_material()
 {
     // TODO bind one texture for all objects of same type
     static GLuint tex = 0;
-    if (tex == material_->diffuse_map_id)
-        ;
-    else {
+    // When loading a material, sometimes it doesn't exist
+    if (!material_) {
+        return;
+    }
+    // Only bind texture if it wasn't already previously bound
+    else if (tex != material_->diffuse_map_id) {
         glBindTexture(GL_TEXTURE_2D, material_->diffuse_map_id);
         tex = material_->diffuse_map_id;
     }

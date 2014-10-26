@@ -8,6 +8,14 @@ namespace texture_manager
 
 GLuint load_texture(std::string&& file, GLenum texture_unit)
 {
+    // TODO don't reload already loaded images
+    static std::string str = "";
+    static unsigned tex;
+    if (!str.compare(file)) {
+        return tex;
+    }
+    else
+        str = file;
     int width;
     int height;
     int channel;
@@ -28,6 +36,7 @@ GLuint load_texture(std::string&& file, GLenum texture_unit)
                  GL_UNSIGNED_BYTE, image);
     free(image);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    tex = texture;
     return texture;
 }
 

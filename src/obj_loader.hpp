@@ -39,8 +39,8 @@ public:
     void print_triangles(container3& vertices, container2& text_coord,
                          container3& normals);
 private:
-    void get_vertex(const char *str, s_vertex_idx &v_idx, size_t nb_vertices);
-    void add_indices(size_t nb_vertices);
+    void get_vertex(std::string& str, s_vertex_idx &v_idx);
+    void add_indices();
     void index_object(container3 &out_v, container3 &out_n);
     void compute_flat_shading(unsigned i,
                               glm::vec3& cross);
