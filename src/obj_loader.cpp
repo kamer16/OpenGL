@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <set>
+#include <unordered_set>
 #include <cassert>
 
 #define GLM_FORCE_RADIANS
@@ -117,16 +117,21 @@ obj_loader::print_results()
 
 // Vertices and Normals
 void
-obj_loader::index_object(container3 &out_v, container3 &out_n)
+obj_loader::index_object(vertices_idx& out_idx, container_vn& out_vn)
 {
+    using namespace std;
     for (unsigned i = 0; i < indices_.size(); ++i) {
 
         // Our base idx is 0, not 1 like in the mesh files
         size_t v_idx = indices_[i].v - 1;
         size_t n_idx = indices_[i].n - 1;
-
-        out_v.push_back(vertices_[v_idx]);
-        out_n.push_back(normals_[n_idx]);
+        auto pair = map_.insert(make_pair(make_tuple(v_idx, n_idx, 0),
+                                          counter_));
+        if (pair.second) {
+            out_vn.push_back({ vertices_[v_idx], normals_[n_idx] });
+            counter_++;
+        }
+        out_idx.push_back(pair.first->second);
     }
 }
 
@@ -189,18 +194,22 @@ obj_loader::compute_normals(char flat_shading)
 
 // Vertices and Normals and Textures
 void
-obj_loader::index_object(container3 &out_v, container3 &out_n, container2 &out_t)
+obj_loader::index_object(vertices_idx& out_idx, container_vtn& out_vtn)
 {
+    using namespace std;
     for (unsigned i = 0; i < indices_.size(); ++i) {
 
         // Our base idx is 0, not 1 like in the mesh files
         size_t v_idx = indices_[i].v - 1;
         size_t n_idx = indices_[i].n - 1;
         size_t t_idx = indices_[i].t - 1;
-
-        out_v.push_back(vertices_[v_idx]);
-        out_n.push_back(normals_[n_idx]);
-        out_t.push_back(text_coords_[t_idx]);
+        auto pair = map_.insert(make_pair(make_tuple(v_idx, n_idx, t_idx),
+                                          counter_));
+        if (pair.second) {
+            out_vtn.push_back({ vertices_[v_idx], text_coords_[t_idx], normals_[n_idx] });
+            counter_++;
+        }
+        out_idx.push_back(pair.first->second);
     }
 }
 
@@ -230,18 +239,17 @@ void obj_loader::set_object_attribute(object* obj)
     assert(indices_[0].n && "We always hove normals");
     // Vertices and Normals
     if (indices_[0].t == 0)
-        index_object(obj->get_vertices(), obj->get_normals());
+        index_object(obj->get_indices(), obj->get_vertices_vn());
     // Vertices and Normals and Textures
     else
-        index_object(obj->get_vertices(), obj->get_normals(),
-                     obj->get_text_coord());
+        index_object(obj->get_indices(), obj->get_vertices_vtn());
 }
 
 auto
 obj_loader::load_obj(std::string& file) -> materials*
 {
     materials* res = new materials();
-    std::set<std::string> lut;
+    std::unordered_set<std::string> lut;
     material_lib mat_lib(file.substr(0, file.find_last_of('/') + 1));
 
     std::string token;
@@ -273,6 +281,8 @@ obj_loader::load_obj(std::string& file) -> materials*
             // Finish setting attributes of old object
             if (obj && indices_.size())
                 set_object_attribute(obj);
+            counter_ = 0;
+            map_.clear();
             indices_.clear();
             obj = new mesh_object();
             std::string mat_name;
@@ -290,6 +300,17 @@ obj_loader::load_obj(std::string& file) -> materials*
         iss_.clear();
     }
     // Update last object that was added to materials object list
+    if (!obj) {
+        obj = new mesh_object();
+        // Use default material since there were none
+        auto mat = new material();
+        // Check if mat already exists or not in resulting vector
+        mat->ambient = glm::vec4(0.2, 0.2, 0.2, 1);
+        mat->diffuse = glm::vec4(0.8, 0.8, 0.8, 1);
+        mat->specular = glm::vec4(1.0, 1., 1., 1.);
+        mat->objects.push_back(obj);
+        res->push_back(mat);
+    }
     set_object_attribute(obj);
     ifs_.close();
     return res;

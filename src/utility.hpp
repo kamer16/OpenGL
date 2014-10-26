@@ -14,6 +14,19 @@ namespace utility
         glm::vec3 color;
     };
 
+    struct vertex_vtn
+    {
+        glm::vec3 v;
+        glm::vec2 t;
+        glm::vec3 n;
+    };
+
+    struct vertex_vn
+    {
+        glm::vec3 v;
+        glm::vec3 n;
+    };
+
     void print(glm::mat4 mat);
     void print(glm::mat3 mat);
     void print(glm::vec4 mat);

@@ -6,57 +6,82 @@ object::object()
 {
 }
 
-auto object::get_vertices() -> container3&
+auto object::get_vertices_vtn() -> container_vtn&
 {
-    return vertices_;
+    return vertices_vtn_;
 }
 
-auto object::get_normals() -> container3&
+auto object::get_vertices_vn() -> container_vn&
 {
-    return normals_;
+    return vertices_vn_;
+}
+
+auto object::get_indices() -> vertices_idx&
+{
+    return indices_;
 }
 
 template <typename T>
 void
-object::load_data(GLuint program_id, std::vector<T> &data, const char *name,
-                  GLuint* buffer_id)
+object::load_index_buffer(std::vector<T>& indices)
 {
-    glGenBuffers(1, buffer_id);
-    glBindBuffer(GL_ARRAY_BUFFER, *buffer_id);
-    long unsigned byte_size = sizeof (T) * data.size();
-    glBufferData(GL_ARRAY_BUFFER, byte_size, data.data(), GL_STATIC_DRAW);
-    GLint location_idx = glGetAttribLocation(program_id, name);
-    glEnableVertexAttribArray(location_idx); // Matches layout (location = 1)
-    size_t nb_elt = sizeof (T) / sizeof (typename T::value_type);
-    glVertexAttribPointer(location_idx, nb_elt, GL_FLOAT, GL_FALSE, 0, 0);
+    glGenBuffers(1, &index_buffer_id_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_id_);
+    long unsigned byte_size = sizeof (T) * indices.size();
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, byte_size, indices.data(), GL_STATIC_DRAW);
 }
 
-#include <iostream>
+template <typename T>
+void
+object::load_vertex_buffer(GLuint program_id, std::vector<T>& vertices,
+                           bool has_text_coord)
+{
+    glGenBuffers(1, &vert_buffer_id_);
+    GLint pos_location = glGetAttribLocation(program_id, "in_position");
+    glBindBuffer(GL_ARRAY_BUFFER, vert_buffer_id_);
+    long unsigned byte_size = sizeof (T) * vertices.size();
+    glBufferData(GL_ARRAY_BUFFER, byte_size, vertices.data(), GL_STATIC_DRAW);
+
+    // Sets shaders attribute for vertices positions
+    glEnableVertexAttribArray(pos_location); // Matches layout (location = 0)
+    glVertexAttribPointer(pos_location, 3, GL_FLOAT, GL_FALSE, sizeof (T), 0);
+
+    // Sets shaders attribute for texture coordinates
+    if (has_text_coord)
+    {
+        GLint uv_idx = glGetAttribLocation(program_id, "in_uv");
+        if (uv_idx != -1) {
+            glEnableVertexAttribArray(uv_idx); // Matches layout (location = 1)
+            GLvoid *offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3));
+            glVertexAttribPointer(uv_idx, 2, GL_FLOAT, GL_FALSE, sizeof (T),
+                                  offset);
+        }
+    }
+    // Sets shaders attribute for color (r, g, b)
+    GLint norm_idx = glGetAttribLocation(program_id, "in_norm");
+    if (norm_idx != -1) {
+        glEnableVertexAttribArray(norm_idx); // Matches layout (location = 1)
+        GLvoid *offset;
+        if (has_text_coord)
+            offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3) +
+                                                 sizeof (glm::vec2));
+        else
+            offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3));
+        glVertexAttribPointer(norm_idx, 3, GL_FLOAT, GL_FALSE, sizeof (T), offset);
+    }
+}
 
 void
-object::bind_vao(GLuint program_id)
+object::bind_indexed_vao(GLuint program_id)
 {
     glGenVertexArrays(1, &vao_id_);
     glBindVertexArray(vao_id_);
-
-    // Sets shaders attribute for vertices positions
-    load_data(program_id, vertices_, "in_position", &vert_buffer_id_);
-
-    // Sets shaders attribute for texture coordinates
-    if (text_coords_.size() == vertices_.size())
-        load_data(program_id, text_coords_, "in_uv", &text_buffer_id_);
+    if (vertices_vtn_.size())
+        load_vertex_buffer(program_id, vertices_vtn_, 1);
     else
-        assert(text_coords_.size() == 0);
-
-    // Sets shaders attribute for texture coordinates
-    load_data(program_id, normals_, "in_norm", &norm_buffer_id_);
-
+        load_vertex_buffer(program_id, vertices_vn_, 0);
+    load_index_buffer(indices_);
     glBindVertexArray(0);
-}
-
-auto object::get_text_coord() -> container2&
-{
-    return text_coords_;
 }
 
 const glm::mat4&

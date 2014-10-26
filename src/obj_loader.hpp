@@ -5,6 +5,7 @@
 # include <iostream>
 # include <sstream>
 # include <fstream>
+# include <unordered_set>
 
 # include "object.hpp"
 # include "material.hpp"
@@ -21,14 +22,31 @@ struct s_vertex_idx
     size_t n;
 };
 
+class hash_ptr
+{
+public:
+    size_t operator() (const std::tuple<size_t, size_t, size_t>& tup) const
+    {
+        size_t a = std::get<0>(tup);
+        size_t b = std::get<1>(tup);
+        size_t c = std::get<2>(tup);
+        std::hash<size_t> obj;
+        return ((obj(a) ^ (obj(b) << 1)) >> 1) ^ obj(c);
+    }
+};
+
 class obj_loader
 {
 public:
-    using objects = std::vector<object*>;
+    using container_vtn = std::vector<utility::vertex_vtn>;
+    using container_vn = std::vector<utility::vertex_vn>;
+    using vertices_idx = std::vector<unsigned>;
     using materials = std::vector<material*>;
     using container3 = std::vector<glm::vec3>;
     using container2 = std::vector<glm::vec2>;
     using container_idx = std::vector<s_vertex_idx>;
+    using index_map = std::unordered_map<std::tuple<size_t, size_t, size_t>,
+                                            unsigned, hash_ptr>;
     // Reads an Obj files and stores vertices, normals, and texture coords.
     // A simple call to glDrawArarys will render the object.
     materials* load_obj(std::string& file);
@@ -43,7 +61,8 @@ public:
 private:
     void get_vertex(std::string& str, s_vertex_idx &v_idx);
     void add_indices();
-    void index_object(container3 &out_v, container3 &out_n);
+    void index_object(vertices_idx& out_idx, container_vn& out_vn);
+    void index_object(vertices_idx& out_idx, container_vtn& out_vtn);
     void compute_flat_shading(unsigned i,
                               glm::vec3& cross);
     void compute_smooth_shading(std::vector<float>& normals_count,
@@ -51,7 +70,6 @@ private:
                                 glm::vec3& cross,
                                 unsigned i);
     void compute_normals(char flat_shading);
-    void index_object(container3 &out_v, container3 &out_n, container2 &out_t);
     void set_object_attribute(object* obj);
 
     container3 vertices_;
@@ -60,6 +78,9 @@ private:
     container_idx indices_;
     std::istringstream iss_;
     std::ifstream ifs_;
+    unsigned counter_ = 0;
+    index_map map_;
+
 };
 
 #endif // OBJ_LOADER_HPP

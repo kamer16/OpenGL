@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     tm.set_shader_uniforms(program_ids[0]);
     for (auto mat : *mats) {
         for (auto obj : mat->objects)
-            obj->bind_vao(program_ids[0]);
+            obj->bind_indexed_vao(program_ids[0]);
     }
     if (monitor)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
