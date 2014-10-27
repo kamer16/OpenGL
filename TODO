@@ -53,6 +53,9 @@ Object rendering : should be done in a smart way, i-e all object bound to the
 same material drawn consecutively, and different materials with same texture
 also should be drawn consecutively.
 
+Drawing: glMultiDrawLements, minimize CPU call to draw, draw once batch of
+objects associated to a material once.
+
 REFACTORING:
 Currently files :
     - material.hpp

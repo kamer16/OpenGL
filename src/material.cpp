@@ -118,6 +118,8 @@ void material::bind(GLuint program_id)
         glBindTexture(GL_TEXTURE_2D, diffuse_map_id);
         tex = diffuse_map_id;
     }
+    // TODO use unfirorm buffer objects, glBindBufferBase(GL_UNIFORM_BUFFER)
+    // glNamedBufferSubDataEXT();
     GLint specular_idx = glGetUniformLocation(program_id, "material.specular");
     glUniform4fv(specular_idx, 1, glm::value_ptr(specular));
 

@@ -1,2 +1,6 @@
 http://github.prideout.net/modern-opengl-prezo/
 http://www.dailymotion.com/video/x17w4nc_conference-graphique-avancee_tech
+
+
+NVIDIA code factorying tips for speedup
+http://on-demand.gputechconf.com/gtc/2014/presentations/S4379-opengl-44-scene-rendering-techniques.pdf

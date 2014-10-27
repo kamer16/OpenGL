@@ -26,6 +26,7 @@ scene::update_and_draw(const devices_state &device)
     }
     for (auto mat : *materials_) {
         mat->bind(program_id_);
+        // TODO Call glMultiDrawElements...
         for (auto obj : mat->objects) {
             const glm::mat4& model_mat = obj->get_model_mat();
             set_model_view_matrix(model_mat);
@@ -40,7 +41,7 @@ scene::set_light_source()
 {
     // create directional light
     GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
-    glm::vec3 light_dir(0, 0.0, 0.8);
+    glm::vec3 light_dir(0, 1.0, 0.2);
     // When world moves, lights direction moves with it, therefore we multiply
     // it by a normal matrix. // TODO do this HERE and not in shader
     glUniform3fv(light_dir_idx, 1, glm::value_ptr(glm::normalize(light_dir)));
