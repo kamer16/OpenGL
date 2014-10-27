@@ -35,9 +35,12 @@ public:
     }
 };
 
+
 class obj_loader
 {
 public:
+    using index_map = std::unordered_map<std::tuple<size_t, size_t, size_t>,
+                                         unsigned, hash_ptr>;
     using container_vtn = std::vector<utility::vertex_vtn>;
     using container_vn = std::vector<utility::vertex_vn>;
     using vertices_idx = std::vector<unsigned>;
@@ -45,12 +48,10 @@ public:
     using container3 = std::vector<glm::vec3>;
     using container2 = std::vector<glm::vec2>;
     using container_idx = std::vector<s_vertex_idx>;
-    using index_map = std::unordered_map<std::tuple<size_t, size_t, size_t>,
-                                            unsigned, hash_ptr>;
     // Reads an Obj files and stores vertices, normals, and texture coords.
     // A simple call to glDrawArarys will render the object.
     // TODO should return one object that contains all of mesh file.
-    materials* load_obj(std::string& file);
+    object* load_obj(std::string& file);
 
     // Print out vector in the mesh format
     // Mesh will only contain triangles
@@ -71,7 +72,7 @@ private:
                                 glm::vec3& cross,
                                 unsigned i);
     void compute_normals(char flat_shading);
-    void set_object_attribute(object* obj);
+    void set_material_indices(object* obj, material* mat);
 
     container3 vertices_;
     container3 normals_;
@@ -80,8 +81,9 @@ private:
     std::istringstream iss_;
     std::ifstream ifs_;
     unsigned counter_ = 0;
+    // Associative map_ of all indices of object to check.  If index already
+    // exists it's id can be return, otherwise a new one is created
     index_map map_;
-
 };
 
 #endif // OBJ_LOADER_HPP

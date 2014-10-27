@@ -10,12 +10,11 @@
 # include <GL/glew.h>
 
 # include "texture_manager.hpp"
-# include "object.hpp"
 
 struct material
 {
     void bind(GLuint program_id);
-    using objects_t = std::vector<object*>;
+    using vertices_idx = std::vector<unsigned>;
     // Ns
     float shininess = 1.0f;
     // Ka
@@ -39,7 +38,12 @@ struct material
     // dissolve map  ==> map_d
     std::string dissolve_map;
     float dissolve = 1.0f;
-    objects_t objects;
+
+    // Associated indices to material
+    vertices_idx indices;
+    GLuint vao_id;
+    GLuint index_buffer_id;
+    GLuint vertex_buffer_id;
 };
 
 class material_lib
@@ -52,6 +56,7 @@ public:
     void load_material_lib(std::istringstream& iss);
     // Returns pointer to a material for a given name or nullptr when not found.
     material_ptr get_material(std::string& mat_name);
+    materials get_materials();
     void dump();
 private:
     void update_material(material_ptr mtl, std::string& token);

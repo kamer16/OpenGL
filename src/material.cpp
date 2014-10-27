@@ -2,6 +2,12 @@
 #include "utility.hpp"
 #include "texture_manager.hpp"
 
+#define GLM_FORCE_RADIANS
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp> /* lookAt, perspective */
+#include <glm/gtc/type_ptr.hpp> /* value_ptr */
+
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -9,6 +15,12 @@
 material_lib::material_lib(std::string&& dir)
     : dir_(dir)
 {
+}
+
+auto
+material_lib::get_materials() -> materials
+{
+    return materials_;
 }
 
 void material_lib::update_material(material_ptr mtl, std::string& token)

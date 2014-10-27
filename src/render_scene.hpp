@@ -12,12 +12,10 @@
 # include "devices_state.hpp"
 # include "object.hpp"
 # include "camera.hpp"
-# include "material.hpp"
 
 class scene
 {
 public:
-    using materials = std::vector<material*>;
     scene(GLuint program_id, float aspect_ratio);
     // Check for devices inputs, and update model matrix and light position
     // accordingly.
@@ -26,8 +24,6 @@ public:
     // Draw each object
     void update_and_draw(const devices_state &device);
     void add_object(object *object);
-    // Used to load vector which is currently created from mesh_loader
-    void set_materials(std::vector<material*>* mats);
 
 private:
     // Transforms light position into eye coordinate space and send it to shader
@@ -47,7 +43,6 @@ private:
 
     float padding_;
     std::vector<object *> objects_;
-    materials* materials_;
 };
 
 #endif // RENDER_SCENE_CPP

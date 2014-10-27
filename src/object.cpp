@@ -16,35 +16,40 @@ auto object::get_vertices_vn() -> container_vn&
     return vertices_vn_;
 }
 
-auto object::get_indices() -> vertices_idx&
+void
+object::add_material(material* mat)
 {
-    return indices_;
+    materials_.push_back(mat);
 }
 
 template <typename T>
 void
-object::load_index_buffer(std::vector<T>& indices)
+object::load_index_buffer(std::vector<T>& indices, GLuint* index_buffer_id)
 {
-    glGenBuffers(1, &index_buffer_id_);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_id_);
+    glGenBuffers(1, index_buffer_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *index_buffer_id);
     long unsigned byte_size = sizeof (T) * indices.size();
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, byte_size, indices.data(), GL_STATIC_DRAW);
 }
 
 template <typename T>
 void
-object::load_vertex_buffer(GLuint program_id, std::vector<T>& vertices,
-                           bool has_text_coord)
+object::load_vertex_buffer(std::vector<T>& vertices, GLuint* vert_buffer_id)
 {
-    glGenBuffers(1, &vert_buffer_id_);
-    GLint pos_location = glGetAttribLocation(program_id, "in_position");
-    glBindBuffer(GL_ARRAY_BUFFER, vert_buffer_id_);
+    glGenBuffers(1, vert_buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER, *vert_buffer_id);
     long unsigned byte_size = sizeof (T) * vertices.size();
     glBufferData(GL_ARRAY_BUFFER, byte_size, vertices.data(), GL_STATIC_DRAW);
 
+}
+
+void
+object::set_vao_attribs(GLuint program_id, bool has_text_coord, size_t stride)
+{
     // Sets shaders attribute for vertices positions
+    GLint pos_location = glGetAttribLocation(program_id, "in_position");
     glEnableVertexAttribArray(pos_location); // Matches layout (location = 0)
-    glVertexAttribPointer(pos_location, 3, GL_FLOAT, GL_FALSE, sizeof (T), 0);
+    glVertexAttribPointer(pos_location, 3, GL_FLOAT, GL_FALSE, stride, 0);
 
     // Sets shaders attribute for texture coordinates
     if (has_text_coord)
@@ -53,7 +58,7 @@ object::load_vertex_buffer(GLuint program_id, std::vector<T>& vertices,
         if (uv_idx != -1) {
             glEnableVertexAttribArray(uv_idx); // Matches layout (location = 1)
             GLvoid *offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3));
-            glVertexAttribPointer(uv_idx, 2, GL_FLOAT, GL_FALSE, sizeof (T),
+            glVertexAttribPointer(uv_idx, 2, GL_FLOAT, GL_FALSE, stride,
                                   offset);
         }
     }
@@ -67,20 +72,31 @@ object::load_vertex_buffer(GLuint program_id, std::vector<T>& vertices,
                                                  sizeof (glm::vec2));
         else
             offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3));
-        glVertexAttribPointer(norm_idx, 3, GL_FLOAT, GL_FALSE, sizeof (T), offset);
+        glVertexAttribPointer(norm_idx, 3, GL_FLOAT, GL_FALSE, stride, offset);
     }
 }
 
 void
 object::bind_indexed_vao(GLuint program_id)
 {
-    glGenVertexArrays(1, &vao_id_);
-    glBindVertexArray(vao_id_);
-    if (vertices_vtn_.size())
-        load_vertex_buffer(program_id, vertices_vtn_, 1);
-    else
-        load_vertex_buffer(program_id, vertices_vn_, 0);
-    load_index_buffer(indices_);
+    size_t stride;
+    if (vertices_vtn_.size()) {
+        load_vertex_buffer(vertices_vtn_, &vertex_buffer_id_);
+        stride = sizeof (utility::vertex_vtn);
+    }
+    else {
+        load_vertex_buffer(vertices_vn_, &vertex_buffer_id_);
+        stride = sizeof (utility::vertex_vn);
+    }
+    // Currently materials store vao_id, as I need a different index buffer for
+    // each material hence, a specific vao to keep that state.
+    for (auto mat : materials_) {
+        glGenVertexArrays(1, &mat->vao_id);
+        glBindVertexArray(mat->vao_id);
+        set_vao_attribs(program_id, 1, stride);
+        //glBindBuffer(GL_ARRAY_BUFFER, vert_buffer_id_);
+        load_index_buffer(mat->indices, &mat->index_buffer_id);
+    }
     glBindVertexArray(0);
 }
 
@@ -96,6 +112,12 @@ object::set_model_mat(glm::mat4& model_mat)
     model_mat_ = model_mat;
 }
 
+
+auto
+object::get_materials() -> materials_t&
+{
+    return materials_;
+}
 
 void
 object::translate(const glm::vec3& dir)
@@ -113,6 +135,19 @@ void
 object::scale(const glm::vec3& vec)
 {
     model_mat_ = glm::scale(vec);
+}
+
+void
+object::draw(GLuint program_id)
+{
+    // TODO ABORT, materials caches all geomtries data and hence draws us
+    for (auto mat : materials_) {
+        mat->bind(program_id);
+        glBindVertexArray(mat->vao_id);
+        int nb_elt = static_cast<int>(mat->indices.size());
+        glDrawElements(GL_TRIANGLES, nb_elt, GL_UNSIGNED_INT, 0);
+    }
+    glBindVertexArray(0);
 }
 
 object::~object()

@@ -13,7 +13,6 @@
 
 #include "obj_loader.hpp"
 #include "material.hpp"
-#include "mesh_object.hpp"
 #include "utility.hpp"
 
 void
@@ -230,7 +229,7 @@ obj_loader::print_triangles(container3& vertices, container2& text_coords,
     }
 }
 
-void obj_loader::set_object_attribute(object* obj)
+void obj_loader::set_material_indices(object* obj, material* mat)
 {
     if (indices_[0].n == 0)
         compute_normals(0);
@@ -239,17 +238,17 @@ void obj_loader::set_object_attribute(object* obj)
     assert(indices_[0].n && "We always hove normals");
     // Vertices and Normals
     if (indices_[0].t == 0)
-        index_object(obj->get_indices(), obj->get_vertices_vn());
+        index_object(mat->indices, obj->get_vertices_vn());
     // Vertices and Normals and Textures
     else
-        index_object(obj->get_indices(), obj->get_vertices_vtn());
+        index_object(mat->indices, obj->get_vertices_vtn());
 }
 
 auto
-obj_loader::load_obj(std::string& file) -> materials*
+obj_loader::load_obj(std::string& file) -> object*
 {
-    materials* res = new materials();
-    std::unordered_set<std::string> lut;
+    object* res = new object();
+    material* current_mat = nullptr;
     material_lib mat_lib(file.substr(0, file.find_last_of('/') + 1));
 
     std::string token;
@@ -260,7 +259,6 @@ obj_loader::load_obj(std::string& file) -> materials*
         return nullptr;
     }
     std::getline(ifs_, buff);
-    object* obj = nullptr;
     while (!ifs_.eof()) {
         using namespace utility;
         iss_.str(buff);
@@ -278,21 +276,17 @@ obj_loader::load_obj(std::string& file) -> materials*
             mat_lib.load_material_lib(iss_);
         }
         else if (!token.compare("usemtl")) {
-            // Finish setting attributes of old object
-            if (obj && indices_.size())
-                set_object_attribute(obj);
-            counter_ = 0;
-            map_.clear();
+            // Update indices in current_material, and add new vertex_elements
+            // to resulting object.
+            if (current_mat)
+                set_material_indices(res, current_mat);
+            // we just finished unsing old indices and don't want to add them to
+            // new geometry
             indices_.clear();
-            obj = new mesh_object();
             std::string mat_name;
             iss_ >> mat_name;
-            auto mat = mat_lib.get_material(mat_name);
-            // Check if mat already exists or not in resulting vector
-            auto pair = lut.insert(mat_name);
-            if (pair.second)
-                res->push_back(mat);
-            mat->objects.push_back(obj);
+            // new material at work
+            current_mat = mat_lib.get_material(mat_name);
         }
 
         std::getline(ifs_, buff);
@@ -300,18 +294,20 @@ obj_loader::load_obj(std::string& file) -> materials*
         iss_.clear();
     }
     // Update last object that was added to materials object list
-    if (!obj) {
-        obj = new mesh_object();
+    if (!current_mat) {
         // Use default material since there were none
-        auto mat = new material();
+        current_mat = new material();
         // Check if mat already exists or not in resulting vector
-        mat->ambient = glm::vec4(0.2, 0.2, 0.2, 1);
-        mat->diffuse = glm::vec4(0.8, 0.8, 0.8, 1);
-        mat->specular = glm::vec4(1.0, 1., 1., 1.);
-        mat->objects.push_back(obj);
-        res->push_back(mat);
+        current_mat->ambient = glm::vec4(0.2, 0.2, 0.2, 1);
+        current_mat->diffuse = glm::vec4(0.8, 0.8, 0.8, 1);
+        current_mat->specular = glm::vec4(1.0, 1., 1., 1.);
+        res->add_material(current_mat);
     }
-    set_object_attribute(obj);
+    // load indices into current_material
+    set_material_indices(res, current_mat);
+    auto mats = mat_lib.get_materials();
+    for (auto pair : mats)
+        res->add_material(pair.second);
     ifs_.close();
     return res;
 }

@@ -16,7 +16,7 @@ class polygon : public object
 public:
     polygon(GLenum mode);
     virtual ~polygon() override;
-    virtual void draw() override;
+    virtual void draw(GLuint program_id) override;
 
 private:
     friend object *make_coordinate_polygon(GLuint program_id);

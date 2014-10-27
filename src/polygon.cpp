@@ -7,7 +7,7 @@ polygon::polygon(GLenum mode)
 {
   glGenVertexArrays(1, &vao_id_);
   glGenBuffers(1, &index_buffer_id_);
-  glGenBuffers(1, &vert_buffer_id_);
+  glGenBuffers(1, &vertex_buffer_id_);
   mode_ = mode;
 }
 
@@ -15,11 +15,12 @@ polygon::~polygon()
 {
 }
 
-void polygon::draw()
+void polygon::draw(GLuint program_id)
 {
-  glBindVertexArray(vao_id_);
-  glDrawElements(mode_, nb_elt_, GL_UNSIGNED_INT, 0);
-  glBindVertexArray(0);
+    (void) program_id;
+    glBindVertexArray(vao_id_);
+    glDrawElements(mode_, nb_elt_, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
 
 object *

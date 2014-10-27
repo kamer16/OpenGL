@@ -22,19 +22,7 @@ scene::update_and_draw(const devices_state &device)
         const glm::mat4& model_mat = obj->get_model_mat();
         set_model_view_matrix(model_mat);
         set_light_source();
-        obj->draw();
-    }
-    if (!materials_)
-        return;
-    for (auto mat : *materials_) {
-        mat->bind(program_id_);
-        // TODO Call glMultiDrawElements...
-        for (auto obj : mat->objects) {
-            const glm::mat4& model_mat = obj->get_model_mat();
-            set_model_view_matrix(model_mat);
-            set_light_source();
-            obj->draw();
-        }
+        obj->draw(program_id_);
     }
 }
 
@@ -113,10 +101,4 @@ void
 scene::add_object(object* object)
 {
     objects_.push_back(object);
-}
-
-void
-scene::set_materials(std::vector<material*>* mats)
-{
-    materials_ = mats;
 }
