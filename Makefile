@@ -2,9 +2,9 @@
 
 CXX = clang++
 CXXFLAGS = -Wall -Wextra -std=c++11 -Wconversion -g -Weverything \
-	   -Wsign-conversion -Wno-c++98-compat -Wno-padded
-CPPFLAGS =
-LDFLAGS = -lGL -lglfw -lGLEW -lSOIL -lGLU
+	   -Wsign-conversion -Wno-c++98-compat -Wno-padded -Wno-documentation
+CPPFLAGS = -I /home/kamer/usr/include
+LDFLAGS = -lGL -lglfw -lGLEW -lSOIL -lGLU -L /home/kamer/usr/lib
 
 TARGET=main
 
