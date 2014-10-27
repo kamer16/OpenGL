@@ -19,11 +19,6 @@ class scene
 public:
     using materials = std::vector<material*>;
     scene(GLuint program_id, float aspect_ratio);
-    // Draw objects contained by the vertex array object
-    // TODO this class should not render objects, objects should draw themselves
-    // with a draw call to the object
-    void render_arrays(GLuint vao_id, int nb_elt);
-    void render_elements(GLuint vao_id, int nb_elt);
     // Check for devices inputs, and update model matrix and light position
     // accordingly.
     // Set the shaders with the updated transformation matrix and light

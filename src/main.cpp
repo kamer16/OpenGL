@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 
         glUseProgram(program_ids[1]);
         // update and draw scene2
-        //scene2.update_and_draw(device);
+        scene2.update_and_draw(device);
         glfwSwapBuffers(window);
 
         /* Poll for and process events */

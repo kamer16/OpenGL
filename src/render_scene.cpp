@@ -24,6 +24,8 @@ scene::update_and_draw(const devices_state &device)
         set_light_source();
         obj->draw();
     }
+    if (!materials_)
+        return;
     for (auto mat : *materials_) {
         mat->bind(program_id_);
         // TODO Call glMultiDrawElements...
@@ -108,22 +110,6 @@ scene::set_model_view_matrix(const glm::mat4& model_mat)
 }
 
 void
-scene::render_arrays(GLuint vao_id, int nb_elt)
-{
-    glBindVertexArray(vao_id);
-    glDrawArrays(GL_TRIANGLES, 0, nb_elt);
-    glBindVertexArray(0);
-}
-
-void
-scene::render_elements(GLuint vao_id, int nb_elt)
-{
-    glBindVertexArray(vao_id);
-    glDrawElements(GL_TRIANGLES, nb_elt, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-}
-
-void
 scene::add_object(object* object)
 {
     objects_.push_back(object);
@@ -133,5 +119,4 @@ void
 scene::set_materials(std::vector<material*>* mats)
 {
     materials_ = mats;
-
 }

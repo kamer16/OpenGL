@@ -5,6 +5,7 @@
 # include <unordered_map>
 # include <GL/glew.h>
 
+// TODO ideally have a unique texture_manager that handles all tetxrue resources
 class texture_manager
 {
 public:

@@ -49,6 +49,7 @@ public:
                                             unsigned, hash_ptr>;
     // Reads an Obj files and stores vertices, normals, and texture coords.
     // A simple call to glDrawArarys will render the object.
+    // TODO should return one object that contains all of mesh file.
     materials* load_obj(std::string& file);
 
     // Print out vector in the mesh format

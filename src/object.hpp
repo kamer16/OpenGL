@@ -36,6 +36,7 @@ public:
     container_vn& get_vertices_vn();
     vertices_idx& get_indices();
     // Generate all required buffers and vao.
+    // TODO object should not know about bindings
     void bind_indexed_vao(GLuint program_id);
     virtual ~object();
 protected:
@@ -46,9 +47,11 @@ protected:
     container_vn vertices_vn_;
     vertices_idx indices_;
 private:
+    // TODO should be called by resour/program manager
     template <typename T>
     void load_vertex_buffer(GLuint program_id, std::vector<T>& vertices,
                             bool has_text_coord);
+    // TODO should be called by resour/program manager
     template <typename T>
     void load_index_buffer(std::vector<T>& indices);
     glm::mat4 model_mat_;

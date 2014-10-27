@@ -10,6 +10,7 @@ object *make_coordinate_polygon(GLuint program_id);
 object *make_quad_xz_polygon(GLuint program_id);
 object *make_cube_polygon(GLuint program_id);
 
+// TODO remove inheritance, leave object class for complexe objects
 class polygon : public object
 {
 public:
