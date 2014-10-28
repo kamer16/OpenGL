@@ -19,6 +19,16 @@ material_lib::material_lib(std::string&& dir)
 
 
 void
+material::draw(GLuint program_id)
+{
+    bind(program_id);
+    glBindVertexArray(vao_id);
+    int nb_elt = static_cast<int>(indices.size());
+    glDrawElements(GL_TRIANGLES, nb_elt, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+void
 material::load_index_buffer()
 {
     glGenBuffers(1, &index_buffer_id);

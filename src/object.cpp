@@ -62,14 +62,8 @@ object::scale(const glm::vec3& vec)
 void
 object::draw(GLuint program_id)
 {
-    // TODO ABORT, materials caches all geomtries data and hence draws us
-    for (auto mat : materials_) {
-        mat->bind(program_id);
-        glBindVertexArray(mat->vao_id);
-        int nb_elt = static_cast<int>(mat->indices.size());
-        glDrawElements(GL_TRIANGLES, nb_elt, GL_UNSIGNED_INT, 0);
-    }
-    glBindVertexArray(0);
+    for (auto mat : materials_)
+        mat->draw(program_id);
 }
 
 object::~object()

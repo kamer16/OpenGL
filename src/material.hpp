@@ -20,6 +20,7 @@ struct material
     using index_map = std::unordered_map<std::tuple<size_t, size_t, size_t>,
           unsigned, hash_ptr>;
     void bind_indexed_vao(GLuint program_id);
+    void draw(GLuint program_id);
     // Vertices can be updated by caller
     container_vtn& get_vertices_vtn();
     container_vn& get_vertices_vn();
