@@ -116,7 +116,8 @@ obj_loader::print_results()
 
 // Vertices and Normals
 void
-obj_loader::index_object(vertices_idx& out_idx, container_vn& out_vn)
+obj_loader::index_object(index_map& map, vertices_idx& out_idx,
+                         container_vn& out_vn)
 {
     using namespace std;
     for (unsigned i = 0; i < indices_.size(); ++i) {
@@ -124,11 +125,10 @@ obj_loader::index_object(vertices_idx& out_idx, container_vn& out_vn)
         // Our base idx is 0, not 1 like in the mesh files
         size_t v_idx = indices_[i].v - 1;
         size_t n_idx = indices_[i].n - 1;
-        auto pair = map_.insert(make_pair(make_tuple(v_idx, n_idx, 0),
-                                          counter_));
+        auto pair = map.insert(make_pair(make_tuple(v_idx, n_idx, 0),
+                                         out_vn.size()));
         if (pair.second) {
             out_vn.push_back({ vertices_[v_idx], normals_[n_idx] });
-            counter_++;
         }
         out_idx.push_back(pair.first->second);
     }
@@ -193,7 +193,8 @@ obj_loader::compute_normals(char flat_shading)
 
 // Vertices and Normals and Textures
 void
-obj_loader::index_object(vertices_idx& out_idx, container_vtn& out_vtn)
+obj_loader::index_object(index_map& map, vertices_idx& out_idx,
+                         container_vtn& out_vtn)
 {
     using namespace std;
     for (unsigned i = 0; i < indices_.size(); ++i) {
@@ -202,11 +203,10 @@ obj_loader::index_object(vertices_idx& out_idx, container_vtn& out_vtn)
         size_t v_idx = indices_[i].v - 1;
         size_t n_idx = indices_[i].n - 1;
         size_t t_idx = indices_[i].t - 1;
-        auto pair = map_.insert(make_pair(make_tuple(v_idx, n_idx, t_idx),
-                                          counter_));
+        auto pair = map.insert(make_pair(make_tuple(v_idx, n_idx, t_idx),
+                                         out_vtn.size()));
         if (pair.second) {
             out_vtn.push_back({ vertices_[v_idx], text_coords_[t_idx], normals_[n_idx] });
-            counter_++;
         }
         out_idx.push_back(pair.first->second);
     }
@@ -229,7 +229,7 @@ obj_loader::print_triangles(container3& vertices, container2& text_coords,
     }
 }
 
-void obj_loader::set_material_indices(object* obj, material* mat)
+void obj_loader::set_material_indices(material* mat)
 {
     if (indices_[0].n == 0)
         compute_normals(0);
@@ -238,16 +238,15 @@ void obj_loader::set_material_indices(object* obj, material* mat)
     assert(indices_[0].n && "We always hove normals");
     // Vertices and Normals
     if (indices_[0].t == 0)
-        index_object(mat->indices, obj->get_vertices_vn());
+        index_object(mat->map, mat->indices, mat->get_vertices_vn());
     // Vertices and Normals and Textures
     else
-        index_object(mat->indices, obj->get_vertices_vtn());
+        index_object(mat->map, mat->indices, mat->get_vertices_vtn());
 }
 
 auto
 obj_loader::load_obj(std::string& file) -> object*
 {
-    object* res = new object();
     material* current_mat = nullptr;
     material_lib mat_lib(file.substr(0, file.find_last_of('/') + 1));
 
@@ -279,7 +278,7 @@ obj_loader::load_obj(std::string& file) -> object*
             // Update indices in current_material, and add new vertex_elements
             // to resulting object.
             if (current_mat)
-                set_material_indices(res, current_mat);
+                set_material_indices(current_mat);
             // we just finished unsing old indices and don't want to add them to
             // new geometry
             indices_.clear();
@@ -293,6 +292,8 @@ obj_loader::load_obj(std::string& file) -> object*
         token.clear();
         iss_.clear();
     }
+    // Now that materials have been computed we can bind them to object
+    object* res = new object();
     // Update last object that was added to materials object list
     if (!current_mat) {
         // Use default material since there were none
@@ -304,7 +305,7 @@ obj_loader::load_obj(std::string& file) -> object*
         res->add_material(current_mat);
     }
     // load indices into current_material
-    set_material_indices(res, current_mat);
+    set_material_indices(current_mat);
     auto mats = mat_lib.get_materials();
     for (auto pair : mats)
         res->add_material(pair.second);

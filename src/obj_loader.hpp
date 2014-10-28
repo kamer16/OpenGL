@@ -9,6 +9,7 @@
 
 # include "object.hpp"
 # include "material.hpp"
+# include "utility.hpp"
 
 // A structure used for storing the indices of each vertex in the face
 // declaration of a polygon.
@@ -21,20 +22,6 @@ struct s_vertex_idx
     // Normal index
     size_t n;
 };
-
-class hash_ptr
-{
-public:
-    size_t operator() (const std::tuple<size_t, size_t, size_t>& tup) const
-    {
-        size_t a = std::get<0>(tup);
-        size_t b = std::get<1>(tup);
-        size_t c = std::get<2>(tup);
-        std::hash<size_t> obj;
-        return ((obj(a) ^ (obj(b) << 1)) >> 1) ^ obj(c);
-    }
-};
-
 
 class obj_loader
 {
@@ -63,8 +50,10 @@ public:
 private:
     void get_vertex(std::string& str, s_vertex_idx &v_idx);
     void add_indices();
-    void index_object(vertices_idx& out_idx, container_vn& out_vn);
-    void index_object(vertices_idx& out_idx, container_vtn& out_vtn);
+    void index_object(index_map& map, vertices_idx& out_idx,
+                      container_vn& out_vn);
+    void index_object(index_map& map, vertices_idx& out_idx,
+                      container_vtn& out_vtn);
     void compute_flat_shading(unsigned i,
                               glm::vec3& cross);
     void compute_smooth_shading(std::vector<float>& normals_count,
@@ -72,7 +61,7 @@ private:
                                 glm::vec3& cross,
                                 unsigned i);
     void compute_normals(char flat_shading);
-    void set_material_indices(object* obj, material* mat);
+    void set_material_indices(material* mat);
 
     container3 vertices_;
     container3 normals_;
@@ -80,10 +69,6 @@ private:
     container_idx indices_;
     std::istringstream iss_;
     std::ifstream ifs_;
-    unsigned counter_ = 0;
-    // Associative map_ of all indices of object to check.  If index already
-    // exists it's id can be return, otherwise a new one is created
-    index_map map_;
 };
 
 #endif // OBJ_LOADER_HPP

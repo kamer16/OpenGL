@@ -5,6 +5,21 @@
 # include <sstream>
 # include <iostream>
 # include <string>
+# include <tuple>
+
+class hash_ptr
+{
+public:
+    size_t operator() (const std::tuple<size_t, size_t, size_t>& tup) const
+    {
+        size_t a = std::get<0>(tup);
+        size_t b = std::get<1>(tup);
+        size_t c = std::get<2>(tup);
+        std::hash<size_t> obj;
+        return ((obj(a) ^ (obj(b) << 1)) >> 1) ^ obj(c);
+    }
+};
+
 
 namespace utility
 {
