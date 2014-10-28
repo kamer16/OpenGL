@@ -35,6 +35,19 @@ texture_manager::load_texture(std::string&& file, GLenum texture_unit)
 }
 
 void
+texture_manager::bind_material(material& mat)
+{
+    // Only bind texture if it wasn't already previously bound
+    GLuint diffuse_texture = mat.get_diffuse_texture();
+    if (diffuse_texture != cached_id_.diffuse) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, diffuse_texture);
+        cached_id_.diffuse = diffuse_texture;
+    }
+    // TODO bind other textures
+}
+
+void
 texture_manager::set_shader_uniforms(GLuint program_id)
 {
     glUseProgram(program_id);

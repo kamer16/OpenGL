@@ -14,6 +14,7 @@
 #include "obj_loader.hpp"
 #include "material.hpp"
 #include "utility.hpp"
+#include "texture_manager.hpp"
 
 void
 obj_loader::get_vertex(std::string& str, s_vertex_idx &v_idx)
@@ -248,7 +249,8 @@ auto
 obj_loader::load_obj(std::string& file) -> object*
 {
     material* current_mat = nullptr;
-    material_lib mat_lib(file.substr(0, file.find_last_of('/') + 1));
+    texture_manager tm;
+    material_lib mat_lib(file.substr(0, file.find_last_of('/') + 1), tm);
 
     std::string token;
     ifs_.open(file);

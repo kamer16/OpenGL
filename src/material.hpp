@@ -10,8 +10,12 @@
 # include <GL/glew.h>
 # include <tuple>
 
-# include "texture_manager.hpp"
 # include "utility.hpp"
+
+// TODO material should not know about texture_manager,
+// A program will contain a texture_manager and delegate textures ids to a
+// material
+class texture_manager;
 
 struct material
 {
@@ -21,6 +25,11 @@ struct material
           unsigned, hash_ptr>;
     void bind_indexed_vao(GLuint program_id);
     void draw(GLuint program_id);
+    GLuint get_diffuse_texture();
+    glm::vec4& get_ambient();
+    glm::vec4& get_specular();
+    glm::vec4& get_diffuse();
+    float get_shininess();
     // Vertices can be updated by caller
     container_vtn& get_vertices_vtn();
     container_vn& get_vertices_vn();
@@ -75,7 +84,7 @@ class material_lib
 public:
     using materials = std::unordered_map<std::string, material*>;
     using material_ptr = material*;
-    material_lib(std::string&& dir);
+    material_lib(std::string&& dir, texture_manager& tm);
     // The material library using filename in the string stream
     void load_material_lib(std::istringstream& iss);
     // Returns pointer to a material for a given name or nullptr when not found.
@@ -88,7 +97,7 @@ private:
     std::istringstream iss_;
     std::ifstream ifs_;
     std::string dir_;
-    texture_manager tm_;
+    texture_manager& tm_;
 };
 
 #endif // MATERIAL_HPP

@@ -12,11 +12,20 @@
 #include <fstream>
 #include <iostream>
 
-material_lib::material_lib(std::string&& dir)
-    : dir_(dir)
+// TODO material_lib should not have a texture manager, a program has acces to a
+// unique texturme_manager, and the material_lib can access this texture_manager
+// via a program object.
+material_lib::material_lib(std::string&& dir, texture_manager& tm)
+    : dir_(dir),
+      tm_(tm)
 {
 }
 
+GLuint
+material::get_diffuse_texture()
+{
+    return diffuse_map_id;
+}
 
 void
 material::draw(GLuint program_id)
@@ -113,6 +122,29 @@ auto material::get_vertices_vn() -> container_vn&
     return vertices_vn;
 }
 
+glm::vec4&
+material::get_ambient()
+{
+    return ambient;
+}
+
+glm::vec4&
+material::get_specular()
+{
+    return specular;
+}
+
+glm::vec4&
+material::get_diffuse()
+{
+    return diffuse;
+}
+
+float
+material::get_shininess()
+{
+    return shininess;
+}
 
 auto
 material_lib::get_materials() -> materials
