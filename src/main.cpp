@@ -31,7 +31,7 @@ void enableEnv()
 bool sort_materials(material* left, material* right);
 bool sort_materials(material* left, material* right)
 {
-    return left->diffuse_map_id < right->diffuse_map_id;
+    return left->get_diffuse_map_id() < right->get_diffuse_map_id();
 }
 
 int main(int argc, char *argv[])

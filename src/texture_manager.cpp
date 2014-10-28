@@ -5,7 +5,7 @@
 #include <iostream>
 
 GLuint
-texture_manager::load_texture(std::string&& file, GLenum texture_unit)
+texture_manager::load_texture(std::string&& file, unsigned texture_unit)
 {
     auto it = textures_.find(file);
     if (it != textures_.end())
@@ -18,7 +18,7 @@ texture_manager::load_texture(std::string&& file, GLenum texture_unit)
     // Set current program object for modification
     glGenTextures(1, &texture);
 
-    glActiveTexture(texture_unit);
+    glActiveTexture(GL_TEXTURE0 + texture_unit);
     glBindTexture(GL_TEXTURE_2D, texture);
     // BUG in SOIL when channel == NULL
     image = SOIL_load_image(file.c_str(), &width, &height, &channel, SOIL_LOAD_RGB);
@@ -40,7 +40,7 @@ texture_manager::bind_material(material& mat)
     // Only bind texture if it wasn't already previously bound
     GLuint diffuse_texture = mat.get_diffuse_texture();
     if (diffuse_texture != cached_id_.diffuse) {
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, diffuse_texture);
         cached_id_.diffuse = diffuse_texture;
     }

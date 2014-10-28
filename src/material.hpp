@@ -12,29 +12,41 @@
 
 # include "utility.hpp"
 
-// TODO material should not know about texture_manager,
-// A program will contain a texture_manager and delegate textures ids to a
-// material
-class texture_manager;
-
-struct material
+class material
 {
+public:
     using container_vtn = std::vector<utility::vertex_vtn>;
     using container_vn = std::vector<utility::vertex_vn>;
     using index_map = std::unordered_map<std::tuple<size_t, size_t, size_t>,
           unsigned, hash_ptr>;
+    using vertices_idx = std::vector<unsigned>;
     void bind_indexed_vao(GLuint program_id);
     void draw(GLuint program_id);
     GLuint get_diffuse_texture();
     glm::vec4& get_ambient();
     glm::vec4& get_specular();
     glm::vec4& get_diffuse();
-    float get_shininess();
-    // Vertices can be updated by caller
+    float& get_shininess();
+    float& get_dissolve();
+    GLuint& get_ambient_map_id();
+    GLuint& get_diffuse_map_id();
+    GLuint& get_specular_map_id();
+    GLuint& get_bump_map_id();
+    GLuint& get_bump_id();
+    GLuint& get_dissolve_map_id();
+    vertices_idx& get_indices();
+    index_map& get_idx_lut();
+
     container_vtn& get_vertices_vtn();
     container_vn& get_vertices_vn();
     void bind(GLuint program_id);
-    using vertices_idx = std::vector<unsigned>;
+private:
+    // TODO should be called by resour/program manager
+    template <typename T>
+    void load_vertex_buffer(std::vector<T>& vertices, GLuint* id);
+    // TODO should be called by resour/program manager
+    void load_index_buffer();
+    void set_vao_attribs(GLuint program_id, bool has_text_coord, size_t stride);
     // Ns
     float shininess = 1.0f;
     // Ka
@@ -44,24 +56,22 @@ struct material
     // Ks
     glm::vec4 specular;
     // ambient texture map ==> map_Ka
-    std::string ambient_map;
+    GLuint ambient_map_id = 0;
     // diffuse texture map ==> map_Kd
-    std::string diffuse_map;
-    // Texture id for diffuse_map;
     GLuint diffuse_map_id = 0;
     // specular texture map ==> map_Ks
-    std::string specular_map;
+    GLuint specular_map_id = 0;
     // Bump texture map ==> map_bump
-    std::string bump_map;
+    GLuint bump_map_id;
     // Bump  ==> bump
-    std::string bump;
+    GLuint bump_id;
     // dissolve map  ==> map_d
-    std::string dissolve_map;
+    GLuint dissolve_map_id;
     float dissolve = 1.0f;
 
     // Associative map_ of all indices of object to check.  If index already
     // exists it's id can be return, otherwise a new one is created
-    index_map map;
+    index_map idx_lut;
 
     GLuint vao_id;
     GLuint index_buffer_id;
@@ -70,34 +80,6 @@ struct material
     vertices_idx indices;
     container_vtn vertices_vtn;
     container_vn vertices_vn;
-private:
-    // TODO should be called by resour/program manager
-    template <typename T>
-    void load_vertex_buffer(std::vector<T>& vertices, GLuint* id);
-    // TODO should be called by resour/program manager
-    void load_index_buffer();
-    void set_vao_attribs(GLuint program_id, bool has_text_coord, size_t stride);
-};
-
-class material_lib
-{
-public:
-    using materials = std::unordered_map<std::string, material*>;
-    using material_ptr = material*;
-    material_lib(std::string&& dir, texture_manager& tm);
-    // The material library using filename in the string stream
-    void load_material_lib(std::istringstream& iss);
-    // Returns pointer to a material for a given name or nullptr when not found.
-    material_ptr get_material(std::string& mat_name);
-    materials get_materials();
-    void dump();
-private:
-    void update_material(material_ptr mtl, std::string& token);
-    materials materials_;
-    std::istringstream iss_;
-    std::ifstream ifs_;
-    std::string dir_;
-    texture_manager& tm_;
 };
 
 #endif // MATERIAL_HPP

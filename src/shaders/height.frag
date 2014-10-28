@@ -44,5 +44,5 @@ void main()
         out_color += light.param.specular * material.specular *
                      pow(e_dot_r, material.shininess);
     }
-    out_color = mix(tex1, out_color, 0.5);
+    out_color = mix(tex2, out_color, 0.5);
 }

@@ -12,7 +12,7 @@ class texture_manager
 {
 public:
     using textures = std::unordered_map<std::string, GLuint>;
-    GLuint load_texture(std::string&& file, GLenum texture_unit);
+    GLuint load_texture(std::string&& file, unsigned texture_unit);
     void set_shader_uniforms(GLuint program_id);
     void bind_material(material& mat);
 private:

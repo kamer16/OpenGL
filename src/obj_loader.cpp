@@ -13,6 +13,7 @@
 
 #include "obj_loader.hpp"
 #include "material.hpp"
+#include "material_lib.hpp"
 #include "utility.hpp"
 #include "texture_manager.hpp"
 
@@ -239,10 +240,12 @@ void obj_loader::set_material_indices(material* mat)
     assert(indices_[0].n && "We always hove normals");
     // Vertices and Normals
     if (indices_[0].t == 0)
-        index_object(mat->map, mat->indices, mat->get_vertices_vn());
+        index_object(mat->get_idx_lut(), mat->get_indices(),
+                     mat->get_vertices_vn());
     // Vertices and Normals and Textures
     else
-        index_object(mat->map, mat->indices, mat->get_vertices_vtn());
+        index_object(mat->get_idx_lut(), mat->get_indices(),
+                     mat->get_vertices_vtn());
 }
 
 auto
@@ -301,9 +304,9 @@ obj_loader::load_obj(std::string& file) -> object*
         // Use default material since there were none
         current_mat = new material();
         // Check if mat already exists or not in resulting vector
-        current_mat->ambient = glm::vec4(0.2, 0.2, 0.2, 1);
-        current_mat->diffuse = glm::vec4(0.8, 0.8, 0.8, 1);
-        current_mat->specular = glm::vec4(1.0, 1., 1., 1.);
+        current_mat->get_ambient() = glm::vec4(0.2, 0.2, 0.2, 1);
+        current_mat->get_diffuse() = glm::vec4(0.8, 0.8, 0.8, 1);
+        current_mat->get_specular() = glm::vec4(1.0, 1., 1., 1.);
         res->add_material(current_mat);
     }
     // load indices into current_material
