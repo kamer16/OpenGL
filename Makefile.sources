@@ -2,7 +2,6 @@ SOURCES=main.cpp \
 	utility.cpp \
 	program.cpp \
 	material_lib.cpp \
-	texture_manager.cpp \
 	texture_loader.cpp \
 	texture_binder.cpp \
 	resource_manager.cpp \
