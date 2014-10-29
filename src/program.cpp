@@ -2,7 +2,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-program::program()
+program::program(GLuint program_id)
+    : program_id_(program_id)
 {
 }
 
@@ -17,4 +18,11 @@ program::load_material(material& mat)
     glUniform4fv(material_location_.diffuse, 1, value_ptr(mat.get_diffuse()));
     glUniform4fv(material_location_.ambient, 1, value_ptr(mat.get_ambient()));
     glUniform1f(material_location_.shininess, mat.get_shininess());
+}
+
+void
+program::init()
+{
+    glUseProgram(program_id_);
+    texture_binder_.set_shader_uniforms(program_id_);
 }

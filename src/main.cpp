@@ -14,7 +14,7 @@
 #include "polygon.hpp" // polygons
 #include "options.hpp" // parse_args
 #include "fps_manager.hpp" // update_and_print_fps
-#include "texture_manager.hpp" // set_shader_uniforms
+#include "program.hpp" // init()
 #include "resource_manager.hpp" // set_shader_uniforms
 
 #include "obj_loader.hpp"
@@ -87,8 +87,8 @@ int main(int argc, char *argv[])
     object* obj = loader.load_obj(opt.mesh_file, rm);
     std::sort(obj->get_materials().begin(), obj->get_materials().end(),
               sort_materials);
-    texture_manager tm;
-    tm.set_shader_uniforms(program_ids[0]);
+    program p1(program_ids[0]);
+    p1.init();
     obj->bind_indexed_vao(program_ids[0]);
     if (monitor)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

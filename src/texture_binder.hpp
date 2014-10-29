@@ -4,6 +4,7 @@
 # include <GL/glew.h>
 # include "material.hpp"
 
+// Helper class for the program class.  Should only be used by the progrm class.
 class texture_binder
 {
 public:

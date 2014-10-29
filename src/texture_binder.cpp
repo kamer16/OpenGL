@@ -16,12 +16,8 @@ texture_binder::bind_material(material& mat)
 void
 texture_binder::set_shader_uniforms(GLuint program_id)
 {
-    glUseProgram(program_id);
-
     GLint loc0 = glGetUniformLocation(program_id, "texture0");
     glUniform1i(loc0, 0);
     GLint loc1 = glGetUniformLocation(program_id, "texture1");
     glUniform1i(loc1, 1);
-
-    glUseProgram(0);
 }

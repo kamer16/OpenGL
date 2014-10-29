@@ -12,6 +12,10 @@ class program
 public:
     using container_vnt = std::vector<utility::vertex_vnt>;
     using container_vn = std::vector<utility::vertex_vn>;
+    // Initialises shader resources, such as texture uniforms.
+    // Initializes program and sets it as the current program
+    program(GLuint program_id);
+    void init();
     template <typename T>
     void load_data(GLuint program_id, std::vector<T>& data, const char* name,
                    GLuint* buffer_id);
