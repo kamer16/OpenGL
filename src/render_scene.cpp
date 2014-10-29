@@ -6,10 +6,8 @@ scene::scene(GLuint program_id, float aspect_ratio)
     : program_id_(program_id),
       camera_(aspect_ratio)
 {
-    (void) padding_;
     glUseProgram(program_id_);
     set_light_color();
-    set_material_color();
     glUseProgram(0);
 }
 
@@ -54,26 +52,6 @@ void scene::set_light_color()
     glm::vec4 g_ambient(0.2f, 0.2f, 0.2f, 1.0f);
     GLint g_ambient_idx = glGetUniformLocation(program_id_, "global_ambient");
     glUniform4fv(g_ambient_idx, 1, glm::value_ptr(g_ambient));
-}
-
-void
-scene::set_material_color()
-{
-    GLint specular_idx = glGetUniformLocation(program_id_, "material.specular");
-    glm::vec4 specular(1.0f, 1.0f, 1.0f, 1.0f);
-    glUniform4fv(specular_idx, 1, glm::value_ptr(specular));
-
-    glm::vec4 diffuse(0.8f, 0.8f, 0.8f, 1.0f);
-    GLint diffuse_idx = glGetUniformLocation(program_id_, "material.diffuse");
-    glUniform4fv(diffuse_idx, 1, glm::value_ptr(diffuse));
-
-    glm::vec4 ambient(0.5f, 0.5f, 0.5f, 1.0f);
-    GLint ambient_idx = glGetUniformLocation(program_id_, "material.ambient");
-    glUniform4fv(ambient_idx, 1, glm::value_ptr(ambient));
-
-    float shininess = 30.0f;
-    GLint shininess_idx = glGetUniformLocation(program_id_, "material.shininess");
-    glUniform1f(shininess_idx, shininess);
 }
 
 void

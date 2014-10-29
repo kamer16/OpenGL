@@ -18,9 +18,9 @@ uniform mat4 view_mat;
 uniform mat3 normal_mat;
 uniform light_source light;
 
-layout (location = 0) in vec2 in_uv;
-layout (location = 1) in vec3 in_position;
-layout (location = 2) in vec3 in_norm;
+layout (location = 0) in vec3 in_position;
+layout (location = 1) in vec3 in_norm;
+layout (location = 2) in vec2 in_uv;
 
 out vec2 uv;
 out vec3 normal;

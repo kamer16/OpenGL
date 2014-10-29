@@ -3,6 +3,9 @@ SOURCES=main.cpp \
 	program.cpp \
 	material_lib.cpp \
 	texture_manager.cpp \
+	texture_loader.cpp \
+	texture_binder.cpp \
+	resource_manager.cpp \
 	material.cpp \
 	options.cpp \
 	camera.cpp \

@@ -34,14 +34,11 @@ private:
     void set_model_view_matrix(const glm::mat4& model_mat);
     // Activate ambiant, specular, diffuse parameter for light in shader
     void set_light_color();
-    // Activate ambiant, specular, diffuse parameter for material in shader
-    void set_material_color();
 
     GLuint program_id_;
 
     camera camera_;
 
-    float padding_;
     std::vector<object *> objects_;
 };
 
