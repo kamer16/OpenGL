@@ -10,6 +10,7 @@
 # include "object.hpp"
 # include "material.hpp"
 # include "utility.hpp"
+# include "resource_manager.hpp"
 
 // A structure used for storing the indices of each vertex in the face
 // declaration of a polygon.
@@ -38,7 +39,7 @@ public:
     // Reads an Obj files and stores vertices, normals, and texture coords.
     // A simple call to glDrawArarys will render the object.
     // TODO should return one object that contains all of mesh file.
-    object* load_obj(std::string& file);
+    object* load_obj(std::string& file, resource_manager& rm);
 
     // Print out vector in the mesh format
     // Mesh will only contain triangles

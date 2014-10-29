@@ -15,6 +15,7 @@
 #include "options.hpp" // parse_args
 #include "fps_manager.hpp" // update_and_print_fps
 #include "texture_manager.hpp" // set_shader_uniforms
+#include "resource_manager.hpp" // set_shader_uniforms
 
 #include "obj_loader.hpp"
 
@@ -82,7 +83,8 @@ int main(int argc, char *argv[])
     std::vector<glm::vec2> text_coords;
     obj_loader loader;
     using materials = std::vector<material*>;
-    object* obj = loader.load_obj(opt.mesh_file);
+    resource_manager rm;
+    object* obj = loader.load_obj(opt.mesh_file, rm);
     std::sort(obj->get_materials().begin(), obj->get_materials().end(),
               sort_materials);
     texture_manager tm;

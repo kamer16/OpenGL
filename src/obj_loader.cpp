@@ -15,7 +15,6 @@
 #include "material.hpp"
 #include "material_lib.hpp"
 #include "utility.hpp"
-#include "texture_manager.hpp"
 
 void
 obj_loader::get_vertex(std::string& str, s_vertex_idx &v_idx)
@@ -249,11 +248,10 @@ void obj_loader::set_material_indices(material* mat)
 }
 
 auto
-obj_loader::load_obj(std::string& file) -> object*
+obj_loader::load_obj(std::string& file, resource_manager& rm) -> object*
 {
     material* current_mat = nullptr;
-    texture_manager tm;
-    material_lib mat_lib(file.substr(0, file.find_last_of('/') + 1), tm);
+    material_lib mat_lib(file.substr(0, file.find_last_of('/') + 1));
 
     std::string token;
     ifs_.open(file);
@@ -277,7 +275,7 @@ obj_loader::load_obj(std::string& file) -> object*
         else if (!token.compare("f"))
             add_indices();
         else if (!token.compare("mtllib")) {
-            mat_lib.load_material_lib(iss_);
+            mat_lib.load_material_lib(iss_, rm);
         }
         else if (!token.compare("usemtl")) {
             // Update indices in current_material, and add new vertex_elements

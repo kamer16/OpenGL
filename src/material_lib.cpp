@@ -15,9 +15,8 @@
 // TODO material_lib should not have a texture manager, a program has acces to a
 // unique texturme_manager, and the material_lib can access this texture_manager
 // via a program object.
-material_lib::material_lib(std::string&& dir, texture_manager& tm)
-    : dir_(dir),
-      tm_(tm)
+material_lib::material_lib(std::string&& dir)
+    : dir_(dir)
 {
 }
 
@@ -27,22 +26,23 @@ material_lib::get_materials() -> materials
     return materials_;
 }
 
-void material_lib::update_material(material_ptr mtl, std::string& token)
+void material_lib::update_material(material_ptr mtl, std::string& token,
+                                   resource_manager& rm)
 {
     using namespace utility;
 
     if (!token.compare("map_Ka"))
-        mtl->get_ambient_map_id() = tm_.load_texture(dir_ + unix_file(iss_), 0);
+        mtl->get_ambient_map_id() = rm.load_texture(dir_ + unix_file(iss_), 0);
     else if (!token.compare("map_Kd"))
-        mtl->get_diffuse_map_id() = tm_.load_texture(dir_ + unix_file(iss_), 1);
+        mtl->get_diffuse_map_id() = rm.load_texture(dir_ + unix_file(iss_), 1);
     else if (!token.compare("map_Ks"))
-        mtl->get_specular_map_id() = tm_.load_texture(dir_ + unix_file(iss_), 2);
+        mtl->get_specular_map_id() = rm.load_texture(dir_ + unix_file(iss_), 2);
     else if (!token.compare("map_bump"))
-        mtl->get_bump_map_id() = tm_.load_texture(dir_ + unix_file(iss_), 3);
+        mtl->get_bump_map_id() = rm.load_texture(dir_ + unix_file(iss_), 3);
     else if (!token.compare("map_d"))
-        mtl->get_dissolve_map_id() = tm_.load_texture(dir_ + unix_file(iss_), 4);
+        mtl->get_dissolve_map_id() = rm.load_texture(dir_ + unix_file(iss_), 4);
     else if (!token.compare("bump"))
-        mtl->get_bump_id() = tm_.load_texture(dir_ + unix_file(iss_), 3);
+        mtl->get_bump_id() = rm.load_texture(dir_ + unix_file(iss_), 3);
     else if (!token.compare("Ka"))
         mtl->get_ambient() = glm::vec4(make_vec3(iss_, "ambiant_mat"), 1);
     else if (!token.compare("Kd"))
@@ -56,7 +56,7 @@ void material_lib::update_material(material_ptr mtl, std::string& token)
 }
 
 void
-material_lib::load_material_lib(std::istringstream& iss)
+material_lib::load_material_lib(std::istringstream& iss, resource_manager& rm)
 {
     std::string filename, token;
     iss >> filename;
@@ -78,7 +78,7 @@ material_lib::load_material_lib(std::istringstream& iss)
             materials_[token] = mtl;
         }
         else if (mtl)
-            update_material(mtl, token);
+            update_material(mtl, token, rm);
 
         std::getline(ifs_, buff);
         token.clear();
