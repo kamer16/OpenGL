@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
 
     enableEnv();
     GLuint program_ids[2];
+    // TODO, shader loading should be done in program object class
     loadShaders("src/shaders/height.vert", "src/shaders/height.frag",
                 &program_ids[0]);
     loadShaders("src/shaders/color.vert", "src/shaders/color.frag",
@@ -87,7 +88,7 @@ int main(int argc, char *argv[])
     program p1(program_ids[0]);
     program p2(program_ids[1]);
     p1.init();
-    obj->bind_indexed_vao(program_ids[0]);
+    obj->bind_indexed_vao(rm);
     if (monitor)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     else // TODO somehow not working, Bug in GLFW ??

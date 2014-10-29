@@ -11,6 +11,7 @@
 # include <tuple>
 
 # include "utility.hpp"
+# include "resource.hpp" // struct element_resource
 
 class material
 {
@@ -20,7 +21,6 @@ public:
     using index_map = std::unordered_map<std::tuple<size_t, size_t, size_t>,
           unsigned, hash_ptr>;
     using vertices_idx = std::vector<unsigned>;
-    void bind_indexed_vao(GLuint program_id);
     void draw();
     GLuint get_diffuse_texture();
     glm::vec4& get_ambient();
@@ -34,18 +34,13 @@ public:
     GLuint& get_bump_map_id();
     GLuint& get_bump_id();
     GLuint& get_dissolve_map_id();
+    element_resource& get_resource();
     vertices_idx& get_indices();
     index_map& get_idx_lut();
 
     container_vnt& get_vertices_vnt();
     container_vn& get_vertices_vn();
 private:
-    // TODO should be called by resour/program manager
-    template <typename T>
-    void load_vertex_buffer(std::vector<T>& vertices, GLuint* id);
-    // TODO should be called by resour/program manager
-    void load_index_buffer();
-    void set_vao_attribs(GLuint program_id, bool has_text_coord, size_t stride);
     // Ns
     float shininess = 1.0f;
     // Ka
@@ -72,9 +67,7 @@ private:
     // exists it's id can be return, otherwise a new one is created
     index_map idx_lut;
 
-    GLuint vao_id;
-    GLuint index_buffer_id;
-    GLuint vertex_buffer_id;
+    element_resource resource;
     // Associated indices to material
     vertices_idx indices;
     container_vnt vertices_vnt;

@@ -16,10 +16,10 @@ resource_manager::load_indexed_data(container_vnt& vertices,
                                     vertices_idx& indices,
                                     element_resource& resource)
 {
-    load_vertex_buffer(vertices, &resource.vertex_buffer_id);
-    load_index_buffer(indices, &resource.index_buffer_id);
     glGenVertexArrays(1, &resource.vao_id);
     glBindVertexArray(resource.vao_id);
+    load_vertex_buffer(vertices, &resource.vertex_buffer_id);
+    load_index_buffer(indices, &resource.index_buffer_id);
     size_t stride = sizeof (utility::vertex_vnt);
     enable_vertex_and_normal(stride);
 
@@ -34,10 +34,10 @@ resource_manager::load_indexed_data(container_vn& vertices,
                                     vertices_idx& indices,
                                     element_resource& resource)
 {
-    load_vertex_buffer(vertices, &resource.vertex_buffer_id);
-    load_index_buffer(indices, &resource.index_buffer_id);
     glGenVertexArrays(1, &resource.vao_id);
     glBindVertexArray(resource.vao_id);
+    load_vertex_buffer(vertices, &resource.vertex_buffer_id);
+    load_index_buffer(indices, &resource.index_buffer_id);
     size_t stride = sizeof (utility::vertex_vn);
     enable_vertex_and_normal(stride);
 }

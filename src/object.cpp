@@ -13,12 +13,17 @@ object::add_material(material* mat)
 }
 
 void
-object::bind_indexed_vao(GLuint program_id)
+object::bind_indexed_vao(resource_manager& rm)
 {
     // Currently materials store vao_id, as I need a different index buffer for
     // each material hence, a specific vao to keep that state.
     for (auto mat : materials_) {
-        mat->bind_indexed_vao(program_id);
+        if (mat->get_vertices_vnt().size())
+            rm.load_indexed_data(mat->get_vertices_vnt(), mat->get_indices(),
+                                 mat->get_resource());
+        else
+            rm.load_indexed_data(mat->get_vertices_vn(), mat->get_indices(),
+                                 mat->get_resource());
     }
 }
 
