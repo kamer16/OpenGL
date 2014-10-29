@@ -29,11 +29,11 @@ namespace utility
         glm::vec3 color;
     };
 
-    struct vertex_vtn
+    struct vertex_vnt
     {
         glm::vec3 v;
-        glm::vec2 t;
         glm::vec3 n;
+        glm::vec2 t;
     };
 
     struct vertex_vn

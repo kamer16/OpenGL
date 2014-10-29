@@ -15,7 +15,7 @@
 class material
 {
 public:
-    using container_vtn = std::vector<utility::vertex_vtn>;
+    using container_vnt = std::vector<utility::vertex_vnt>;
     using container_vn = std::vector<utility::vertex_vn>;
     using index_map = std::unordered_map<std::tuple<size_t, size_t, size_t>,
           unsigned, hash_ptr>;
@@ -37,7 +37,7 @@ public:
     vertices_idx& get_indices();
     index_map& get_idx_lut();
 
-    container_vtn& get_vertices_vtn();
+    container_vnt& get_vertices_vnt();
     container_vn& get_vertices_vn();
     void bind(GLuint program_id);
 private:
@@ -78,7 +78,7 @@ private:
     GLuint vertex_buffer_id;
     // Associated indices to material
     vertices_idx indices;
-    container_vtn vertices_vtn;
+    container_vnt vertices_vnt;
     container_vn vertices_vn;
 };
 

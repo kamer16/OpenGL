@@ -56,28 +56,24 @@ material::set_vao_attribs(GLuint program_id, bool has_text_coord, size_t stride)
     glEnableVertexAttribArray(pos_location); // Matches layout (location = 0)
     glVertexAttribPointer(pos_location, 3, GL_FLOAT, GL_FALSE, stride, 0);
 
+    // Sets shaders attribute for color (r, g, b)
+    GLint norm_idx = glGetAttribLocation(program_id, "in_norm");
+    if (norm_idx != -1) {
+        glEnableVertexAttribArray(norm_idx); // Matches layout (location = 1)
+        GLvoid* offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3));
+        glVertexAttribPointer(norm_idx, 3, GL_FLOAT, GL_FALSE, stride, offset);
+    }
+
     // Sets shaders attribute for texture coordinates
     if (has_text_coord)
     {
         GLint uv_idx = glGetAttribLocation(program_id, "in_uv");
         if (uv_idx != -1) {
             glEnableVertexAttribArray(uv_idx); // Matches layout (location = 1)
-            GLvoid *offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3));
+            GLvoid* offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3) * 2);
             glVertexAttribPointer(uv_idx, 2, GL_FLOAT, GL_FALSE, stride,
                                   offset);
         }
-    }
-    // Sets shaders attribute for color (r, g, b)
-    GLint norm_idx = glGetAttribLocation(program_id, "in_norm");
-    if (norm_idx != -1) {
-        glEnableVertexAttribArray(norm_idx); // Matches layout (location = 1)
-        GLvoid *offset;
-        if (has_text_coord)
-            offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3) +
-                                                 sizeof (glm::vec2));
-        else
-            offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3));
-        glVertexAttribPointer(norm_idx, 3, GL_FLOAT, GL_FALSE, stride, offset);
     }
 }
 
@@ -85,9 +81,9 @@ void
 material::bind_indexed_vao(GLuint program_id)
 {
     size_t stride;
-    if (vertices_vtn.size()) {
-        load_vertex_buffer(vertices_vtn, &vertex_buffer_id);
-        stride = sizeof (utility::vertex_vtn);
+    if (vertices_vnt.size()) {
+        load_vertex_buffer(vertices_vnt, &vertex_buffer_id);
+        stride = sizeof (utility::vertex_vnt);
     }
     else {
         load_vertex_buffer(vertices_vn, &vertex_buffer_id);
@@ -103,9 +99,9 @@ material::bind_indexed_vao(GLuint program_id)
     glBindVertexArray(0);
 }
 
-auto material::get_vertices_vtn() -> container_vtn&
+auto material::get_vertices_vnt() -> container_vnt&
 {
-    return vertices_vtn;
+    return vertices_vnt;
 }
 
 auto material::get_vertices_vn() -> container_vn&

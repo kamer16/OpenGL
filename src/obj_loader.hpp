@@ -28,7 +28,7 @@ class obj_loader
 public:
     using index_map = std::unordered_map<std::tuple<size_t, size_t, size_t>,
                                          unsigned, hash_ptr>;
-    using container_vtn = std::vector<utility::vertex_vtn>;
+    using container_vnt = std::vector<utility::vertex_vnt>;
     using container_vn = std::vector<utility::vertex_vn>;
     using vertices_idx = std::vector<unsigned>;
     using materials = std::vector<material*>;
@@ -53,7 +53,7 @@ private:
     void index_object(index_map& map, vertices_idx& out_idx,
                       container_vn& out_vn);
     void index_object(index_map& map, vertices_idx& out_idx,
-                      container_vtn& out_vtn);
+                      container_vnt& out_vnt);
     void compute_flat_shading(unsigned i,
                               glm::vec3& cross);
     void compute_smooth_shading(std::vector<float>& normals_count,

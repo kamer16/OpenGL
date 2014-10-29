@@ -196,7 +196,7 @@ obj_loader::compute_normals(char flat_shading)
 // Vertices and Normals and Textures
 void
 obj_loader::index_object(index_map& map, vertices_idx& out_idx,
-                         container_vtn& out_vtn)
+                         container_vnt& out_vnt)
 {
     using namespace std;
     for (unsigned i = 0; i < indices_.size(); ++i) {
@@ -206,9 +206,9 @@ obj_loader::index_object(index_map& map, vertices_idx& out_idx,
         size_t n_idx = indices_[i].n - 1;
         size_t t_idx = indices_[i].t - 1;
         auto pair = map.insert(make_pair(make_tuple(v_idx, n_idx, t_idx),
-                                         out_vtn.size()));
+                                         out_vnt.size()));
         if (pair.second) {
-            out_vtn.push_back({ vertices_[v_idx], text_coords_[t_idx], normals_[n_idx] });
+            out_vnt.push_back({ vertices_[v_idx], normals_[n_idx], text_coords_[t_idx] });
         }
         out_idx.push_back(pair.first->second);
     }
@@ -245,7 +245,7 @@ void obj_loader::set_material_indices(material* mat)
     // Vertices and Normals and Textures
     else
         index_object(mat->get_idx_lut(), mat->get_indices(),
-                     mat->get_vertices_vtn());
+                     mat->get_vertices_vnt());
 }
 
 auto

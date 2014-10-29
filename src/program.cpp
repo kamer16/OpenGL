@@ -7,7 +7,7 @@ program::program(texture_manager_ptr tm)
 {
 }
 
-auto program::get_texture_manager() -> const texture_manager_ptr& 
+auto program::get_texture_manager() -> const texture_manager_ptr&
 {
     return texture_manager_;
 }

@@ -12,7 +12,7 @@ class program
 {
 public:
     using texture_manager_ptr = std::shared_ptr<texture_manager>;
-    using container_vtn = std::vector<utility::vertex_vtn>;
+    using container_vnt = std::vector<utility::vertex_vnt>;
     using container_vn = std::vector<utility::vertex_vn>;
     template <typename T>
     void load_data(GLuint program_id, std::vector<T>& data, const char* name,
