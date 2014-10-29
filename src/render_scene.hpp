@@ -12,6 +12,7 @@
 # include "devices_state.hpp"
 # include "object.hpp"
 # include "camera.hpp"
+# include "program.hpp"
 
 class scene
 {
@@ -22,7 +23,7 @@ public:
     // Set the shaders with the updated transformation matrix and light
     // position.
     // Draw each object
-    void update_and_draw(const devices_state &device);
+    void update_and_draw(const devices_state &device, program& program);
     void add_object(object *object);
 
 private:

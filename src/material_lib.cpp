@@ -1,6 +1,5 @@
 #include "material_lib.hpp"
 #include "utility.hpp"
-#include "texture_manager.hpp"
 
 #define GLM_FORCE_RADIANS
 
@@ -12,9 +11,6 @@
 #include <fstream>
 #include <iostream>
 
-// TODO material_lib should not have a texture manager, a program has acces to a
-// unique texturme_manager, and the material_lib can access this texture_manager
-// via a program object.
 material_lib::material_lib(std::string&& dir)
     : dir_(dir)
 {

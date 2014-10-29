@@ -14,11 +14,6 @@
 # include "material.hpp"
 # include "resource_manager.hpp"
 
-// TODO material should not know about texture_manager,
-// A program will contain a texture_manager and delegate textures ids to a
-// material
-class texture_manager;
-
 class material_lib
 {
 public:

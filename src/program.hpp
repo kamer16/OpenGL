@@ -16,23 +16,16 @@ public:
     // Initializes program and sets it as the current program
     program(GLuint program_id);
     void init();
-    template <typename T>
-    void load_data(GLuint program_id, std::vector<T>& data, const char* name,
-                   GLuint* buffer_id);
     // Loads material data onto shader, and binds its textures.
-    void load_material(material& mat);
-    program();
-    template <typename T>
-    void load_vertex_buffer(std::vector<T>& vertices, GLuint* vert_buffer_id);
-    void set_vao_attribs(container_vnt& vertices, size_t stride);
+    void bind_material(material& mat);
 private:
     texture_binder texture_binder_;
     GLuint program_id_;
     struct material_location
     {
-        GLint specular;
-        GLint diffuse;
         GLint ambient;
+        GLint diffuse;
+        GLint specular;
         GLint shininess;
     } material_location_;
 };

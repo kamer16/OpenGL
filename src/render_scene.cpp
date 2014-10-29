@@ -13,14 +13,14 @@ scene::scene(GLuint program_id, float aspect_ratio)
 
 #include <iostream>
 void
-scene::update_and_draw(const devices_state &device)
+scene::update_and_draw(const devices_state &device, program& program)
 {
     camera_.update(device);
     for (auto obj : objects_) {
         const glm::mat4& model_mat = obj->get_model_mat();
         set_model_view_matrix(model_mat);
         set_light_source();
-        obj->draw(program_id_);
+        obj->draw(program);
     }
 }
 

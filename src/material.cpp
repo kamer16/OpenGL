@@ -1,6 +1,5 @@
 #include "material.hpp"
 #include "utility.hpp"
-#include "texture_manager.hpp"
 
 #define GLM_FORCE_RADIANS
 
@@ -19,9 +18,8 @@ material::get_diffuse_texture()
 }
 
 void
-material::draw(GLuint program_id)
+material::draw()
 {
-    bind(program_id);
     glBindVertexArray(vao_id);
     int nb_elt = static_cast<int>(indices.size());
     glDrawElements(GL_TRIANGLES, nb_elt, GL_UNSIGNED_INT, 0);
@@ -131,32 +129,6 @@ float&
 material::get_shininess()
 {
     return shininess;
-}
-
-void material::bind(GLuint program_id)
-{
-    // TODO bind one texture for all objects of same type
-    static GLuint tex = 0;
-    // Only bind texture if it wasn't already previously bound
-    if (tex != diffuse_map_id) {
-        // TODO, texture_manager should bind textures
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, diffuse_map_id);
-        tex = diffuse_map_id;
-    }
-    // TODO use unfirorm buffer objects, glBindBufferBase(GL_UNIFORM_BUFFER)
-    // glNamedBufferSubDataEXT();
-    GLint specular_idx = glGetUniformLocation(program_id, "material.specular");
-    glUniform4fv(specular_idx, 1, glm::value_ptr(specular));
-
-    GLint diffuse_idx = glGetUniformLocation(program_id, "material.diffuse");
-    glUniform4fv(diffuse_idx, 1, glm::value_ptr(diffuse));
-
-    GLint ambient_idx = glGetUniformLocation(program_id, "material.ambient");
-    glUniform4fv(ambient_idx, 1, glm::value_ptr(ambient));
-
-    GLint shininess_idx = glGetUniformLocation(program_id, "material.shininess");
-    glUniform1f(shininess_idx, shininess);
 }
 
 GLuint& material::get_ambient_map_id()

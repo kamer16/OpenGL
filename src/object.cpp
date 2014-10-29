@@ -60,10 +60,12 @@ object::scale(const glm::vec3& vec)
 }
 
 void
-object::draw(GLuint program_id)
+object::draw(program& program)
 {
-    for (auto mat : materials_)
-        mat->draw(program_id);
+    for (auto mat : materials_) {
+        program.bind_material(*mat);
+        mat->draw();
+    }
 }
 
 object::~object()

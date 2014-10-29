@@ -5,6 +5,7 @@
 # include <array>
 
 # include "object.hpp"
+# include "program.hpp"
 
 object *make_coordinate_polygon(GLuint program_id);
 object *make_quad_xz_polygon(GLuint program_id);
@@ -16,7 +17,7 @@ class polygon : public object
 public:
     polygon(GLenum mode);
     virtual ~polygon() override;
-    virtual void draw(GLuint program_id) override;
+    virtual void draw(program& program) override;
 
 private:
     friend object *make_coordinate_polygon(GLuint program_id);

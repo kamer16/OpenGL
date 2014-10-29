@@ -78,9 +78,6 @@ int main(int argc, char *argv[])
     loadShaders("src/shaders/color.vert", "src/shaders/color.frag",
                 &program_ids[1]);
 
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec3> normals;
-    std::vector<glm::vec2> text_coords;
     obj_loader loader;
     using materials = std::vector<material*>;
     resource_manager rm;
@@ -88,6 +85,7 @@ int main(int argc, char *argv[])
     std::sort(obj->get_materials().begin(), obj->get_materials().end(),
               sort_materials);
     program p1(program_ids[0]);
+    program p2(program_ids[1]);
     p1.init();
     obj->bind_indexed_vao(program_ids[0]);
     if (monitor)
@@ -115,11 +113,11 @@ int main(int argc, char *argv[])
         /* Swap front and back buffers */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(program_ids[0]);
-        scene1.update_and_draw(device);
+        scene1.update_and_draw(device, p1);
 
         glUseProgram(program_ids[1]);
         // update and draw scene2
-        scene2.update_and_draw(device);
+        scene2.update_and_draw(device, p2);
         glfwSwapBuffers(window);
 
         /* Poll for and process events */

@@ -21,7 +21,7 @@ public:
           unsigned, hash_ptr>;
     using vertices_idx = std::vector<unsigned>;
     void bind_indexed_vao(GLuint program_id);
-    void draw(GLuint program_id);
+    void draw();
     GLuint get_diffuse_texture();
     glm::vec4& get_ambient();
     glm::vec4& get_specular();
@@ -39,7 +39,6 @@ public:
 
     container_vnt& get_vertices_vnt();
     container_vn& get_vertices_vn();
-    void bind(GLuint program_id);
 private:
     // TODO should be called by resour/program manager
     template <typename T>

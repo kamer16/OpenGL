@@ -15,9 +15,9 @@ polygon::~polygon()
 {
 }
 
-void polygon::draw(GLuint program_id)
+void polygon::draw(program& program)
 {
-    (void) program_id;
+    (void) program;
     glBindVertexArray(vao_id_);
     glDrawElements(mode_, nb_elt_, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

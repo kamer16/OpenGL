@@ -8,7 +8,7 @@ program::program(GLuint program_id)
 }
 
 void
-program::load_material(material& mat)
+program::bind_material(material& mat)
 {
     texture_binder_.bind_material(mat);
     // TODO use unfirorm buffer objects, glBindBufferBase(GL_UNIFORM_BUFFER)
@@ -23,6 +23,14 @@ program::load_material(material& mat)
 void
 program::init()
 {
+    material_location_.ambient = glGetUniformLocation(program_id_,
+                                                      "material.ambient");
+    material_location_.diffuse = glGetUniformLocation(program_id_,
+                                                      "material.diffuse");
+    material_location_.specular = glGetUniformLocation(program_id_,
+                                                       "material.specular");
+    material_location_.shininess = glGetUniformLocation(program_id_,
+                                                        "material.shininess");
     glUseProgram(program_id_);
     texture_binder_.set_shader_uniforms(program_id_);
 }
