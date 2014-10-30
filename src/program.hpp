@@ -14,10 +14,13 @@ public:
     using container_vn = std::vector<utility::vertex_vn>;
     // Initialises shader resources, such as texture uniforms.
     // Initializes program and sets it as the current program
-    program(GLuint program_id);
+    program(const char* vertex_shader, const char* fragment_shader);
     void init();
+    void use();
     // Loads material data onto shader, and binds its textures.
     void bind_material(material& mat);
+    GLuint get_program_id();
+    ~program();
 private:
     GLuint program_id_;
     texture_binder texture_binder_;

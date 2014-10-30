@@ -38,7 +38,7 @@ static void printProgramInfoLog(GLuint obj)
 }
 
 
-void loadShaders(const char *vert_file, const char *frag_file,
+void load_shaders(const char *vert_file, const char *frag_file,
                  GLuint *program_id)
 {
   char *vs = NULL,*fs = NULL;

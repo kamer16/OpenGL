@@ -1,10 +1,11 @@
 #include "program.hpp"
+#include "shader.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
-program::program(GLuint program_id)
-    : program_id_(program_id)
+program::program(const char* vertex_shader, const char* fragment_shader)
 {
+    load_shaders(vertex_shader, fragment_shader, &program_id_);
 }
 
 void
@@ -33,4 +34,21 @@ program::init()
                                                         "material.shininess");
     glUseProgram(program_id_);
     texture_binder_.set_shader_uniforms(program_id_);
+}
+
+program::~program()
+{
+    glDeleteProgram(program_id_);
+}
+
+void
+program::use()
+{
+    glUseProgram(program_id_);
+}
+
+GLuint
+program::get_program_id()
+{
+    return program_id_;
 }

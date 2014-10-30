@@ -10,7 +10,6 @@
 # include <algorithm>
 #include <memory> // shared_ptr
 
-#include "shader.hpp" // loadShaders()
 #include "render_scene.hpp" // renderScene()
 #include "polygon.hpp" // polygons
 #include "options.hpp" // parse_args
@@ -73,15 +72,9 @@ int main(int argc, char *argv[])
         return -1; // or handle the error in a nicer way
 
     enableEnv();
-    GLuint program_ids[2];
-    // TODO, shader loading should be done in program object class
-    loadShaders("src/shaders/height.vert", "src/shaders/height.frag",
-                &program_ids[0]);
-    loadShaders("src/shaders/color.vert", "src/shaders/color.frag",
-                &program_ids[1]);
 
-    program p1(program_ids[0]);
-    program p2(program_ids[1]);
+    program p1("src/shaders/height.vert", "src/shaders/height.frag");
+    program p2("src/shaders/color.vert", "src/shaders/color.frag");
     p1.init();
     obj_loader loader;
     using materials = std::vector<material*>;
@@ -96,12 +89,12 @@ int main(int argc, char *argv[])
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     /* Loop until the user closes the window */
-    scene scene1(program_ids[0], aspect_ratio);
+    scene scene1(p1.get_program_id(), aspect_ratio);
     scene1.add_object(obj);
-    scene scene2(program_ids[1], aspect_ratio);
-    scene2.add_object(make_coordinate_polygon(program_ids[1]));
-    scene2.add_object(make_quad_xz_polygon(program_ids[1]));
-    object* cube = make_cube_polygon(program_ids[1]);
+    scene scene2(p2.get_program_id(), aspect_ratio);
+    scene2.add_object(make_coordinate_polygon(p2.get_program_id()));
+    scene2.add_object(make_quad_xz_polygon(p2.get_program_id()));
+    object* cube = make_cube_polygon(p2.get_program_id());
     cube->scale(glm::vec3(10, 10, 10));
     cube->translate(glm::vec3(0, 0, 20));
     scene2.add_object(cube);
@@ -114,10 +107,10 @@ int main(int argc, char *argv[])
 
         /* Swap front and back buffers */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glUseProgram(program_ids[0]);
+        p1.use();
         scene1.update_and_draw(device, p1);
 
-        glUseProgram(program_ids[1]);
+        p2.use();
         // update and draw scene2
         scene2.update_and_draw(device, p2);
         glfwSwapBuffers(window);
@@ -131,6 +124,5 @@ int main(int argc, char *argv[])
     }
 
     glfwTerminate();
-    glDeleteProgram(program_ids[0]);
     return 0;
 }
