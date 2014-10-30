@@ -92,9 +92,14 @@ int main(int argc, char *argv[])
     scene scene1(p1.get_program_id(), aspect_ratio);
     scene1.add_object(obj);
     scene scene2(p2.get_program_id(), aspect_ratio);
-    scene2.add_object(make_coordinate_polygon(p2.get_program_id()));
-    scene2.add_object(make_quad_xz_polygon(p2.get_program_id()));
-    object* cube = make_cube_polygon(p2.get_program_id());
+    polygon* coord = make_coordinate_polygon();
+    rm->load_indexed_polygon(*coord);
+    polygon* quad = make_quad_xz_polygon();
+    rm->load_indexed_polygon(*quad);
+    scene2.add_object(coord);
+    scene2.add_object(quad);
+    polygon* cube = make_cube_polygon();
+    rm->load_indexed_polygon(*cube);
     cube->scale(glm::vec3(10, 10, 10));
     cube->translate(glm::vec3(0, 0, 20));
     scene2.add_object(cube);

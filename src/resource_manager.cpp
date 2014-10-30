@@ -92,3 +92,8 @@ resource_manager::load_indexed_object(object& obj)
     }
 }
 
+void
+resource_manager::load_indexed_polygon(polygon& p)
+{
+    load_indexed_data(p.get_vertices(), p.get_indices(), p.get_resource());
+}

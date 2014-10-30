@@ -6,33 +6,36 @@
 
 # include "object.hpp"
 # include "program.hpp"
+# include "utility.hpp"
 
-object *make_coordinate_polygon(GLuint program_id);
-object *make_quad_xz_polygon(GLuint program_id);
-object *make_cube_polygon(GLuint program_id);
+class polygon;
+
+polygon* make_coordinate_polygon();
+polygon* make_quad_xz_polygon();
+polygon* make_cube_polygon();
 
 // TODO remove inheritance, leave object class for complexe objects
 class polygon : public object
 {
 public:
+    using container_vn = std::vector<utility::vertex_vn>;
+    using vertices_idx = std::vector<unsigned>;
     polygon(GLenum mode);
     virtual ~polygon() override;
     virtual void draw(program& program) override;
+    container_vn& get_vertices();
+    vertices_idx& get_indices();
+    auto get_resource() -> element_resource&;
 
 private:
-    friend object *make_coordinate_polygon(GLuint program_id);
-    friend object *make_quad_xz_polygon(GLuint program_id);
-    friend object *make_cube_polygon(GLuint program_id);
-    template <typename T, std::size_t N>
-    void load_index_buffer(std::array<T, N> &cubeIdxs);
-    template <typename T, std::size_t N> void
-    load_vertex_buffer(GLuint program_id, std::array<T, N> &cubeVerts);
+    friend polygon* make_coordinate_polygon();
+    friend polygon* make_quad_xz_polygon();
+    friend polygon* make_cube_polygon();
 
-    GLint nb_elt_;
-    GLuint index_buffer_id_;
+    element_resource resource_;
+    container_vn vertices_;
+    vertices_idx indices_;
     GLenum mode_;
 };
-
-# include "polygon.hxx"
 
 #endif // POLYGONS_HPP

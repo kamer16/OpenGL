@@ -37,9 +37,6 @@ public:
     materials_t& get_materials();
     virtual ~object();
 protected:
-    GLuint vertex_buffer_id_;
-    GLuint index_buffer_id_;
-    GLuint vao_id_;
     materials_t materials_;
 private:
     glm::mat4 model_mat_;
