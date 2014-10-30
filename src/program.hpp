@@ -19,8 +19,8 @@ public:
     // Loads material data onto shader, and binds its textures.
     void bind_material(material& mat);
 private:
-    texture_binder texture_binder_;
     GLuint program_id_;
+    texture_binder texture_binder_;
     struct material_location
     {
         GLint ambient;

@@ -17,7 +17,6 @@
 # include "utility.hpp"
 # include "material.hpp"
 # include "program.hpp"
-# include "resource_manager.hpp"
 
 class object
 {
@@ -36,9 +35,6 @@ public:
     void add_material(material* mat);
     // Can be accessed to be sorted
     materials_t& get_materials();
-    // Generate all required buffers and vao.
-    // TODO object should not know about bindings
-    void bind_indexed_vao(resource_manager& rm);
     virtual ~object();
 protected:
     GLuint vertex_buffer_id_;

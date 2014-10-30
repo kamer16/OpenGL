@@ -248,7 +248,7 @@ void obj_loader::set_material_indices(material* mat)
 }
 
 auto
-obj_loader::load_obj(std::string& file, resource_manager& rm) -> object*
+obj_loader::load_obj(std::string& file, resource_manager_ptr rm) -> object*
 {
     material* current_mat = nullptr;
     material_lib mat_lib(file.substr(0, file.find_last_of('/') + 1));

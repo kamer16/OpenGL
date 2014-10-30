@@ -3,6 +3,7 @@
 
 # include <vector>
 # include <iostream>
+# include <memory>
 # include <sstream>
 # include <fstream>
 # include <unordered_set>
@@ -36,10 +37,10 @@ public:
     using container3 = std::vector<glm::vec3>;
     using container2 = std::vector<glm::vec2>;
     using container_idx = std::vector<s_vertex_idx>;
+    using resource_manager_ptr = std::shared_ptr<resource_manager>;
     // Reads an Obj files and stores vertices, normals, and texture coords.
     // A simple call to glDrawArarys will render the object.
-    // TODO should return one object that contains all of mesh file.
-    object* load_obj(std::string& file, resource_manager& rm);
+    object* load_obj(std::string& file, resource_manager_ptr rm);
 
     // Print out vector in the mesh format
     // Mesh will only contain triangles

@@ -76,3 +76,19 @@ resource_manager::load_index_buffer(vertices_idx& indices,
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, byte_size, indices.data(),
                  GL_STATIC_DRAW);
 }
+
+void
+resource_manager::load_indexed_object(object& obj)
+{
+    // Currently materials store vao_id, as I need a different index buffer for
+    // each material hence, a specific vao to keep that state.
+    for (auto mat : obj.get_materials()) {
+        if (mat->get_vertices_vnt().size())
+            load_indexed_data(mat->get_vertices_vnt(), mat->get_indices(),
+                              mat->get_resource());
+        else
+            load_indexed_data(mat->get_vertices_vn(), mat->get_indices(),
+                              mat->get_resource());
+    }
+}
+

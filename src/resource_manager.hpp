@@ -6,6 +6,7 @@
 # include "texture_loader.hpp"
 # include "utility.hpp"
 # include "resource.hpp"
+# include "object.hpp"
 
 class resource_manager
 {
@@ -17,6 +18,7 @@ public:
                            element_resource& resource);
     void load_indexed_data(container_vn& vertices, vertices_idx& indices,
                            element_resource& resource);
+    void load_indexed_object(object& obj);
     GLuint load_texture(std::string&& file, unsigned texture_unit);
 private:
     texture_loader texture_loader_;

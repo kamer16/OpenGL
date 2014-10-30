@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp> /* value_ptr */
 
 # include <algorithm>
+#include <memory> // shared_ptr
 
 #include "shader.hpp" // loadShaders()
 #include "render_scene.hpp" // renderScene()
@@ -79,16 +80,16 @@ int main(int argc, char *argv[])
     loadShaders("src/shaders/color.vert", "src/shaders/color.frag",
                 &program_ids[1]);
 
-    obj_loader loader;
-    using materials = std::vector<material*>;
-    resource_manager rm;
-    object* obj = loader.load_obj(opt.mesh_file, rm);
-    std::sort(obj->get_materials().begin(), obj->get_materials().end(),
-              sort_materials);
     program p1(program_ids[0]);
     program p2(program_ids[1]);
     p1.init();
-    obj->bind_indexed_vao(rm);
+    obj_loader loader;
+    using materials = std::vector<material*>;
+    std::shared_ptr<resource_manager> rm = std::make_shared<resource_manager>();
+    object* obj = loader.load_obj(opt.mesh_file, rm);
+    rm->load_indexed_object(*obj);
+    std::sort(obj->get_materials().begin(), obj->get_materials().end(),
+              sort_materials);
     if (monitor)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     else // TODO somehow not working, Bug in GLFW ??
