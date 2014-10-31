@@ -1,5 +1,6 @@
 SOURCES=main.cpp \
 	utility.cpp \
+	light.cpp \
 	program.cpp \
 	material_lib.cpp \
 	texture_loader.cpp \

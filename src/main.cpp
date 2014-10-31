@@ -7,7 +7,6 @@
 #include <glm/gtc/matrix_transform.hpp> /* lookAt, perspective */
 #include <glm/gtc/type_ptr.hpp> /* value_ptr */
 
-# include <algorithm>
 #include <memory> // shared_ptr
 
 #include "render_scene.hpp" // renderScene()
@@ -27,12 +26,6 @@ void enableEnv()
 {
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
-}
-
-bool sort_materials(material* left, material* right);
-bool sort_materials(material* left, material* right)
-{
-    return left->get_diffuse_map_id() < right->get_diffuse_map_id();
 }
 
 int main(int argc, char *argv[])
@@ -76,13 +69,11 @@ int main(int argc, char *argv[])
     program p1("src/shaders/height.vert", "src/shaders/height.frag");
     program p2("src/shaders/color.vert", "src/shaders/color.frag");
     p1.init();
+    p2.init();
     obj_loader loader;
-    using materials = std::vector<material*>;
     std::shared_ptr<resource_manager> rm = std::make_shared<resource_manager>();
     object* obj = loader.load_obj(opt.mesh_file, rm);
     rm->load_indexed_object(*obj);
-    std::sort(obj->get_materials().begin(), obj->get_materials().end(),
-              sort_materials);
     if (monitor)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     else // TODO somehow not working, Bug in GLFW ??

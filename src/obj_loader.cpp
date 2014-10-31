@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_set>
 #include <cassert>
+#include <algorithm> // sort
 
 #define GLM_FORCE_RADIANS
 
@@ -247,6 +248,12 @@ void obj_loader::set_material_indices(material* mat)
                      mat->get_vertices_vnt());
 }
 
+bool sort_materials(material* left, material* right);
+bool sort_materials(material* left, material* right)
+{
+    return left->get_diffuse_map_id() < right->get_diffuse_map_id();
+}
+
 auto
 obj_loader::load_obj(std::string& file, resource_manager_ptr rm) -> object*
 {
@@ -312,6 +319,9 @@ obj_loader::load_obj(std::string& file, resource_manager_ptr rm) -> object*
     auto mats = mat_lib.get_materials();
     for (auto pair : mats)
         res->add_material(pair.second);
+    // Sort materials by textures to minimize amount of texture bindings
+    std::sort(res->get_materials().begin(), res->get_materials().end(),
+              sort_materials);
     ifs_.close();
     return res;
 }

@@ -13,10 +13,13 @@
 # include "object.hpp"
 # include "camera.hpp"
 # include "program.hpp"
+# include "light.hpp"
 
 class scene
 {
 public:
+    using lights = std::vector<light*>;
+    using objects = std::vector<object*>;
     scene(GLuint program_id, float aspect_ratio);
     // Check for devices inputs, and update model matrix and light position
     // accordingly.
@@ -40,7 +43,8 @@ private:
 
     camera camera_;
 
-    std::vector<object *> objects_;
+    objects objects_;
+    lights lights_;
 };
 
 #endif // RENDER_SCENE_CPP
