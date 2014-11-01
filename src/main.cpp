@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     /* Loop until the user closes the window */
     scene scene1(aspect_ratio);
     scene1.add_object(obj);
-    scene1.add_light(light_pos_default_new());
+    scene1.add_light(light_dir_default_new());
     scene scene2(aspect_ratio);
     polygon* coord = make_coordinate_polygon();
     rm->load_indexed_polygon(*coord);

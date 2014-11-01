@@ -9,7 +9,7 @@ struct light_param {
 };
 struct light_source {
     light_param param;
-    vec3 position;
+    vec4 position;
 };
 
 uniform sampler2D texture0;

@@ -9,7 +9,7 @@ struct light_param {
 };
 struct light_source {
     light_param param;
-    vec3 position;
+    vec4 position;
 };
 
 uniform mat4 mvp_mat;
@@ -34,8 +34,7 @@ void main()
 {
     uv = in_uv;
     normal = normalize(normal_mat * in_norm);
-    // TODO should be computed in user code not here
-    light_dir = normalize(normal_mat * light.position);
+    light_dir = vec3(light.position);
     // Convert vertex to eye space ==> eye_position == (0, 0, 0)
     eye = normalize(-vec3(view_mat * vec4(in_position, 1)));
 
