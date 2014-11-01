@@ -25,7 +25,7 @@ private:
     glm::vec4 position_;
 };
 
-light* default_dir_light_new();
-light* default_pos_light_new();
+light* light_dir_default_new();
+light* light_pos_default_new();
 
 #endif // LIGHT_HPP

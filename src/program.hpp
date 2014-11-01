@@ -6,6 +6,7 @@
 
 # include "texture_binder.hpp"
 # include "utility.hpp"
+# include "light.hpp"
 
 class program
 {
@@ -19,7 +20,10 @@ public:
     void use();
     // Loads material data onto shader, and binds its textures.
     void bind_material(material& mat);
-    GLuint get_program_id();
+    void bind_light(light& light);
+    void bind_model_view_matrix(const glm::mat4& model_mat,
+                                const glm::mat4& view_mat,
+                                const glm::mat4& proj_mat);
     ~program();
 private:
     GLuint program_id_;

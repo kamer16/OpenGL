@@ -80,9 +80,10 @@ int main(int argc, char *argv[])
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     /* Loop until the user closes the window */
-    scene scene1(p1.get_program_id(), aspect_ratio);
+    scene scene1(aspect_ratio);
     scene1.add_object(obj);
-    scene scene2(p2.get_program_id(), aspect_ratio);
+    scene1.add_light(light_pos_default_new());
+    scene scene2(aspect_ratio);
     polygon* coord = make_coordinate_polygon();
     rm->load_indexed_polygon(*coord);
     polygon* quad = make_quad_xz_polygon();
@@ -103,10 +104,8 @@ int main(int argc, char *argv[])
 
         /* Swap front and back buffers */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        p1.use();
         scene1.update_and_draw(device, p1);
 
-        p2.use();
         // update and draw scene2
         scene2.update_and_draw(device, p2);
         glfwSwapBuffers(window);

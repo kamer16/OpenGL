@@ -1,7 +1,7 @@
 #include "light.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-light* default_dir_light_new()
+light* light_dir_default_new()
 {
     light* res = new light;
     res->set_ambient({ 0.0f, 0.0f, 0.0f, 1.0f });
@@ -12,7 +12,7 @@ light* default_dir_light_new()
     return res;
 }
 
-light* default_pos_light_new()
+light* light_pos_default_new()
 {
     light* res = new light;
     res->set_ambient({ 0.0f, 0.0f, 0.0f, 1.0f });
