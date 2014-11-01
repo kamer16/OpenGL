@@ -12,10 +12,10 @@ struct light_source {
     vec3 position;
 };
 
-uniform mat4 projMat;
-uniform mat4 model_view_mat;
+uniform mat4 mvp_mat;
 uniform mat4 view_mat;
 uniform mat3 normal_mat;
+
 uniform light_source light;
 
 layout (location = 0) in vec3 in_position;
@@ -40,5 +40,5 @@ void main()
     eye = normalize(-vec3(view_mat * vec4(in_position, 1)));
 
     reflection = reflect(-light_dir,  normal);
-    gl_Position = projMat * model_view_mat * vec4(in_position, 1.0f);
+    gl_Position = mvp_mat * vec4(in_position, 1.0f);
 }

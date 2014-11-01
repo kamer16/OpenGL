@@ -11,9 +11,9 @@ void
 scene::update_and_draw(const devices_state &device, program& program)
 {
     program.use();
+    camera_.update(device);
     if (lights_.size())
         program.bind_light(*lights_[0]);
-    camera_.update(device);
     for (auto obj : objects_) {
         const glm::mat4& model_mat = obj->get_model_mat();
         program.bind_model_view_matrix(model_mat, camera_.get_view_mat(),

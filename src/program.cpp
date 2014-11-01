@@ -48,7 +48,7 @@ program::use()
 }
 
 void
-program::bind_light(light& light)
+program::bind_light(light& light)//, const glm::mat3& normal_mat)
 {
     // create directional light
     GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
@@ -75,21 +75,28 @@ program::bind_light(light& light)
 
 void
 program::bind_model_view_matrix(const glm::mat4& model_mat,
-                               const glm::mat4& view_mat,
-                               const glm::mat4& proj_mat)
+                                const glm::mat4& view_mat,
+                                const glm::mat4& proj_mat)
 {
-    GLint proj_mat_idx = glGetUniformLocation(program_id_, "projMat");
-    GLint model_view_idx = glGetUniformLocation(program_id_, "model_view_mat");
+    GLint mvp_idx = glGetUniformLocation(program_id_, "mvp_mat");
     GLint normal_mat_idx = glGetUniformLocation(program_id_, "normal_mat");
     GLint view_mat_idx = glGetUniformLocation(program_id_, "view_mat");
 
     glm::mat4 model_view_mat = view_mat * model_mat;
     glm::mat3 normal_mat = glm::transpose(glm::inverse(glm::mat3(model_view_mat)));
+    glm::mat4 mvp_mat = proj_mat * model_view_mat;
 
-    glUniformMatrix4fv(proj_mat_idx, 1, GL_FALSE, glm::value_ptr(proj_mat));
-    glUniformMatrix4fv(model_view_idx, 1, GL_FALSE, glm::value_ptr(model_view_mat));
+    glUniformMatrix4fv(mvp_idx, 1, GL_FALSE, glm::value_ptr(mvp_mat));
     glUniformMatrix3fv(normal_mat_idx, 1, GL_FALSE, glm::value_ptr(normal_mat));
     // Shaders needs view matrix to transform each vertex to camera space
     // allowing the shader to compute the direction vector from the vertex to cam
     glUniformMatrix4fv(view_mat_idx, 1, GL_FALSE, glm::value_ptr(view_mat));
 }
+
+//void bind_constants()
+//{
+//    GLint view_mat_idx = glGetUniformLocation(program_id_, "view_mat");
+//    // Shaders needs view matrix to transform each vertex to camera space
+//    // allowing the shader to compute the direction vector from the vertex to cam
+//    glUniformMatrix4fv(view_mat_idx, 1, GL_FALSE, glm::value_ptr(view_mat));
+//}
