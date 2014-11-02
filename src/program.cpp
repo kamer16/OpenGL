@@ -48,7 +48,7 @@ program::use()
 }
 
 void
-program::bind_light(light& light)
+program::bind_light(light& light, const glm::mat4& view_mat)
 {
     GLint specular_idx = glGetUniformLocation(program_id_, "light.param.specular");
     glUniform4fv(specular_idx, 1, glm::value_ptr(light.get_specular()));
@@ -63,14 +63,22 @@ program::bind_light(light& light)
     glm::vec4 g_ambient(0.2f, 0.2f, 0.2f, 1.0f);
     GLint g_ambient_idx = glGetUniformLocation(program_id_, "global_ambient");
     glUniform4fv(g_ambient_idx, 1, glm::value_ptr(g_ambient));
+
+
+    using namespace glm;
+    // create directional light
+    GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
+    // When world moves, lights direction moves with it, therefore we multiply
+    // it by a normal matrix.
+    glUniform4fv(light_dir_idx, 1,
+                 value_ptr(normalize(view_mat * light.get_position())));
 }
 
 
 void
 program::bind_scene(const glm::mat4& model_mat,
                     const glm::mat4& view_mat,
-                    const glm::mat4& proj_mat,
-                    lights& lights)
+                    const glm::mat4& proj_mat)
 {
     GLint mvp_idx = glGetUniformLocation(program_id_, "mvp_mat");
     GLint normal_mat_idx = glGetUniformLocation(program_id_, "normal_mat");
@@ -82,31 +90,15 @@ program::bind_scene(const glm::mat4& model_mat,
     glUniformMatrix4fv(mvp_idx, 1, GL_FALSE, glm::value_ptr(mvp_mat));
     glUniformMatrix3fv(normal_mat_idx, 1, GL_FALSE, glm::value_ptr(normal_mat));
 
-    if (lights.size())
-        bind_light_pos(*lights[0], normal_mat);
-}
-
-void
-program::bind_scene_constants(const glm::mat4& view_mat, lights& lights)
-{
-    GLint view_mat_idx = glGetUniformLocation(program_id_, "view_mat");
-    // Shaders needs view matrix to transform each vertex to camera space
+    GLint mv_idx = glGetUniformLocation(program_id_, "mv_mat");
+    // Shaders needs model_view matrix to transform each vertex to camera space
     // allowing the shader to compute the direction vector from the vertex to cam
-    glUniformMatrix4fv(view_mat_idx, 1, GL_FALSE, glm::value_ptr(view_mat));
-
-    if (lights.size())
-        bind_light(*lights[0]);
+    glUniformMatrix4fv(mv_idx, 1, GL_FALSE, glm::value_ptr(model_view_mat));
 }
 
 void
-program::bind_light_pos(light& light, const glm::mat3& normal_mat)
+program::bind_lights(const glm::mat4& view_mat, lights& lights)
 {
-    using namespace glm;
-    // create directional light
-    GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
-    // When world moves, lights direction moves with it, therefore we multiply
-    // it by a normal matrix.
-    glUniform4fv(light_dir_idx, 1,
-                 value_ptr(normalize(vec4(normal_mat *
-                                          vec3(light.get_position()), 1))));
+    for (auto light : lights)
+        bind_light(*light, view_mat);
 }

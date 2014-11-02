@@ -24,7 +24,6 @@ in vec3 normal;
 in vec3 reflection;
 
 out vec4 out_color;
-in vec3 light_dir;
 in vec3 eye;
 
 void main()
@@ -34,9 +33,9 @@ void main()
     vec4 tex2 = texture(texture1, uv);
 
     out_color = global_ambient * material.ambient;
-    //out_color += mix(tex1, tex2, 0.5) * dot(normalize(light_dir), n);
+    //out_color += mix(tex1, tex2, 0.5) * dot(normalize(light.position), n);
 
-    float n_dot_l = max(dot(n, normalize(light_dir)), 0);
+    float n_dot_l = max(dot(n, vec3(light.position)), 0);
     out_color += n_dot_l * light.param.diffuse * material.diffuse;
 
     if (n_dot_l > 0.01f) {

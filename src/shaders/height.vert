@@ -13,7 +13,7 @@ struct light_source {
 };
 
 uniform mat4 mvp_mat;
-uniform mat4 view_mat;
+uniform mat4 mv_mat;
 uniform mat3 normal_mat;
 
 uniform light_source light;
@@ -26,7 +26,6 @@ out vec2 uv;
 out vec3 normal;
 // reflection vector caused by light
 out vec3 reflection;
-out vec3 light_dir;
 // direction of vertex to eye
 out vec3 eye;
 
@@ -34,10 +33,9 @@ void main()
 {
     uv = in_uv;
     normal = normalize(normal_mat * in_norm);
-    light_dir = vec3(light.position);
     // Convert vertex to eye space ==> eye_position == (0, 0, 0)
-    eye = normalize(-vec3(view_mat * vec4(in_position, 1)));
+    eye = normalize(-vec3(mv_mat * vec4(in_position, 1)));
 
-    reflection = reflect(-light_dir,  normal);
+    reflection = reflect(-vec3(light.position),  normal);
     gl_Position = mvp_mat * vec4(in_position, 1.0f);
 }
