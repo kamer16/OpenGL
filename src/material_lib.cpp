@@ -29,6 +29,8 @@ void material_lib::update_material(material_ptr mtl, std::string& token,
         mtl->get_diffuse_map_id() = rm->load_texture(dir_ + unix_file(iss_), 1);
     else if (!token.compare("map_Ks"))
         mtl->get_specular_map_id() = rm->load_texture(dir_ + unix_file(iss_), 2);
+    else if (!token.compare("map_d"))
+        mtl->get_dissolve_map_id() = rm->load_texture(dir_ + unix_file(iss_), 2);
     else if (!token.compare("map_bump"))
         mtl->get_bump_map_id() = rm->load_texture(dir_ + unix_file(iss_), 3);
     else if (!token.compare("map_d"))
@@ -36,7 +38,7 @@ void material_lib::update_material(material_ptr mtl, std::string& token,
     else if (!token.compare("bump"))
         mtl->get_bump_id() = rm->load_texture(dir_ + unix_file(iss_), 3);
     else if (!token.compare("Ka"))
-        mtl->get_ambient() = glm::vec4(make_vec3(iss_, "ambiant_mat"), 1);
+        mtl->get_ambient() = glm::vec4(make_vec3(iss_, "ambient_mat"), 1);
     else if (!token.compare("Kd"))
         mtl->get_diffuse() = glm::vec4(make_vec3(iss_, "diffuse_mat"), 1);
     else if (!token.compare("Ks"))

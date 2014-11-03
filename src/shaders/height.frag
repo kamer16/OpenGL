@@ -12,8 +12,11 @@ struct light_source {
     vec4 position;
 };
 
-uniform sampler2D texture0;
-uniform sampler2D texture1;
+uniform sampler2D map_Ka;
+uniform sampler2D map_Kd;
+uniform sampler2D map_Ks;
+uniform sampler2D map_d;
+uniform sampler2D map_bump;
 
 uniform light_source light;
 uniform light_param material;
@@ -29,11 +32,14 @@ in vec3 eye;
 void main()
 {
     vec3 n = normalize(normal);
-    vec4 tex1 = texture(texture0, uv);
-    vec4 tex2 = texture(texture1, uv);
+    vec4 Ka = texture(map_Ka, uv);
+    vec4 Kd = texture(map_Kd, uv);
+    vec4 Ks = texture(map_Ks, uv);
+    vec4 d = texture(map_d, uv);
+    vec4 bump = texture(map_bump, uv);
 
     out_color = global_ambient * material.ambient;
-    //out_color += mix(tex1, tex2, 0.5) * dot(normalize(light.position), n);
+    //out_color += mix(Ka, Kd, 0.5) * dot(normalize(light.position), n);
 
     float n_dot_l = max(dot(n, vec3(light.position)), 0);
     out_color += n_dot_l * light.param.diffuse * material.diffuse;
@@ -43,5 +49,5 @@ void main()
         out_color += light.param.specular * material.specular *
                      pow(e_dot_r, material.shininess);
     }
-    out_color = mix(tex2, out_color, 0.8);
+    out_color = mix(Kd, out_color, 0.8);
 }

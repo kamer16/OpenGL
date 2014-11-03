@@ -22,7 +22,6 @@ public:
           unsigned, hash_ptr>;
     using vertices_idx = std::vector<unsigned>;
     void draw();
-    GLuint get_diffuse_texture();
     glm::vec4& get_ambient();
     glm::vec4& get_specular();
     glm::vec4& get_diffuse();
@@ -31,9 +30,9 @@ public:
     GLuint& get_ambient_map_id();
     GLuint& get_diffuse_map_id();
     GLuint& get_specular_map_id();
+    GLuint& get_dissolve_map_id();
     GLuint& get_bump_map_id();
     GLuint& get_bump_id();
-    GLuint& get_dissolve_map_id();
     element_resource& get_resource();
     vertices_idx& get_indices();
     index_map& get_idx_lut();
@@ -55,12 +54,12 @@ private:
     GLuint diffuse_map_id = 0;
     // specular texture map ==> map_Ks
     GLuint specular_map_id = 0;
+    // dissolve texture map ==> map_d
+    GLuint dissolve_map_id = 0;
     // Bump texture map ==> map_bump
-    GLuint bump_map_id;
+    GLuint bump_map_id = 0;
     // Bump  ==> bump
-    GLuint bump_id;
-    // dissolve map  ==> map_d
-    GLuint dissolve_map_id;
+    GLuint bump_id = 0;
     float dissolve = 1.0f;
 
     // Associative map_ of all indices of object to check.  If index already

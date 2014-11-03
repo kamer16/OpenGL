@@ -11,11 +11,14 @@ public:
     void set_shader_uniforms(GLuint program_id);
     void bind_material(material& mat);
 private:
+    void bind_texture(GLenum texture_unit, GLuint new_tex, GLuint& cached_tex);
+    // TODO get notified about which texture are to be updated
     struct textures_ids
     {
-        GLuint ambiant;
+        GLuint ambient;
         GLuint diffuse;
         GLuint specular;
+        GLuint dissolve;
         GLuint bump;
     } cached_id_;
 };

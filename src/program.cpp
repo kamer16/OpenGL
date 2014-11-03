@@ -44,7 +44,11 @@ program::~program()
 void
 program::use()
 {
-    glUseProgram(program_id_);
+    static GLuint cached_program_id_ = 0;
+    if (program_id_ != cached_program_id_) {
+        glUseProgram(program_id_);
+        cached_program_id_ = program_id_;
+    }
 }
 
 void
@@ -73,7 +77,6 @@ program::bind_light(light& light, const glm::mat4& view_mat)
     glUniform4fv(light_dir_idx, 1,
                  value_ptr(normalize(view_mat * light.get_position())));
 }
-
 
 void
 program::bind_scene(const glm::mat4& model_mat,

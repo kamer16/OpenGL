@@ -11,12 +11,6 @@
 #include <fstream>
 #include <iostream>
 
-GLuint
-material::get_diffuse_texture()
-{
-    return diffuse_map_id;
-}
-
 void
 material::draw()
 {
@@ -80,6 +74,11 @@ GLuint& material::get_specular_map_id()
     return specular_map_id;
 }
 
+GLuint& material::get_dissolve_map_id()
+{
+    return dissolve_map_id;
+}
+
 GLuint& material::get_bump_map_id()
 {
     return bump_map_id;
@@ -88,11 +87,6 @@ GLuint& material::get_bump_map_id()
 GLuint& material::get_bump_id()
 {
     return bump_id;
-}
-
-GLuint& material::get_dissolve_map_id()
-{
-    return dissolve_map_id;
 }
 
 float& material::get_dissolve()
