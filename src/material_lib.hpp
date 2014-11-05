@@ -31,6 +31,7 @@ public:
 private:
     void update_material(material_ptr mtl, std::string& token,
                          resource_manager_ptr rm);
+    void add_material(material* mtl, std::string& material_name);
     materials materials_;
     std::istringstream iss_;
     std::ifstream ifs_;

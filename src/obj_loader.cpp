@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <cassert>
 #include <algorithm> // sort
+#include <type_traits> // is_same
 
 #define GLM_FORCE_RADIANS
 
@@ -116,26 +117,6 @@ obj_loader::print_results()
     }
 }
 
-// Vertices and Normals
-void
-obj_loader::index_object(index_map& map, vertices_idx& out_idx,
-                         container_vn& out_vn)
-{
-    using namespace std;
-    for (unsigned i = 0; i < indices_.size(); ++i) {
-
-        // Our base idx is 0, not 1 like in the mesh files
-        size_t v_idx = indices_[i].v - 1;
-        size_t n_idx = indices_[i].n - 1;
-        auto pair = map.insert(make_pair(make_tuple(v_idx, n_idx, 0),
-                                         out_vn.size()));
-        if (pair.second) {
-            out_vn.push_back({ vertices_[v_idx], normals_[n_idx] });
-        }
-        out_idx.push_back(pair.first->second);
-    }
-}
-
 void
 obj_loader::compute_flat_shading(unsigned i, glm::vec3& cross)
 {
@@ -194,11 +175,14 @@ obj_loader::compute_normals(char flat_shading)
 }
 
 // Vertices and Normals and Textures
-template <typename container>
+template <typename material>
 void
-obj_loader::index_object(index_map& map, vertices_idx& out_idx,
-                         std::vector<container>& out_vnt)
+obj_loader::index_object(material& mat)
 {
+    using container_t = typename material::value_type;
+    index_map& map = mat.get_idx_lut();
+    vertices_idx& out_idx = mat.get_indices();
+    auto& out_vertices = mat.get_vertices();
     using namespace std;
     for (unsigned i = 0; i < indices_.size(); ++i) {
 
@@ -207,11 +191,24 @@ obj_loader::index_object(index_map& map, vertices_idx& out_idx,
         size_t n_idx = indices_[i].n - 1;
         size_t t_idx = indices_[i].t - 1;
         auto pair = map.insert(make_pair(make_tuple(v_idx, n_idx, t_idx),
-                                         out_vnt.size()));
+                                         out_vertices.size()));
         if (pair.second) {
-            container content(vertices_[v_idx], normals_[n_idx],
-                            text_coords_[t_idx]);
-            out_vnt.push_back(content);
+            if (std::is_same<container_t, utility::vertex_vnta>::value) {
+                container_t content(vertices_[v_idx], normals_[n_idx],
+                                    text_coords_[t_idx], glm::vec4(0, 0, 0, 0));
+                out_vertices.push_back(content);
+            }
+            else if (std::is_same<container_t, utility::vertex_vnt>::value) {
+                container_t content(vertices_[v_idx], normals_[n_idx],
+                                    text_coords_[t_idx]);
+                out_vertices.push_back(content);
+            }
+            else if (std::is_same<container_t, utility::vertex_vn>::value) {
+                container_t content(vertices_[v_idx], normals_[n_idx]);
+                out_vertices.push_back(content);
+            }
+            else
+                std::cerr << "Obj Loader : Unkown material type\n";
         }
         out_idx.push_back(pair.first->second);
     }
@@ -235,10 +232,12 @@ obj_loader::print_triangles(container3& vertices, container2& text_coords,
 }
 
 void
-obj_loader::compute_tangents(vertices_idx& indices, container_vnta& out_vnta)
+obj_loader::compute_tangents(material_vnta& material)
 {
+    vertices_idx& indices = material.get_indices();
+    container_vnta& vertices = material.get_vertices();
     (void) indices;
-    (void) out_vnta;
+    (void) vertices;
 }
 
 void obj_loader::set_material_indices(material* mat)
@@ -248,21 +247,17 @@ void obj_loader::set_material_indices(material* mat)
     if (vertices_.size() == 0)
         std::cerr << "File does not define any vertices\n";
     assert(indices_[0].n && "We always hove normals");
-    // Vertices and Normals
-    if (indices_[0].t == 0)
-        index_object(mat->get_idx_lut(), mat->get_indices(),
-                     mat->get_vertices_vn());
-    // Vertices and Normals and Textures
-    else {
-        if (mat->get_bump_map_id()) {
-            index_object(mat->get_idx_lut(), mat->get_indices(),
-                     mat->get_vertices_vnta());
-            compute_tangents(mat->get_indices(), mat->get_vertices_vnta());
-        }
-        else
-            index_object(mat->get_idx_lut(), mat->get_indices(),
-                         mat->get_vertices_vnt());
+    if (mat->get_bump_map_id()) {
+        index_object(static_cast<material_vnta&>(*mat));
+        compute_tangents(static_cast<material_vnta&>(*mat));
     }
+    // Vertices and Normals and Textures
+    else if (mat->get_ambient_map_id() || mat->get_diffuse_map_id() ||
+             mat->get_specular_map_id() || mat->get_dissolve_map_id())
+        index_object(static_cast<material_vnt&>(*mat));
+    // Vertices and Normals
+    else
+        index_object(static_cast<material_vn&>(*mat));
 }
 
 bool sort_materials(material* left, material* right);
@@ -324,7 +319,7 @@ obj_loader::load_obj(std::string& file, resource_manager_ptr rm) -> object*
     // Update last object that was added to materials object list
     if (!current_mat) {
         // Use default material since there were none
-        current_mat = new material();
+        current_mat = new material_vn;
         // Check if mat already exists or not in resulting vector
         current_mat->get_ambient() = glm::vec4(0.2, 0.2, 0.2, 1);
         current_mat->get_diffuse() = glm::vec4(0.8, 0.8, 0.8, 1);

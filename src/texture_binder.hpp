@@ -15,11 +15,11 @@ private:
     // TODO get notified about which texture are to be updated
     struct textures_ids
     {
-        GLuint ambient;
-        GLuint diffuse;
-        GLuint specular;
-        GLuint dissolve;
-        GLuint bump;
+        GLuint ambient = static_cast<unsigned>(-1);
+        GLuint diffuse = static_cast<unsigned>(-1);
+        GLuint specular = static_cast<unsigned>(-1);
+        GLuint dissolve = static_cast<unsigned>(-1);
+        GLuint bump = static_cast<unsigned>(-1);
     } cached_id_;
 };
 

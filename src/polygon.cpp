@@ -33,12 +33,13 @@ make_coordinate_polygon()
     indices.push_back(3); indices.push_back(4); indices.push_back(5);
     auto& vertices = coord->get_vertices();
     using namespace glm;
-    vertices.push_back({ vec3(0.0f, 0.0f, 0.0f   ), vec3(1.0f, 0.0f, 0.0f) });
-    vertices.push_back({ vec3(800.0f, 0.0f, 0.0f ), vec3(1.0f, 0.0f, 0.0f) });
-    vertices.push_back({ vec3(0.0f, 0.0f, 0.0f   ), vec3(0.0f, 1.0f, 0.0f) });
-    vertices.push_back({ vec3(0.0f, 800.0f, 0.0f ), vec3(0.0f, 1.0f, 0.0f) });
-    vertices.push_back({ vec3(0.0f, 0.0f, 0.0f   ), vec3(0.0f, 0.0f, 1.0f) });
-    vertices.push_back({ vec3(0.0f, 0.0f, 800.0f ), vec3(0.0f, 0.0f, 1.0f) });
+    using namespace utility;
+    vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 0.0f   ), vec3(1.0f, 0.0f, 0.0f)));
+    vertices.push_back(vertex_vn(vec3(800.0f, 0.0f, 0.0f ), vec3(1.0f, 0.0f, 0.0f)));
+    vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 0.0f   ), vec3(0.0f, 1.0f, 0.0f)));
+    vertices.push_back(vertex_vn(vec3(0.0f, 800.0f, 0.0f ), vec3(0.0f, 1.0f, 0.0f)));
+    vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 0.0f   ), vec3(0.0f, 0.0f, 1.0f)));
+    vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 800.0f ), vec3(0.0f, 0.0f, 1.0f)));
     return coord;
 }
 
@@ -51,10 +52,11 @@ make_quad_xz_polygon()
     indices.push_back(2); indices.push_back(0); indices.push_back(3);
     auto& vertices = quad_xz->get_vertices();
     using namespace glm;
-    vertices.push_back({ vec3(-9.5f, 0.0f, -9.5f), vec3(0.5f, 0.0f, 0.0f) });
-    vertices.push_back({ vec3( 9.5f, 0.0f, -9.5f), vec3(0.0f, 0.0f, 0.5f) });
-    vertices.push_back({ vec3( 9.5f, 0.0f,  9.5f), vec3(0.0f, 0.5f, 0.0f) });
-    vertices.push_back({ vec3(-9.5f, 0.0f,  9.5f), vec3(0.5f, 0.5f, 0.5f) });
+    using namespace utility;
+    vertices.push_back(vertex_vn(vec3(-9.5f, 0.0f, -9.5f), vec3(0.5f, 0.0f, 0.0f)));
+    vertices.push_back(vertex_vn(vec3( 9.5f, 0.0f, -9.5f), vec3(0.0f, 0.0f, 0.5f)));
+    vertices.push_back(vertex_vn(vec3( 9.5f, 0.0f,  9.5f), vec3(0.0f, 0.5f, 0.0f)));
+    vertices.push_back(vertex_vn(vec3(-9.5f, 0.0f,  9.5f), vec3(0.5f, 0.5f, 0.5f)));
     return quad_xz;
 }
 

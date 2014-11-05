@@ -36,10 +36,6 @@ public:
     element_resource& get_resource();
     vertices_idx& get_indices();
     index_map& get_idx_lut();
-
-    container_vnt& get_vertices_vnt();
-    container_vnta& get_vertices_vnta();
-    container_vn& get_vertices_vn();
 private:
     // Ns
     float shininess = 1.0f;
@@ -68,9 +64,52 @@ private:
     element_resource resource;
     // Associated indices to material
     vertices_idx indices;
-    container_vnta vertices_vnta;
+};
+
+class material_vnt : public material
+{
+public:
+    material_vnt(material& parent)
+        : material(parent)
+    {}
+    using container_vnt = std::vector<utility::vertex_vnt>;
+    using value_type = utility::vertex_vnt;
+    container_vnt& get_vertices();
+    static const bool has_texture = 1;
+    static const bool has_adjacent = 0;
+private:
     container_vnt vertices_vnt;
+};
+
+class material_vn : public material
+{
+public:
+    material_vn() = default;
+    material_vn(material& parent)
+        : material(parent)
+    {}
+    using container_vn = std::vector<utility::vertex_vn>;
+    using value_type = utility::vertex_vn;
+    container_vn& get_vertices();
+    static const bool has_texture = 0;
+    static const bool has_adjacent = 0;
+private:
     container_vn vertices_vn;
+};
+
+class material_vnta : public material
+{
+public:
+    material_vnta(material& parent)
+        : material(parent)
+    {}
+    using container_vnta = std::vector<utility::vertex_vnta>;
+    using value_type = utility::vertex_vnta;
+    container_vnta& get_vertices();
+    static const bool has_texture = 1;
+    static const bool has_adjacent = 1;
+private:
+    container_vnta vertices_vnta;
 };
 
 #endif // MATERIAL_HPP

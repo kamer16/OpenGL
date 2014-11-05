@@ -34,8 +34,8 @@ namespace utility
         glm::vec3 v;
         glm::vec3 n;
         glm::vec2 t;
-        static const bool has_texture = 1;
-        static const bool has_adjacent = 0;
+        vertex_vnt(glm::vec3& v_, glm::vec3& n_);
+        vertex_vnt(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_, glm::vec4&& a_);
         vertex_vnt(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_)
             : v(v_), n(n_), t(t_)
         { }
@@ -47,10 +47,10 @@ namespace utility
         glm::vec3 n;
         glm::vec2 t;
         glm::vec4 a;
-        static const bool has_texture = 1;
-        static const bool has_adjacent = 1;
-        vertex_vnta(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_)
-            : v(v_), n(n_), t(t_)
+        vertex_vnta(glm::vec3& v_, glm::vec3& n_);
+        vertex_vnta(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_);
+        vertex_vnta(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_, glm::vec4&& a_)
+            : v(v_), n(n_), t(t_), a(a_)
         { }
     };
 
@@ -58,8 +58,14 @@ namespace utility
     {
         glm::vec3 v;
         glm::vec3 n;
-        static const bool has_texture = 0;
-        static const bool has_adjacent = 0;
+        vertex_vn(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_, glm::vec4&& a_);
+        vertex_vn(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_);
+        vertex_vn(glm::vec3& v_, glm::vec3& n_)
+            : v(v_), n(n_)
+        { }
+        vertex_vn(glm::vec3&& v_, glm::vec3&& n_)
+            : v(v_), n(n_)
+        { }
     };
 
     void print(glm::mat4 mat);

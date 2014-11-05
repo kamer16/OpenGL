@@ -18,6 +18,9 @@ polygon* make_cube_polygon();
 class polygon : public object
 {
 public:
+    static const bool has_texture = 0;
+    static const bool has_adjacent = 0;
+    using value_type = utility::vertex_vn;
     using container_vn = std::vector<utility::vertex_vn>;
     using vertices_idx = std::vector<unsigned>;
     polygon(GLenum mode);

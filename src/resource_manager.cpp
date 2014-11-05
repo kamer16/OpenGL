@@ -11,25 +11,28 @@ resource_manager::load_texture(std::string&& file, unsigned texture_unit)
                                         texture_unit);
 }
 
-template <typename content>
+template <typename mesh>
 void
-resource_manager::load_indexed_data(std::vector<content>& vertices,
-                                    vertices_idx& indices,
-                                    element_resource& resource)
+resource_manager::load_indexed_data(mesh& m)
 {
+    auto& vertices = m.get_vertices();
+    vertices_idx& indices = m.get_indices();
+    element_resource& resource = m.get_resource();
+
     glGenVertexArrays(1, &resource.vao_id);
     glBindVertexArray(resource.vao_id);
     load_vertex_buffer(vertices, &resource.vertex_buffer_id);
     load_index_buffer(indices, &resource.index_buffer_id);
-    size_t stride = sizeof (content);
+    size_t stride = sizeof (typename mesh::value_type);
     enable_vertex_and_normal(stride);
 
-    if (content::has_texture) {
+    if (mesh::has_texture) {
         // Sets shaders attribute for texture coordinates
         glEnableVertexAttribArray(2); // Matches layout (location = 2)
         GLvoid* offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3) * 2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, offset);
-        if (content::has_adjacent) {
+        if (mesh::has_adjacent) {
+            // TODO bind adjcent
         }
     }
 }
@@ -75,22 +78,18 @@ resource_manager::load_indexed_object(object& obj)
     // Currently materials store vao_id, as I need a different index buffer for
     // each material hence, a specific vao to keep that state.
     for (auto mat : obj.get_materials()) {
-        if (mat->get_vertices_vnt().size())
-            load_indexed_data(mat->get_vertices_vnt(), mat->get_indices(),
-                              mat->get_resource());
-        else if (mat->get_vertices_vn().size())
-            load_indexed_data(mat->get_vertices_vn(), mat->get_indices(),
-                              mat->get_resource());
-        else if (mat->get_vertices_vnta().size())
-            load_indexed_data(mat->get_vertices_vnta(), mat->get_indices(),
-                              mat->get_resource());
+        if (mat->get_bump_map_id())
+            load_indexed_data(static_cast<material_vnta&>(*mat));
+        else if (mat->get_ambient_map_id() || mat->get_diffuse_map_id() ||
+                 mat->get_specular_map_id() || mat->get_dissolve_map_id())
+            load_indexed_data(static_cast<material_vnt&>(*mat));
         else
-            std::cerr << "Resource Manager: Object has no data\n";
+            load_indexed_data(static_cast<material_vn&>(*mat));
     }
 }
 
 void
 resource_manager::load_indexed_polygon(polygon& p)
 {
-    load_indexed_data(p.get_vertices(), p.get_indices(), p.get_resource());
+    load_indexed_data(p);
 }

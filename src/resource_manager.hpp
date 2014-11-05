@@ -15,9 +15,8 @@ public:
     using container_vnt = std::vector<utility::vertex_vnt>;
     using container_vn = std::vector<utility::vertex_vn>;
     using vertices_idx = std::vector<unsigned>;
-    template <typename content>
-    void load_indexed_data(std::vector<content>& vertices,
-                           vertices_idx& indices, element_resource& resource);
+    template <typename mesh>
+    void load_indexed_data(mesh& m);
     void load_indexed_object(object& obj);
     void load_indexed_polygon(polygon& p);
     GLuint load_texture(std::string&& file, unsigned texture_unit);

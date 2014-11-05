@@ -11,6 +11,31 @@
 #include <fstream>
 #include <iostream>
 
+auto material_vnta::get_vertices() -> container_vnta&
+{
+    return vertices_vnta;
+}
+
+auto material_vnt::get_vertices() -> container_vnt&
+{
+    return vertices_vnt;
+}
+
+auto material_vn::get_vertices() -> container_vn&
+{
+    return vertices_vn;
+}
+
+
+////////////////////////////////////
+// MATERIAL BASE CLASS DEFINITION //
+////////////////////////////////////
+
+auto material::get_resource() -> element_resource&
+{
+    return resource;
+}
+
 void
 material::draw()
 {
@@ -18,26 +43,6 @@ material::draw()
     int nb_elt = static_cast<int>(indices.size());
     glDrawElements(GL_TRIANGLES, nb_elt, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
-}
-
-auto material::get_vertices_vnta() -> container_vnta&
-{
-    return vertices_vnta;
-}
-
-auto material::get_vertices_vnt() -> container_vnt&
-{
-    return vertices_vnt;
-}
-
-auto material::get_resource() -> element_resource&
-{
-    return resource;
-}
-
-auto material::get_vertices_vn() -> container_vn&
-{
-    return vertices_vn;
 }
 
 glm::vec4&

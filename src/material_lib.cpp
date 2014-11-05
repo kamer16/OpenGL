@@ -50,6 +50,25 @@ void material_lib::update_material(material_ptr mtl, std::string& token,
 }
 
 void
+material_lib::add_material(material* mtl, std::string& material_name)
+{
+    if (mtl->get_bump_map_id()) {
+        material_vnta* res = new material_vnta(*mtl);
+        materials_[material_name] = res;
+    }
+    else if (mtl->get_ambient_map_id() || mtl->get_diffuse_map_id() ||
+             mtl->get_specular_map_id() || mtl->get_dissolve_map_id()) {
+        material_vnt* res = new material_vnt(*mtl);
+        materials_[material_name] = res;
+    }
+    else {
+        material_vn* res = new material_vn(*mtl);
+        materials_[material_name] = res;
+    }
+    delete mtl;
+}
+
+void
 material_lib::load_material_lib(std::istringstream& iss, resource_manager_ptr rm)
 {
     std::string filename, token;
@@ -61,15 +80,19 @@ material_lib::load_material_lib(std::istringstream& iss, resource_manager_ptr rm
         return;
     }
     std::string buff;
+    std::string material_name;
     std::getline(ifs_, buff);
     material_ptr mtl = nullptr;
     while (!ifs_.eof()) {
         iss_.str(buff);
         iss_ >> token;
         if (!token.compare("newmtl")) {
+            if (mtl) {
+                add_material(mtl, material_name);
+            }
             mtl = new material;
-            iss_ >> token;
-            materials_[token] = mtl;
+            iss_ >> material_name;
+            materials_[material_name] = mtl;
         }
         else if (mtl)
             update_material(mtl, token, rm);
@@ -78,6 +101,7 @@ material_lib::load_material_lib(std::istringstream& iss, resource_manager_ptr rm
         token.clear();
         iss_.clear();
     }
+    add_material(mtl, material_name);
     ifs_.close();
 }
 
