@@ -11,8 +11,9 @@ resource_manager::load_texture(std::string&& file, unsigned texture_unit)
                                         texture_unit);
 }
 
+template <typename content>
 void
-resource_manager::load_indexed_data(container_vnt& vertices,
+resource_manager::load_indexed_data(std::vector<content>& vertices,
                                     vertices_idx& indices,
                                     element_resource& resource)
 {
@@ -20,26 +21,17 @@ resource_manager::load_indexed_data(container_vnt& vertices,
     glBindVertexArray(resource.vao_id);
     load_vertex_buffer(vertices, &resource.vertex_buffer_id);
     load_index_buffer(indices, &resource.index_buffer_id);
-    size_t stride = sizeof (utility::vertex_vnt);
+    size_t stride = sizeof (content);
     enable_vertex_and_normal(stride);
 
-    // Sets shaders attribute for texture coordinates
-    glEnableVertexAttribArray(2); // Matches layout (location = 2)
-    GLvoid* offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3) * 2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, offset);
-}
-
-void
-resource_manager::load_indexed_data(container_vn& vertices,
-                                    vertices_idx& indices,
-                                    element_resource& resource)
-{
-    glGenVertexArrays(1, &resource.vao_id);
-    glBindVertexArray(resource.vao_id);
-    load_vertex_buffer(vertices, &resource.vertex_buffer_id);
-    load_index_buffer(indices, &resource.index_buffer_id);
-    size_t stride = sizeof (utility::vertex_vn);
-    enable_vertex_and_normal(stride);
+    if (content::has_texture) {
+        // Sets shaders attribute for texture coordinates
+        glEnableVertexAttribArray(2); // Matches layout (location = 2)
+        GLvoid* offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3) * 2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, offset);
+        if (content::has_adjacent) {
+        }
+    }
 }
 
 void
@@ -86,9 +78,14 @@ resource_manager::load_indexed_object(object& obj)
         if (mat->get_vertices_vnt().size())
             load_indexed_data(mat->get_vertices_vnt(), mat->get_indices(),
                               mat->get_resource());
-        else
+        else if (mat->get_vertices_vn().size())
             load_indexed_data(mat->get_vertices_vn(), mat->get_indices(),
                               mat->get_resource());
+        else if (mat->get_vertices_vnta().size())
+            load_indexed_data(mat->get_vertices_vnta(), mat->get_indices(),
+                              mat->get_resource());
+        else
+            std::cerr << "Resource Manager: Object has no data\n";
     }
 }
 

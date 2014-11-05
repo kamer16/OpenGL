@@ -34,12 +34,32 @@ namespace utility
         glm::vec3 v;
         glm::vec3 n;
         glm::vec2 t;
+        static const bool has_texture = 1;
+        static const bool has_adjacent = 0;
+        vertex_vnt(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_)
+            : v(v_), n(n_), t(t_)
+        { }
+    };
+
+    struct vertex_vnta
+    {
+        glm::vec3 v;
+        glm::vec3 n;
+        glm::vec2 t;
+        glm::vec4 a;
+        static const bool has_texture = 1;
+        static const bool has_adjacent = 1;
+        vertex_vnta(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_)
+            : v(v_), n(n_), t(t_)
+        { }
     };
 
     struct vertex_vn
     {
         glm::vec3 v;
         glm::vec3 n;
+        static const bool has_texture = 0;
+        static const bool has_adjacent = 0;
     };
 
     void print(glm::mat4 mat);

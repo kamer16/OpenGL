@@ -36,7 +36,7 @@ void material_lib::update_material(material_ptr mtl, std::string& token,
     else if (!token.compare("map_d"))
         mtl->get_dissolve_map_id() = rm->load_texture(dir_ + unix_file(iss_), 4);
     else if (!token.compare("bump"))
-        mtl->get_bump_id() = rm->load_texture(dir_ + unix_file(iss_), 3);
+        mtl->get_bump_map_id() = rm->load_texture(dir_ + unix_file(iss_), 3);
     else if (!token.compare("Ka"))
         mtl->get_ambient() = glm::vec4(make_vec3(iss_, "ambient_mat"), 1);
     else if (!token.compare("Kd"))
@@ -78,9 +78,6 @@ material_lib::load_material_lib(std::istringstream& iss, resource_manager_ptr rm
         token.clear();
         iss_.clear();
     }
-    // Use empty string as default material
-    mtl = new material;
-    materials_[""] = mtl;
     ifs_.close();
 }
 
@@ -98,7 +95,7 @@ material_lib::dump()
         std::cout << "\tdiffuse_map\t"  << ptr->get_diffuse_map_id() << std::endl;
         std::cout << "\tspecular_map\t" << ptr->get_specular_map_id() << std::endl;
         std::cout << "\tbump_map\t"     << ptr->get_bump_map_id() << std::endl;
-        std::cout << "\tbump\t"         << ptr->get_bump_id() << std::endl;
+        std::cout << "\tbump\t"         << ptr->get_bump_map_id() << std::endl;
         std::cout << "\tmap_d\t"        << ptr->get_dissolve_map_id() << std::endl;
     }
 }
@@ -108,6 +105,9 @@ material_lib::get_material(std::string& material_name)
 {
     auto it = materials_.find(material_name);
     if (it == materials_.end()) {
+        it = materials_.find("");
+        if (it == materials_.end())
+            materials_[""] = new material;
         std::cerr << "Unable to find material name : " << material_name
                   << std::endl;
         // Default material when none is found

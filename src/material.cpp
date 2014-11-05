@@ -20,6 +20,11 @@ material::draw()
     glBindVertexArray(0);
 }
 
+auto material::get_vertices_vnta() -> container_vnta&
+{
+    return vertices_vnta;
+}
+
 auto material::get_vertices_vnt() -> container_vnt&
 {
     return vertices_vnt;
@@ -82,11 +87,6 @@ GLuint& material::get_dissolve_map_id()
 GLuint& material::get_bump_map_id()
 {
     return bump_map_id;
-}
-
-GLuint& material::get_bump_id()
-{
-    return bump_id;
 }
 
 float& material::get_dissolve()

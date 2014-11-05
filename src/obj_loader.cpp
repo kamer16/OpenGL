@@ -194,9 +194,10 @@ obj_loader::compute_normals(char flat_shading)
 }
 
 // Vertices and Normals and Textures
+template <typename container>
 void
 obj_loader::index_object(index_map& map, vertices_idx& out_idx,
-                         container_vnt& out_vnt)
+                         std::vector<container>& out_vnt)
 {
     using namespace std;
     for (unsigned i = 0; i < indices_.size(); ++i) {
@@ -208,7 +209,9 @@ obj_loader::index_object(index_map& map, vertices_idx& out_idx,
         auto pair = map.insert(make_pair(make_tuple(v_idx, n_idx, t_idx),
                                          out_vnt.size()));
         if (pair.second) {
-            out_vnt.push_back({ vertices_[v_idx], normals_[n_idx], text_coords_[t_idx] });
+            container content(vertices_[v_idx], normals_[n_idx],
+                            text_coords_[t_idx]);
+            out_vnt.push_back(content);
         }
         out_idx.push_back(pair.first->second);
     }
@@ -231,6 +234,13 @@ obj_loader::print_triangles(container3& vertices, container2& text_coords,
     }
 }
 
+void
+obj_loader::compute_tangents(vertices_idx& indices, container_vnta& out_vnta)
+{
+    (void) indices;
+    (void) out_vnta;
+}
+
 void obj_loader::set_material_indices(material* mat)
 {
     if (indices_[0].n == 0)
@@ -243,9 +253,16 @@ void obj_loader::set_material_indices(material* mat)
         index_object(mat->get_idx_lut(), mat->get_indices(),
                      mat->get_vertices_vn());
     // Vertices and Normals and Textures
-    else
-        index_object(mat->get_idx_lut(), mat->get_indices(),
-                     mat->get_vertices_vnt());
+    else {
+        if (mat->get_bump_map_id()) {
+            index_object(mat->get_idx_lut(), mat->get_indices(),
+                     mat->get_vertices_vnta());
+            compute_tangents(mat->get_indices(), mat->get_vertices_vnta());
+        }
+        else
+            index_object(mat->get_idx_lut(), mat->get_indices(),
+                         mat->get_vertices_vnt());
+    }
 }
 
 bool sort_materials(material* left, material* right);

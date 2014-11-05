@@ -30,6 +30,7 @@ class obj_loader
 public:
     using index_map = std::unordered_map<std::tuple<size_t, size_t, size_t>,
                                          unsigned, hash_ptr>;
+    using container_vnta = std::vector<utility::vertex_vnta>;
     using container_vnt = std::vector<utility::vertex_vnt>;
     using container_vn = std::vector<utility::vertex_vn>;
     using vertices_idx = std::vector<unsigned>;
@@ -54,14 +55,18 @@ private:
     void add_indices();
     void index_object(index_map& map, vertices_idx& out_idx,
                       container_vn& out_vn);
+
+    // Index the textures normals, vertices, extra attributes are ignored here
+    template <typename container>
     void index_object(index_map& map, vertices_idx& out_idx,
-                      container_vnt& out_vnt);
+                      std::vector<container>& out_vnt);
     void compute_flat_shading(unsigned i,
                               glm::vec3& cross);
     void compute_smooth_shading(std::vector<float>& normals_count,
                                 size_t idx1, size_t idx2, size_t idx3,
                                 glm::vec3& cross,
                                 unsigned i);
+    void compute_tangents(vertices_idx& indices, container_vnta& out_vnta);
     void compute_normals(char flat_shading);
     void set_material_indices(material* mat);
 
