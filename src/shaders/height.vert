@@ -21,21 +21,29 @@ uniform light_source light;
 layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_norm;
 layout (location = 2) in vec2 in_uv;
+layout (location = 3) in vec4 in_tan;
 
 out vec2 uv;
-out vec3 normal;
+out vec3 normal_cam;
+out vec4 tangent_cam;
 // reflection vector caused by light
-out vec3 reflection;
+out vec3 reflection_cam;
 // direction of vertex to eye
-out vec3 eye;
+out vec3 eye_cam;
+out vec3 light_dir_cam;
 
 void main()
 {
+    light_dir_cam = vec3(light.position);
     uv = in_uv;
-    normal = normalize(normal_mat * in_norm);
+    // normal in eye space
+    normal_cam = normalize(normal_mat * in_norm);
+    // tangent in eye space
+    tangent_cam = vec4(normalize(normal_mat * vec3(in_tan)), in_tan.w);
     // Convert vertex to eye space ==> eye_position == (0, 0, 0)
-    eye = normalize(-vec3(mv_mat * vec4(in_position, 1)));
+    eye_cam = normalize(-vec3(mv_mat * vec4(in_position, 1)));
 
-    reflection = reflect(-vec3(light.position),  normal);
+    // light in eye space
+    reflection_cam = reflect(-vec3(light_dir_cam),  normal_cam);
     gl_Position = mvp_mat * vec4(in_position, 1.0f);
 }

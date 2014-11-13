@@ -155,9 +155,9 @@ obj_loader::compute_normals(char flat_shading)
         size_t idx1 = indices_[i -  2].v - 1;
         size_t idx2 = indices_[i -  1].v - 1;
         size_t idx3 = indices_[i].v - 1;
-        glm::vec3 v1 = vertices_[idx1];
-        glm::vec3 v2 = vertices_[idx2];
-        glm::vec3 v3 = vertices_[idx3];
+        const glm::vec3& v1 = vertices_[idx1];
+        const glm::vec3& v2 = vertices_[idx2];
+        const glm::vec3& v3 = vertices_[idx3];
         normals_count[idx1]++;
         normals_count[idx2]++;
         normals_count[idx3]++;
@@ -236,8 +236,61 @@ obj_loader::compute_tangents(material_vnta& material)
 {
     vertices_idx& indices = material.get_indices();
     container_vnta& vertices = material.get_vertices();
-    (void) indices;
-    (void) vertices;
+    std::vector<glm::vec3> tan1(indices.size());
+    std::vector<glm::vec3> tan2(indices.size());
+    for (unsigned i = 0; i < indices.size(); i += 3)
+    {
+        size_t i1 = indices[i];
+        size_t i2 = indices[i + 1];
+        size_t i3 = indices[i + 2];
+
+        const glm::vec3& v1 = vertices[i1].v;
+        const glm::vec3& v2 = vertices[i2].v;
+        const glm::vec3& v3 = vertices[i3].v;
+
+        const glm::vec2& w1 = vertices[i1].t;
+        const glm::vec2& w2 = vertices[i2].t;
+        const glm::vec2& w3 = vertices[i3].t;
+
+        float x1 = v2.x - v1.x;
+        float x2 = v3.x - v1.x;
+        float y1 = v2.y - v1.y;
+        float y2 = v3.y - v1.y;
+        float z1 = v2.z - v1.z;
+        float z2 = v3.z - v1.z;
+
+        float s1 = w2.x - w1.x;
+        float s2 = w3.x - w1.x;
+        float t1 = w2.y - w1.y;
+        float t2 = w3.y - w1.y;
+
+        float r = 1.0f / (s1 * t2 - s2 * t1);
+        glm::vec3 sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r,
+                       (t2 * z1 - t1 * z2) * r);
+        glm::vec3 tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,
+                       (s1 * z2 - s2 * z1) * r);
+
+        tan1[i1] += sdir;
+        tan1[i2] += sdir;
+        tan1[i3] += sdir;
+
+        tan2[i1] += tdir;
+        tan2[i2] += tdir;
+        tan2[i3] += tdir;
+    }
+
+    for (unsigned long a = 0; a < vertices.size(); ++a)
+    {
+        const glm::vec3& n = vertices[a].n;
+        const glm::vec3& tan = tan1[a];
+
+        using namespace glm;
+        // Gram-Schmidt orthogonalize
+        vertices[a].a = vec4(normalize(tan - n * dot(n, tan)), 0);
+
+        // Calculate handedness
+        vertices[a].a.w = (dot(cross(n, tan), tan2[a]) < 0.0f) ? -1.0f : 1.0f;
+    }
 }
 
 void obj_loader::set_material_indices(material* mat)

@@ -29,10 +29,13 @@ resource_manager::load_indexed_data(mesh& m)
     if (mesh::has_texture) {
         // Sets shaders attribute for texture coordinates
         glEnableVertexAttribArray(2); // Matches layout (location = 2)
-        GLvoid* offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3) * 2);
+        GLvoid* offset = reinterpret_cast<GLvoid *>(sizeof (glm::vec3) * 2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, offset);
         if (mesh::has_adjacent) {
-            // TODO bind adjcent
+            glEnableVertexAttribArray(3); // Matches layout (location = 3)
+            offset = reinterpret_cast<GLvoid *>(sizeof (glm::vec3) * 2 +
+                                                sizeof (glm::vec2));
+            glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, stride, offset);
         }
     }
 }
