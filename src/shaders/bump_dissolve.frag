@@ -38,7 +38,7 @@ void main()
     vec4 Ks = texture(map_Ks, uv);
     vec4 d = texture(map_d, uv);
     vec3 bump = vec3(texture(map_bump, uv));
-    if (bump.x == bump.y && bump.y == bump.z && bump.z == 0)
+    if (d.x + d.y + d.z == 0)
         discard;
     bump.xy = (bump.xy - 0.5) * 2;
 
@@ -53,7 +53,7 @@ void main()
     vec3 reflection_tan = TBN * reflection_cam;
 
 
-    out_color = global_ambient * material.ambient;
+    out_color = global_ambient * Ka;
 
     float n_dot_l = max(dot(normal_tan, light_dir_tan), 0);
     out_color += n_dot_l * light.param.diffuse * Kd;
@@ -61,7 +61,7 @@ void main()
     if (n_dot_l > 0.01f) {
         float e_dot_r = max(dot(normalize(eye_dir_tan),
                                 normalize(reflection_tan)), 0);
-        out_color += light.param.specular * material.specular *
+        out_color += light.param.specular * Ks *
                      pow(e_dot_r, material.shininess);
     }
 }

@@ -66,10 +66,13 @@ int main(int argc, char *argv[])
 
     enableEnv();
 
-    program p1("src/shaders/height.vert", "src/shaders/height.frag");
+    program p1("src/shaders/material.vert", "src/shaders/material.frag");
     program p2("src/shaders/color.vert", "src/shaders/color.frag");
-    p1.init();
-    p2.init();
+    program p3("src/shaders/bump.vert", "src/shaders/bump.frag");
+    program p4("src/shaders/bump_dissolve.vert", "src/shaders/bump_dissolve.frag");
+    program p5("src/shaders/dissolve.vert", "src/shaders/dissolve.frag");
+    program p6("src/shaders/default.vert", "src/shaders/default.frag");
+    p1.init(); p2.init(); p3.init(); p4.init(); p5.init();
     obj_loader loader;
     std::shared_ptr<resource_manager> rm = std::make_shared<resource_manager>();
     object* obj = loader.load_obj(opt.mesh_file, rm);
@@ -81,8 +84,8 @@ int main(int argc, char *argv[])
 
     /* Loop until the user closes the window */
     scene scene1(aspect_ratio);
-    scene1.add_object(obj);
     scene1.add_light(light_dir_default_new());
+    scene1.add_object(obj);
     scene scene2(aspect_ratio);
     polygon* coord = make_coordinate_polygon();
     rm->load_indexed_polygon(*coord);
