@@ -7,6 +7,17 @@
 # include <string>
 # include <tuple>
 
+enum class render_type
+{
+    bump,
+    bump_dissolve,
+    dissolve,
+    color,
+    material,
+    basic
+};
+
+
 class hash_ptr
 {
 public:

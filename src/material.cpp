@@ -108,3 +108,15 @@ auto material::get_indices() -> vertices_idx&
 {
     return indices;
 }
+
+render_type
+material::get_render_type()
+{
+    return render_type_;
+}
+
+void
+material::set_render_type(render_type type)
+{
+    render_type_ = type;
+}

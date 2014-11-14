@@ -21,12 +21,13 @@ public:
     using lights = std::vector<light*>;
     using objects = std::vector<object*>;
     scene(float aspect_ratio);
-    // Check for devices inputs, and update model matrix and light position
-    // accordingly.
+    // Update model matrix and light position accordingly.
     // Set the shaders with the updated transformation matrix and light
     // position.
     // Draw each object
-    void update_and_draw(const devices_state &device, program& program);
+    void draw(program& program);
+    // Check for devices inputs, and update camera position
+    void update(const devices_state &device);
     void add_object(object *object);
     void add_light(light* light);
 

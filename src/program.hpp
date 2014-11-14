@@ -8,16 +8,6 @@
 # include "utility.hpp"
 # include "light.hpp"
 
-enum class program_type
-{
-    material,
-    bump,
-    bump_dissolve,
-    dissolve,
-    color,
-    basic
-};
-
 class program
 {
 public:
@@ -27,10 +17,10 @@ public:
     // Initialises shader resources, such as texture uniforms.
     // Initializes program and sets it as the current program
     program(const char* vertex_shader, const char* fragment_shader,
-            program_type type);
+            render_type type);
     void init();
     void use();
-    program_type get_type();
+    render_type get_render_type();
     // Loads material data onto shader, and binds its textures.
     void bind_material(material& mat);
     void bind_lights(const glm::mat4& view_mat, lights& lights);
@@ -40,7 +30,7 @@ public:
 private:
     void bind_light(light& light, const glm::mat4& view_mat);
     GLuint program_id_;
-    program_type type_;
+    render_type render_type_;
     texture_binder texture_binder_;
     struct material_location
     {

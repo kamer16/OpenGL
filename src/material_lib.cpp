@@ -52,17 +52,30 @@ void material_lib::update_material(material_ptr mtl, std::string& token,
 void
 material_lib::add_material(material* mtl, std::string& material_name)
 {
-    if (mtl->get_bump_map_id()) {
+    if (mtl->get_bump_map_id() && mtl->get_dissolve_map_id()) {
         material_vnta* res = new material_vnta(*mtl);
+        res->set_render_type(render_type::bump_dissolve);
+        materials_[material_name] = res;
+    }
+    else if (mtl->get_bump_map_id()) {
+        material_vnta* res = new material_vnta(*mtl);
+        res->set_render_type(render_type::bump);
+        materials_[material_name] = res;
+    }
+    else if (mtl->get_dissolve_map_id()) {
+        material_vnt* res = new material_vnt(*mtl);
+        res->set_render_type(render_type::dissolve);
         materials_[material_name] = res;
     }
     else if (mtl->get_ambient_map_id() || mtl->get_diffuse_map_id() ||
-             mtl->get_specular_map_id() || mtl->get_dissolve_map_id()) {
+             mtl->get_specular_map_id()) {
         material_vnt* res = new material_vnt(*mtl);
+        res->set_render_type(render_type::basic);
         materials_[material_name] = res;
     }
     else {
         material_vn* res = new material_vn(*mtl);
+        res->set_render_type(render_type::material);
         materials_[material_name] = res;
     }
     delete mtl;

@@ -373,6 +373,7 @@ obj_loader::load_obj(std::string& file, resource_manager_ptr rm) -> object*
     if (!current_mat) {
         // Use default material since there were none
         current_mat = new material_vn;
+        current_mat->set_render_type(render_type::material);
         // Check if mat already exists or not in resulting vector
         current_mat->get_ambient() = glm::vec4(0.2, 0.2, 0.2, 1);
         current_mat->get_diffuse() = glm::vec4(0.8, 0.8, 0.8, 1);

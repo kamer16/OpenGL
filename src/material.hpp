@@ -33,6 +33,8 @@ public:
     GLuint& get_specular_map_id();
     GLuint& get_dissolve_map_id();
     GLuint& get_bump_map_id();
+    render_type get_render_type();
+    void set_render_type(render_type type);
     element_resource& get_resource();
     vertices_idx& get_indices();
     index_map& get_idx_lut();
@@ -61,6 +63,7 @@ private:
     // exists it's id can be return, otherwise a new one is created
     index_map idx_lut;
 
+    render_type render_type_ = render_type::color;
     element_resource resource;
     // Associated indices to material
     vertices_idx indices;

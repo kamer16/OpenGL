@@ -61,8 +61,8 @@ void load_shaders(const char *vert_file, const char *frag_file,
   glCompileShader(v);
   glCompileShader(f);
 
-  printShaderInfoLog(v, "Vertex");
-  printShaderInfoLog(f, "Fragment");
+  printShaderInfoLog(v, vert_file);
+  printShaderInfoLog(f, frag_file);
 
   *program_id = glCreateProgram();
   glAttachShader(*program_id,v);

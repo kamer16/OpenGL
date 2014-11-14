@@ -79,13 +79,13 @@ int main(int argc, char *argv[])
 
     enableEnv();
 
-    program p1(SRC_MAT_VERT, SRC_MAT_FRAG, program_type::material);
-    program p2(SRC_COL_VERT, SRC_COL_FRAG, program_type::color);
-    program p3(SRC_BUMP_VERT,SRC_BUMP_FRAG, program_type::bump);
-    program p4(SRC_DISS_VERT, SRC_DISS_FRAG, program_type::bump_dissolve);
-    program p5(SRC_BUMP_DISS_VERT, SRC_BUMP_DISS_FRAG, program_type::dissolve);
-    program p6(SRC_DEFAULT_VERT, SRC_DEFAULT_VERT, program_type::basic);
-    p1.init(); p2.init(); p3.init(); p4.init(); p5.init();
+    program p1(SRC_MAT_VERT, SRC_MAT_FRAG, render_type::material);
+    program p2(SRC_COL_VERT, SRC_COL_FRAG, render_type::color);
+    program p3(SRC_BUMP_VERT,SRC_BUMP_FRAG, render_type::bump);
+    program p4(SRC_DISS_VERT, SRC_DISS_FRAG, render_type::bump_dissolve);
+    program p5(SRC_BUMP_DISS_VERT, SRC_BUMP_DISS_FRAG, render_type::dissolve);
+    program p6(SRC_DEFAULT_VERT, SRC_DEFAULT_FRAG, render_type::basic);
+    p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p6.init();
     obj_loader loader;
     std::shared_ptr<resource_manager> rm = std::make_shared<resource_manager>();
     object* obj = loader.load_obj(opt.mesh_file, rm);
@@ -120,10 +120,16 @@ int main(int argc, char *argv[])
 
         /* Swap front and back buffers */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        scene1.update_and_draw(device, p1);
+        scene1.update(device);
+        scene1.draw(p1);
+        scene1.draw(p3);
+        scene1.draw(p4);
+        scene1.draw(p5);
+        scene1.draw(p6);
 
         // update and draw scene2
-        scene2.update_and_draw(device, p2);
+        scene2.update(device);
+        scene2.draw(p2);
         glfwSwapBuffers(window);
 
         /* Poll for and process events */

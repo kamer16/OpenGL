@@ -53,8 +53,10 @@ void
 object::draw(program& program)
 {
     for (auto mat : materials_) {
-        program.bind_material(*mat);
-        mat->draw();
+        if (mat->get_render_type() == program.get_render_type()) {
+            program.bind_material(*mat);
+            mat->draw();
+        }
     }
 }
 

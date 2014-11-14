@@ -4,8 +4,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 program::program(const char* vertex_shader, const char* fragment_shader,
-                 program_type type)
-    : type_(type)
+                 render_type type)
+    : render_type_(type)
 {
     load_shaders(vertex_shader, fragment_shader, &program_id_);
 }
@@ -13,14 +13,18 @@ program::program(const char* vertex_shader, const char* fragment_shader,
 void
 program::bind_material(material& mat)
 {
-    texture_binder_.bind_material(mat);
     // TODO use unfirorm buffer objects, glBindBufferBase(GL_UNIFORM_BUFFER)
     // glNamedBufferSubDataEXT();
-    using namespace glm;
-    glUniform4fv(material_location_.specular, 1, value_ptr(mat.get_specular()));
-    glUniform4fv(material_location_.diffuse, 1, value_ptr(mat.get_diffuse()));
-    glUniform4fv(material_location_.ambient, 1, value_ptr(mat.get_ambient()));
-    glUniform1f(material_location_.shininess, mat.get_shininess());
+    if (render_type_ == render_type::material) {
+        using namespace glm;
+        glUniform4fv(material_location_.specular, 1, value_ptr(mat.get_specular()));
+        glUniform4fv(material_location_.diffuse, 1, value_ptr(mat.get_diffuse()));
+        glUniform4fv(material_location_.ambient, 1, value_ptr(mat.get_ambient()));
+        glUniform1f(material_location_.shininess, mat.get_shininess());
+    }
+    else {
+        texture_binder_.bind_material(mat);
+    }
 }
 
 void
@@ -108,8 +112,8 @@ program::bind_lights(const glm::mat4& view_mat, lights& lights)
         bind_light(*light, view_mat);
 }
 
-program_type
-program::get_type()
+render_type
+program::get_render_type()
 {
-    return type_;
+    return render_type_;
 }
