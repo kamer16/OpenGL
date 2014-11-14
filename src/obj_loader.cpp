@@ -340,8 +340,11 @@ obj_loader::load_obj(std::string& file, resource_manager_ptr rm) -> object*
 
         if (!token.compare("v"))
             vertices_.push_back(make_vec3(iss_, "Vertices"));
-        else if (!token.compare("vt"))
-            text_coords_.push_back(make_vec2(iss_, "Text_coord"));
+        else if (!token.compare("vt")) {
+            auto res = make_vec2(iss_, "Text_coord");
+            res.y = 1 - res.y;
+            text_coords_.push_back(res);
+        }
         else if (!token.compare("vn"))
             normals_.push_back(make_vec3(iss_, "Normals"));
         else if (!token.compare("f"))

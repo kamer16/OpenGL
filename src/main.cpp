@@ -30,8 +30,8 @@
 #define SRC_DISS_FRAG ("src/shaders/dissolve.frag")
 #define SRC_BUMP_DISS_VERT ("src/shaders/bump_dissolve.vert")
 #define SRC_BUMP_DISS_FRAG ("src/shaders/bump_dissolve.frag")
-#define SRC_DEFAULT_VERT ("src/shaders/default.vert")
-#define SRC_DEFAULT_FRAG ("src/shaders/default.frag")
+#define SRC_BASIC_VERT ("src/shaders/basic.vert")
+#define SRC_BASIC_FRAG ("src/shaders/basic.frag")
 
 void enableEnv();
 
@@ -82,9 +82,9 @@ int main(int argc, char *argv[])
     program p1(SRC_MAT_VERT, SRC_MAT_FRAG, render_type::material);
     program p2(SRC_COL_VERT, SRC_COL_FRAG, render_type::color);
     program p3(SRC_BUMP_VERT,SRC_BUMP_FRAG, render_type::bump);
-    program p4(SRC_DISS_VERT, SRC_DISS_FRAG, render_type::bump_dissolve);
-    program p5(SRC_BUMP_DISS_VERT, SRC_BUMP_DISS_FRAG, render_type::dissolve);
-    program p6(SRC_DEFAULT_VERT, SRC_DEFAULT_FRAG, render_type::basic);
+    program p4(SRC_DISS_VERT, SRC_DISS_FRAG, render_type::dissolve);
+    program p5(SRC_BUMP_DISS_VERT, SRC_BUMP_DISS_FRAG, render_type::bump_dissolve);
+    program p6(SRC_BASIC_VERT, SRC_BASIC_FRAG, render_type::basic);
     p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p6.init();
     obj_loader loader;
     std::shared_ptr<resource_manager> rm = std::make_shared<resource_manager>();
