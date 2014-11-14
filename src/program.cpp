@@ -3,7 +3,9 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-program::program(const char* vertex_shader, const char* fragment_shader)
+program::program(const char* vertex_shader, const char* fragment_shader,
+                 program_type type)
+    : type_(type)
 {
     load_shaders(vertex_shader, fragment_shader, &program_id_);
 }
@@ -104,4 +106,10 @@ program::bind_lights(const glm::mat4& view_mat, lights& lights)
 {
     for (auto light : lights)
         bind_light(*light, view_mat);
+}
+
+program_type
+program::get_type()
+{
+    return type_;
 }

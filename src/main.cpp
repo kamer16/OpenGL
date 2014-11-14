@@ -20,6 +20,19 @@
 
 #include <iostream>
 
+#define SRC_MAT_VERT ("src/shaders/material.vert")
+#define SRC_MAT_FRAG ("src/shaders/material.frag")
+#define SRC_COL_VERT ("src/shaders/color.vert")
+#define SRC_COL_FRAG ("src/shaders/color.frag")
+#define SRC_BUMP_VERT ("src/shaders/bump.vert")
+#define SRC_BUMP_FRAG ("src/shaders/bump.frag")
+#define SRC_DISS_VERT ("src/shaders/dissolve.vert")
+#define SRC_DISS_FRAG ("src/shaders/dissolve.frag")
+#define SRC_BUMP_DISS_VERT ("src/shaders/bump_dissolve.vert")
+#define SRC_BUMP_DISS_FRAG ("src/shaders/bump_dissolve.frag")
+#define SRC_DEFAULT_VERT ("src/shaders/default.vert")
+#define SRC_DEFAULT_FRAG ("src/shaders/default.frag")
+
 void enableEnv();
 
 void enableEnv()
@@ -66,12 +79,12 @@ int main(int argc, char *argv[])
 
     enableEnv();
 
-    program p1("src/shaders/material.vert", "src/shaders/material.frag");
-    program p2("src/shaders/color.vert", "src/shaders/color.frag");
-    program p3("src/shaders/bump.vert", "src/shaders/bump.frag");
-    program p4("src/shaders/bump_dissolve.vert", "src/shaders/bump_dissolve.frag");
-    program p5("src/shaders/dissolve.vert", "src/shaders/dissolve.frag");
-    program p6("src/shaders/default.vert", "src/shaders/default.frag");
+    program p1(SRC_MAT_VERT, SRC_MAT_FRAG, program_type::material);
+    program p2(SRC_COL_VERT, SRC_COL_FRAG, program_type::color);
+    program p3(SRC_BUMP_VERT,SRC_BUMP_FRAG, program_type::bump);
+    program p4(SRC_DISS_VERT, SRC_DISS_FRAG, program_type::bump_dissolve);
+    program p5(SRC_BUMP_DISS_VERT, SRC_BUMP_DISS_FRAG, program_type::dissolve);
+    program p6(SRC_DEFAULT_VERT, SRC_DEFAULT_VERT, program_type::basic);
     p1.init(); p2.init(); p3.init(); p4.init(); p5.init();
     obj_loader loader;
     std::shared_ptr<resource_manager> rm = std::make_shared<resource_manager>();
