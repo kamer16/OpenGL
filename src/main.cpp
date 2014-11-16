@@ -17,6 +17,7 @@
 #include "resource_manager.hpp" // set_shader_uniforms
 
 #include "obj_loader.hpp"
+#include "g_buffer.hpp"
 
 #include <iostream>
 
@@ -33,9 +34,7 @@
 #define SRC_BASIC_VERT ("src/shaders/basic.vert")
 #define SRC_BASIC_FRAG ("src/shaders/basic.frag")
 
-void enableEnv();
-
-void enableEnv()
+static void enableEnv()
 {
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
@@ -78,6 +77,8 @@ int main(int argc, char *argv[])
         return -1; // or handle the error in a nicer way
 
     enableEnv();
+    g_buffer fb;
+    fb.init(opt.window_width, opt.window_height);
 
     program p1(SRC_MAT_VERT, SRC_MAT_FRAG, render_type::material);
     program p2(SRC_COL_VERT, SRC_COL_FRAG, render_type::color);
@@ -112,13 +113,14 @@ int main(int argc, char *argv[])
     cube->translate(glm::vec3(0, 0, 20));
     scene2.add_object(cube);
 
+
     fps_manager& fps_manager = fps_manager::get_instance();
     while (!glfwWindowShouldClose(window))
     {
-        /* Render here */
         const devices_state &device = devices_state::get_instance(window);
 
-        /* Swap front and back buffers */
+        // Write data to current framebuffer
+        fb.bind_for_writing();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         scene1.update(device);
         scene1.draw(p1);
@@ -130,6 +132,11 @@ int main(int argc, char *argv[])
         // update and draw scene2
         scene2.update(device);
         scene2.draw(p2);
+
+        // Write current framebuffer to screen framebuffer
+        fb.blit(opt.window_width, opt.window_height);
+
+        /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
