@@ -11,6 +11,13 @@ program::program(const char* vertex_shader, const char* fragment_shader,
 }
 
 void
+program::bind_screen_dimension(int width, int height)
+{
+     GLint dims_idx = glGetUniformLocation(program_id_, "screen_size");
+     glUniform2fv(dims_idx, 1, glm::value_ptr(glm::vec2(width, height)));
+}
+
+void
 program::bind_material(material& mat)
 {
     // TODO use unfirorm buffer objects, glBindBufferBase(GL_UNIFORM_BUFFER)
@@ -58,6 +65,24 @@ program::use()
 }
 
 void
+program::bind_dir_light(light& light, const glm::mat4& view_mat)
+{
+    GLint specular_idx = glGetUniformLocation(program_id_, "light.specular");
+    glUniform4fv(specular_idx, 1, glm::value_ptr(light.get_specular()));
+
+    GLint diffuse_idx = glGetUniformLocation(program_id_, "light.diffuse");
+    glUniform4fv(diffuse_idx, 1, glm::value_ptr(light.get_diffuse()));
+
+    using namespace glm;
+    // create directional light
+    GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
+    // When world moves, lights direction moves with it, therefore we multiply
+    // it by a normal matrix.
+    glUniform4fv(light_dir_idx, 1,
+                 value_ptr(normalize(view_mat * light.get_position())));
+}
+
+void
 program::bind_light(light& light, const glm::mat4& view_mat)
 {
     GLint specular_idx = glGetUniformLocation(program_id_, "light.param.specular");
@@ -82,6 +107,12 @@ program::bind_light(light& light, const glm::mat4& view_mat)
     // it by a normal matrix.
     glUniform4fv(light_dir_idx, 1,
                  value_ptr(normalize(view_mat * light.get_position())));
+}
+
+void program::bind_mvp(const glm::mat4&& mvp_mat)
+{
+    GLint mvp_idx = glGetUniformLocation(program_id_, "mvp_mat");
+    glUniformMatrix4fv(mvp_idx, 1, GL_FALSE, glm::value_ptr(mvp_mat));
 }
 
 void

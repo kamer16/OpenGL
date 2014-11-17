@@ -45,9 +45,12 @@ bool g_buffer::init(GLsizei width, GLsizei height)
 
 void g_buffer::bind_for_reading()
 {
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_);
+    // When g_buffer is used for reading we want to write output in default FBO
+    // as its the only way to render data on screen.
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     size_t nb_textures = sizeof (textures_) / sizeof (GLuint);
     for (size_t i = 0; i < nb_textures; ++i) {
+        // Here is where we send fb's data to the shader
         glActiveTexture(GL_TEXTURE5 + i);
         glBindTexture(GL_TEXTURE_2D, textures_[i]);
     }

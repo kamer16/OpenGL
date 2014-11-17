@@ -5,6 +5,24 @@
 scene::scene(float aspect_ratio)
     : camera_(aspect_ratio)
 {
+    quad_xy = make_quad_xy_polygon();
+}
+
+void
+scene::init(std::shared_ptr<resource_manager> rm)
+{
+    rm->load_indexed_polygon(*quad_xy);
+}
+
+void
+scene::draw_lights(program& program)
+{
+    program.use();
+    for (auto light : lights_) {
+        program.bind_dir_light(*light, camera_.get_view_mat());
+        program.bind_mvp(glm::mat4());
+        quad_xy->draw(program);
+    }
 }
 
 void
@@ -17,6 +35,7 @@ scene::draw_geometry(program& program)
                            camera_.get_proj_mat());
         obj->draw_geometry(program);
     }
+    // TODO send material shininess to shader
 }
 
 void
@@ -48,4 +67,9 @@ void
 scene::add_light(light* light)
 {
     lights_.push_back(light);
+}
+
+scene::~scene()
+{
+    delete quad_xy;
 }

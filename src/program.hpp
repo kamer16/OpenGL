@@ -23,9 +23,13 @@ public:
     render_type get_render_type();
     // Loads material data onto shader, and binds its textures.
     void bind_material(material& mat);
+    // Use to bind a single light. Called multiple times in deferred rendering.
+    void bind_dir_light(light& light, const glm::mat4& view_mat);
     void bind_lights(const glm::mat4& view_mat, lights& lights);
+    void bind_mvp(const glm::mat4&& mvp_mat);
     void bind_scene(const glm::mat4& model_mat, const glm::mat4& view_mat,
                     const glm::mat4& proj_mat);
+    void bind_screen_dimension(int width, int height);
     ~program();
 private:
     void bind_light(light& light, const glm::mat4& view_mat);

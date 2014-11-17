@@ -44,6 +44,23 @@ make_coordinate_polygon()
 }
 
 polygon*
+make_quad_xy_polygon()
+{
+    polygon *quad_xy = new polygon(GL_TRIANGLES);
+    auto& indices = quad_xy->get_indices();
+    indices.push_back(0); indices.push_back(1); indices.push_back(2);
+    indices.push_back(2); indices.push_back(0); indices.push_back(3);
+    auto& vertices = quad_xy->get_vertices();
+    using namespace glm;
+    using namespace utility;
+    vertices.push_back(vertex_vn(vec3(-1.0f, -1.0f, 0.0f), vec3(0.5f, 0.0f, 0.0f)));
+    vertices.push_back(vertex_vn(vec3( 1.0f, -1.0f, 0.0f), vec3(0.0f, 0.0f, 0.5f)));
+    vertices.push_back(vertex_vn(vec3( 1.0f,  1.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f)));
+    vertices.push_back(vertex_vn(vec3(-1.0f,  1.0f, 0.0f), vec3(0.5f, 0.5f, 0.5f)));
+    return quad_xy;
+}
+
+polygon*
 make_quad_xz_polygon()
 {
     polygon *quad_xz = new polygon(GL_TRIANGLES);

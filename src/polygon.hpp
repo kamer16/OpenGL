@@ -12,6 +12,7 @@ class polygon;
 
 polygon* make_coordinate_polygon();
 polygon* make_quad_xz_polygon();
+polygon* make_quad_xy_polygon();
 polygon* make_cube_polygon();
 
 // TODO remove inheritance, leave object class for complexe objects
@@ -33,6 +34,7 @@ public:
 private:
     friend polygon* make_coordinate_polygon();
     friend polygon* make_quad_xz_polygon();
+    friend polygon* make_quad_xy_polygon();
     friend polygon* make_cube_polygon();
 
     element_resource resource_;
