@@ -16,6 +16,8 @@ bool g_buffer::init(GLsizei width, GLsizei height)
 
     for (size_t i = 0; i < nb_textures; ++i) {
         glBindTexture(GL_TEXTURE_2D, textures_[i]);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB,
                      GL_FLOAT, NULL);
         glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,
@@ -27,7 +29,7 @@ bool g_buffer::init(GLsizei width, GLsizei height)
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                            GL_TEXTURE_2D, depth_texture_, 0);
      GLenum draw_buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
-         GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+         GL_COLOR_ATTACHMENT2 };
     glDrawBuffers(nb_textures, draw_buffers);
 
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -44,6 +46,11 @@ bool g_buffer::init(GLsizei width, GLsizei height)
 void g_buffer::bind_for_reading()
 {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_);
+    size_t nb_textures = sizeof (textures_) / sizeof (GLuint);
+    for (size_t i = 0; i < nb_textures; ++i) {
+        glActiveTexture(GL_TEXTURE5 + i);
+        glBindTexture(GL_TEXTURE_2D, textures_[i]);
+    }
 }
 
 void g_buffer::bind_for_writing()
@@ -69,7 +76,7 @@ void g_buffer::blit(GLsizei width, GLsizei height)
                       0, 0, width / 2, height / 2,
                       GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-    set_read_buffer(GBUFFER_TEXTURE_TYPE_DIFFUSE);
+    set_read_buffer(GBUFFER_TEXTURE_TYPE_POSITION);
     glBlitFramebuffer(width / 2, height / 2, width, height,
                       width / 2, height / 2, width, height,
                       GL_COLOR_BUFFER_BIT, GL_LINEAR);
