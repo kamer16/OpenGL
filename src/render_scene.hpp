@@ -26,6 +26,8 @@ public:
     // position.
     // Draw each object
     void draw(program& program);
+    // Function used for drawing elments in deferred rendering mode
+    void draw_geometry(program& program);
     // Check for devices inputs, and update camera position
     void update(const devices_state &device);
     void add_object(object *object);

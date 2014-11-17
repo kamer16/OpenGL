@@ -34,6 +34,12 @@
 #define SRC_BASIC_VERT ("src/shaders/basic.vert")
 #define SRC_BASIC_FRAG ("src/shaders/basic.frag")
 
+#define SRC_GEO_VERT ("src/shaders/geometry.vert")
+#define SRC_GEO_FRAG ("src/shaders/geometry.frag")
+
+#define SRC_DIR_LIGHT_VERT ("src/shaders/dir_light.vert")
+#define SRC_DIR_LIGHT_FRAG ("src/shaders/dir_light.frag")
+
 static void enableEnv()
 {
     glEnable(GL_DEPTH_TEST);
@@ -86,7 +92,9 @@ int main(int argc, char *argv[])
     program p4(SRC_DISS_VERT, SRC_DISS_FRAG, render_type::dissolve);
     program p5(SRC_BUMP_DISS_VERT, SRC_BUMP_DISS_FRAG, render_type::bump_dissolve);
     program p6(SRC_BASIC_VERT, SRC_BASIC_FRAG, render_type::basic);
-    p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p6.init();
+    program p7(SRC_GEO_VERT, SRC_GEO_FRAG, render_type::basic);
+    program p8(SRC_DIR_LIGHT_VERT, SRC_DIR_LIGHT_FRAG, render_type::basic);
+    p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p6.init(); p7.init(); p8.init();
     obj_loader loader;
     std::shared_ptr<resource_manager> rm = std::make_shared<resource_manager>();
     object* obj = loader.load_obj(opt.mesh_file, rm);
@@ -123,11 +131,12 @@ int main(int argc, char *argv[])
         fb.bind_for_writing();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         scene1.update(device);
-        scene1.draw(p1);
-        scene1.draw(p3);
-        scene1.draw(p4);
-        scene1.draw(p5);
-        scene1.draw(p6);
+        //scene1.draw(p1);
+        //scene1.draw(p3);
+        //scene1.draw(p4);
+        //scene1.draw(p5);
+        //scene1.draw(p6);
+        scene1.draw_geometry(p7);
 
         // update and draw scene2
         scene2.update(device);

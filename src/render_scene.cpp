@@ -8,6 +8,18 @@ scene::scene(float aspect_ratio)
 }
 
 void
+scene::draw_geometry(program& program)
+{
+    program.use();
+    for (auto obj : objects_) {
+        const glm::mat4& model_mat = obj->get_model_mat();
+        program.bind_scene(model_mat, camera_.get_view_mat(),
+                           camera_.get_proj_mat());
+        obj->draw_geometry(program);
+    }
+}
+
+void
 scene::draw(program& program)
 {
     program.use();

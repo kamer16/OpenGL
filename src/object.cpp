@@ -50,6 +50,16 @@ object::scale(const glm::vec3& vec)
 }
 
 void
+object::draw_geometry(program& program)
+{
+    for (auto mat : materials_) {
+        if (mat->get_render_type() == program.get_render_type()) {
+            mat->draw();
+        }
+    }
+}
+
+void
 object::draw(program& program)
 {
     for (auto mat : materials_) {
