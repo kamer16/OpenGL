@@ -35,8 +35,11 @@ texture_binder::set_shader_uniforms(GLuint program_id)
     GLint loc6 = glGetUniformLocation(program_id, "map_normal_cam");
     glUniform1i(loc6, 6);
 
-    GLint loc7 = glGetUniformLocation(program_id, "map_text_coord");
+    GLint loc7 = glGetUniformLocation(program_id, "map_diffuse");
     glUniform1i(loc7, 7);
+
+    GLint loc8 = glGetUniformLocation(program_id, "map_specular");
+    glUniform1i(loc8, 8);
 }
 
 void

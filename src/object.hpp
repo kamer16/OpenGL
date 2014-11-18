@@ -31,7 +31,6 @@ public:
     void rotate(float degrees, const glm::vec3& dir);
     virtual void draw(program& program);
     // Function used to draw only geometry in deferred rendering
-    void draw_geometry(program& program);
     void set_model_mat(glm::mat4& model_mat);
     const glm::mat4& get_model_mat();
     void add_material(material* mat);
