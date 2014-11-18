@@ -21,22 +21,20 @@
 
 #include <iostream>
 
-#define SRC_MAT_VERT ("src/shaders/material.vert")
-#define SRC_MAT_FRAG ("src/shaders/material.frag")
 #define SRC_COL_VERT ("src/shaders/color.vert")
 #define SRC_COL_FRAG ("src/shaders/color.frag")
+
+#define SRC_MAT_VERT ("src/shaders/material.vert")
+#define SRC_MAT_FRAG ("src/shaders/material.frag")
 #define SRC_BUMP_VERT ("src/shaders/bump.vert")
 #define SRC_BUMP_FRAG ("src/shaders/bump.frag")
 #define SRC_DISS_VERT ("src/shaders/dissolve.vert")
 #define SRC_DISS_FRAG ("src/shaders/dissolve.frag")
 #define SRC_BUMP_DISS_VERT ("src/shaders/bump_dissolve.vert")
 #define SRC_BUMP_DISS_FRAG ("src/shaders/bump_dissolve.frag")
-#define SRC_BASIC_VERT ("src/shaders/basic.vert")
-#define SRC_BASIC_FRAG ("src/shaders/basic.frag")
 
 #define SRC_GEO_VERT ("src/shaders/geometry.vert")
 #define SRC_GEO_FRAG ("src/shaders/geometry.frag")
-
 #define SRC_DIR_LIGHT_VERT ("src/shaders/dir_light.vert")
 #define SRC_DIR_LIGHT_FRAG ("src/shaders/dir_light.frag")
 
@@ -91,10 +89,9 @@ int main(int argc, char *argv[])
     program p3(SRC_BUMP_VERT,SRC_BUMP_FRAG, render_type::bump);
     program p4(SRC_DISS_VERT, SRC_DISS_FRAG, render_type::dissolve);
     program p5(SRC_BUMP_DISS_VERT, SRC_BUMP_DISS_FRAG, render_type::bump_dissolve);
-    program p6(SRC_BASIC_VERT, SRC_BASIC_FRAG, render_type::basic);
     program p7(SRC_GEO_VERT, SRC_GEO_FRAG, render_type::basic);
     program p8(SRC_DIR_LIGHT_VERT, SRC_DIR_LIGHT_FRAG, render_type::basic);
-    p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p6.init(); p7.init(); p8.init();
+    p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p7.init(); p8.init();
     p8.bind_screen_dimension(opt.window_width, opt.window_height);
     obj_loader loader;
     std::shared_ptr<resource_manager> rm = std::make_shared<resource_manager>();
@@ -143,6 +140,8 @@ int main(int argc, char *argv[])
         scene1.draw_geometry(p3);
         // Draw bump with dissolve maps
         scene1.draw_geometry(p5);
+        // Draw material objects
+        scene1.draw_geometry(p1);
         glDepthMask(GL_FALSE);
         glDisable(GL_DEPTH_TEST);
 
