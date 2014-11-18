@@ -137,7 +137,12 @@ int main(int argc, char *argv[])
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
         scene1.update(device);
+        // Draw basic textures
         scene1.draw_geometry(p7);
+        // Draw bump maps
+        scene1.draw_geometry(p3);
+        // Draw bump with dissolve maps
+        scene1.draw_geometry(p5);
         glDepthMask(GL_FALSE);
         glDisable(GL_DEPTH_TEST);
 
@@ -151,6 +156,7 @@ int main(int argc, char *argv[])
 
         // update and draw scene2
         scene2.update(device);
+        // Draw basic
         scene2.draw(p2);
 
         /* Swap front and back buffers */
