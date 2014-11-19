@@ -78,8 +78,8 @@ obj_loader::add_indices()
         s_vertex_idx v = { 1, 1, 1 };
         get_vertex(vertex, v);
         indices_.push_back(v);
-        indices_.push_back(v_idx[0]);
         indices_.push_back(v_idx[2]);
+        indices_.push_back(v_idx[0]);
     }
 
     iss_ >> vertex;
@@ -231,6 +231,7 @@ obj_loader::print_triangles(container3& vertices, container2& text_coords,
     }
 }
 
+#include "utility.hpp"
 void
 obj_loader::compute_tangents(material_vnta& material)
 {
@@ -264,12 +265,18 @@ obj_loader::compute_tangents(material_vnta& material)
         float t1 = w2.y - w1.y;
         float t2 = w3.y - w1.y;
 
-        float r = 1.0f / (s1 * t2 - s2 * t1);
+        float r;
+        float epsilon = 0.0001f;
+        if ((fabs(s1) < epsilon || fabs(t2) < epsilon) &&
+            (fabs(s2) < epsilon || fabs(t1) < epsilon)) {
+            r = 1.0f;
+        }
+        else
+            r = 1.0f / (s1 * t2 - s2 * t1);
         glm::vec3 sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r,
                        (t2 * z1 - t1 * z2) * r);
         glm::vec3 tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,
                        (s1 * z2 - s2 * z1) * r);
-
         tan1[i1] += sdir;
         tan1[i2] += sdir;
         tan1[i3] += sdir;
@@ -281,15 +288,21 @@ obj_loader::compute_tangents(material_vnta& material)
 
     for (unsigned long a = 0; a < vertices.size(); ++a)
     {
+        float epsilon = 0.0001f;
         const glm::vec3& n = vertices[a].n;
         const glm::vec3& tan = tan1[a];
 
         using namespace glm;
         // Gram-Schmidt orthogonalize
-        vertices[a].a = vec4(normalize(tan - n * dot(n, tan)), 0);
+        if (fabs(tan.x) + fabs(tan.y) + fabs(tan.z) < epsilon) {
+            vertices[a].a = glm::vec4(epsilon, epsilon, epsilon, 0);
+            }
+        else {
+            vertices[a].a = vec4(normalize(tan - n * dot(n, tan)), 0);
+            // Calculate handedness
+            vertices[a].a.w = (dot(cross(n, tan), tan2[a]) < 0.0f) ? -1.0f : 1.0f;
+        }
 
-        // Calculate handedness
-        vertices[a].a.w = (dot(cross(n, tan), tan2[a]) < 0.0f) ? -1.0f : 1.0f;
     }
 }
 
