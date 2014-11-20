@@ -78,8 +78,8 @@ obj_loader::add_indices()
         s_vertex_idx v = { 1, 1, 1 };
         get_vertex(vertex, v);
         indices_.push_back(v);
-        indices_.push_back(v_idx[2]);
         indices_.push_back(v_idx[0]);
+        indices_.push_back(v_idx[2]);
     }
 
     iss_ >> vertex;

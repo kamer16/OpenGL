@@ -16,12 +16,7 @@ uniform light_source light;
 uniform float material_shininess;
 uniform vec2 screen_size;
 
-in vec3 normal_cam;
-in vec3 reflection_cam;
-in vec3 light_dir_cam;
-
 out vec4 out_color;
-in vec3 eye_cam;
 
 void main()
 {
