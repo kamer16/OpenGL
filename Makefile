@@ -18,8 +18,10 @@ run:$(TARGET)
 
 _build/%.o: src/%.cpp
 	@ mkdir -p _build
+	@ $(CXX) -M $(CPPFLAGS) $(CXXFLAGS) $< -o _build/$*.d
+	@ cat _build/$*.d | sed -e 's/[\\ ]/\n/g' | \
+	    sed -e '/^$$/d' -e '/\.o:[ \t]*$$/d' > _build/$*.tags
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
-	@ $(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< -o _build/$*.d
 	@mv -f _build/$*.d _build/$*.d.tmp
 	@sed -e 's|.*:|_build/$*.o:|' < _build/$*.d.tmp > _build/$*.d
 	@sed -e 's/.*://' -e 's/\\$$//' < _build/$*.d.tmp | fmt -1 | \
@@ -28,5 +30,8 @@ _build/%.o: src/%.cpp
 
 clean:
 	$(RM) -r _build $(TARGET)
+
+tag:_build
+	cat _build/*.tags | ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q
 
 -include $(OBJS:.o=.d)
