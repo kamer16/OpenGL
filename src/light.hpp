@@ -62,9 +62,13 @@ public:
     float get_spot_cutoff() { return spot_cutoff_; }
     void set_spot_exponent(float att) { spot_exponent_ = att; }
     float get_spot_exponent() { return spot_exponent_; }
+    void set_spot_dir(glm::vec3 dir) { spot_dir_ = dir; }
+    glm::vec3 get_spot_dir() { return spot_dir_; }
 private:
+    // Spot lights lighting direction
+    glm::vec3 spot_dir_ = glm::vec3(0, 0, -1);
     // Degree value between 0 and 90
-    float spot_cutoff_ = 20;
+    float spot_cutoff_ = 40;
     // Exponent between 0 and 128
     float spot_exponent_ = 2;
 };

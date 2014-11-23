@@ -70,6 +70,12 @@ void program::bind_mvp(const glm::mat4&& mvp_mat)
     glUniformMatrix4fv(mvp_idx, 1, GL_FALSE, glm::value_ptr(mvp_mat));
 }
 
+void program::bind_mvp(const glm::mat4& mvp_mat)
+{
+    GLint mvp_idx = glGetUniformLocation(program_id_, "mvp_mat");
+    glUniformMatrix4fv(mvp_idx, 1, GL_FALSE, glm::value_ptr(mvp_mat));
+}
+
 void
 program::bind_scene(const glm::mat4& model_mat,
                     const glm::mat4& view_mat,
@@ -152,4 +158,9 @@ program::bind_light(spot_light& light, const glm::mat4& view_mat)
 
     GLint spot_cut_idx = glGetUniformLocation(program_id_, "light.spot_cut");
     glUniform1f(spot_cut_idx, light.get_spot_cutoff());
+
+    GLint spot_dir_idx = glGetUniformLocation(program_id_, "light.spot_dir");
+    using namespace glm;
+    vec4 spot_dir = vec4(light.get_spot_dir(), 0);
+    glUniform3fv(spot_dir_idx, 1, value_ptr(normalize(view_mat * spot_dir)));
 }

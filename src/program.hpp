@@ -30,6 +30,7 @@ public:
     template <class light_t>
     void bind_light(light_t& light, const glm::mat4& view_mat);
     void bind_mvp(const glm::mat4&& mvp_mat);
+    void bind_mvp(const glm::mat4& mvp_mat);
     void bind_scene(const glm::mat4& model_mat, const glm::mat4& view_mat,
                     const glm::mat4& proj_mat);
     void bind_screen_dimension(int width, int height);

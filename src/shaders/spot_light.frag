@@ -8,6 +8,7 @@ struct light_source {
     float const_att;
     float lin_att;
     float quad_att;
+    vec3 spot_dir;
     float spot_exp;
     float spot_cut;
 };
@@ -25,7 +26,7 @@ out vec4 out_color;
 
 void main()
 {
-    vec3 spot_dir_cam = vec3(0, 0, -1);
+    vec3 spot_dir_cam = light.spot_dir;
 
     // Get screen space texture coordinates
     vec2 text_coord = gl_FragCoord.xy / screen_size;
@@ -36,7 +37,6 @@ void main()
     vec4 Ks = texture(map_specular, text_coord);
 
     vec3 light_pos_cam = vec3(light.position);
-    light_pos_cam = vec3(0, 0, 0);
     vec3 light_dir_cam = normalize(light_pos_cam - pos_cam);
 
     float n_dot_l = max(dot(normal_cam, light_dir_cam), 0);
