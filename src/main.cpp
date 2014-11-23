@@ -39,8 +39,8 @@
 #define SRC_DIR_LIGHT_FRAG ("src/shaders/dir_light.frag")
 #define SRC_POS_LIGHT_VERT ("src/shaders/pos_light.vert")
 #define SRC_POS_LIGHT_FRAG ("src/shaders/pos_light.frag")
-#define SRC_CONE_LIGHT_VERT ("src/shaders/spot_light.vert")
-#define SRC_CONE_LIGHT_FRAG ("src/shaders/spot_light.frag")
+#define SRC_SPOT_LIGHT_VERT ("src/shaders/spot_light.vert")
+#define SRC_SPOT_LIGHT_FRAG ("src/shaders/spot_light.frag")
 
 static void enableEnv()
 {
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
     program p7(SRC_GEO_VERT, SRC_GEO_FRAG, render_type::basic);
     program p8(SRC_DIR_LIGHT_VERT, SRC_DIR_LIGHT_FRAG, render_type::basic);
     program p9(SRC_POS_LIGHT_VERT, SRC_POS_LIGHT_FRAG, render_type::basic);
-    program p10(SRC_CONE_LIGHT_VERT, SRC_CONE_LIGHT_FRAG, render_type::basic);
+    program p10(SRC_SPOT_LIGHT_VERT, SRC_SPOT_LIGHT_FRAG, render_type::basic);
     p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p7.init(); p8.init();
     p9.init(); p10.init();
     p8.bind_screen_dimension(opt.window_width, opt.window_height);
@@ -124,17 +124,9 @@ int main(int argc, char *argv[])
     polygon* coord = make_coordinate_polygon();
     rm->load_indexed_polygon(*coord);
     polygon* quad = make_quad_xz_polygon();
-    polygon* sphere = make_sphere_polygon(20, 20, 40);
-    polygon* sphere2 = make_sphere_polygon(10, 10, 1);
-    sphere2->translate(glm::vec3(80, 0, 0));
-    sphere2->scale(glm::vec3(40, 40, 40));
     rm->load_indexed_polygon(*quad);
-    rm->load_indexed_polygon(*sphere);
-    rm->load_indexed_polygon(*sphere2);
     scene2.add_object(coord);
-    //scene2.add_object(quad);
-    scene2.add_object(sphere);
-    scene2.add_object(sphere2);
+    scene2.add_object(quad);
     polygon* cube = make_cube_polygon();
     rm->load_indexed_polygon(*cube);
     cube->scale(glm::vec3(10, 10, 10));
@@ -164,7 +156,6 @@ int main(int argc, char *argv[])
         scene1.draw_geometry(p1);
         glDepthMask(GL_FALSE);
         glDisable(GL_DEPTH_TEST);
-
 
         glEnable(GL_BLEND);
         glBlendEquation(GL_FUNC_ADD);

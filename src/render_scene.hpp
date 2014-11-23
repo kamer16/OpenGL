@@ -60,6 +60,7 @@ private:
 
     objects objects_;
     polygon *quad_xy;
+    polygon *sphere;
     dir_lights dir_lights_;
     pos_lights pos_lights_;
     spot_lights spot_lights_;

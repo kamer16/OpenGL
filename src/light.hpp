@@ -18,7 +18,7 @@ public:
     void set_diffuse(glm::vec4& diffuse) { diffuse_ = diffuse; }
     void set_specular(glm::vec4& specular) { specular_ = specular; }
     void set_position(glm::vec4& position) { position_ = position; }
-private:
+protected:
     glm::vec4 ambient_;
     glm::vec4 diffuse_;
     glm::vec4 specular_;
@@ -46,10 +46,11 @@ public:
     float get_linear_att() { return linear_att_; }
     void set_quadratic_att(float att) { quadratic_att_ = att; }
     float get_quadratic_att() { return quadratic_att_; }
+    float get_scale();
 private:
     float const_att_ = 1.0f;
-    float linear_att_ = 0.0001f;
-    float quadratic_att_ = 0.0001f;
+    float linear_att_ = 0.001f;
+    float quadratic_att_ = 0.001f;
 };
 
 class spot_light : public pos_light
