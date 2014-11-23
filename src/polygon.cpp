@@ -49,7 +49,7 @@ make_quad_xy_polygon()
     polygon *quad_xy = new polygon(GL_TRIANGLES);
     auto& indices = quad_xy->get_indices();
     indices.push_back(0); indices.push_back(1); indices.push_back(2);
-    indices.push_back(2); indices.push_back(0); indices.push_back(3);
+    indices.push_back(2); indices.push_back(3); indices.push_back(0);
     auto& vertices = quad_xy->get_vertices();
     using namespace glm;
     using namespace utility;
@@ -65,8 +65,8 @@ make_quad_xz_polygon()
 {
     polygon *quad_xz = new polygon(GL_TRIANGLES);
     auto& indices = quad_xz->get_indices();
-    indices.push_back(0); indices.push_back(1); indices.push_back(2);
-    indices.push_back(2); indices.push_back(0); indices.push_back(3);
+    indices.push_back(2); indices.push_back(1); indices.push_back(0);
+    indices.push_back(0); indices.push_back(3); indices.push_back(2);
     auto& vertices = quad_xz->get_vertices();
     using namespace glm;
     using namespace utility;
@@ -89,10 +89,10 @@ make_cube_polygon()
     indices.push_back(4); indices.push_back(6); indices.push_back(7);
     indices.push_back(0); indices.push_back(7); indices.push_back(3);
     indices.push_back(0); indices.push_back(4); indices.push_back(7);
-    indices.push_back(1); indices.push_back(6); indices.push_back(2);
-    indices.push_back(1); indices.push_back(5); indices.push_back(6);
-    indices.push_back(0); indices.push_back(5); indices.push_back(1);
-    indices.push_back(0); indices.push_back(4); indices.push_back(5);
+    indices.push_back(1); indices.push_back(2); indices.push_back(6);
+    indices.push_back(1); indices.push_back(6); indices.push_back(5);
+    indices.push_back(0); indices.push_back(1); indices.push_back(5);
+    indices.push_back(0); indices.push_back(5); indices.push_back(4);
     indices.push_back(3); indices.push_back(7); indices.push_back(6);
     indices.push_back(3); indices.push_back(6); indices.push_back(2);
 
