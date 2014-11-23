@@ -96,3 +96,60 @@ program::get_render_type()
 {
     return render_type_;
 }
+
+void
+program::bind_light(light& light)
+{
+    GLint specular_idx = glGetUniformLocation(program_id_, "light.specular");
+    glUniform4fv(specular_idx, 1, glm::value_ptr(light.get_specular()));
+
+    GLint diffuse_idx = glGetUniformLocation(program_id_, "light.diffuse");
+    glUniform4fv(diffuse_idx, 1, glm::value_ptr(light.get_diffuse()));
+}
+
+
+template <>
+void
+program::bind_light(dir_light& light, const glm::mat4& view_mat)
+{
+    bind_light(light);
+    using namespace glm;
+    // create directional light
+    GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
+    // When world moves, lights direction moves with it, therefore we multiply
+    // it by a normal matrix.
+    glUniform4fv(light_dir_idx, 1,
+                 value_ptr(normalize(view_mat * light.get_position())));
+}
+
+template <>
+void
+program::bind_light(pos_light& light, const glm::mat4& view_mat)
+{
+    bind_light(light);
+    using namespace glm;
+    GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
+    glUniform4fv(light_dir_idx, 1, value_ptr(view_mat * light.get_position()));
+
+    GLint const_att_idx = glGetUniformLocation(program_id_, "light.const_att");
+    glUniform1f(const_att_idx, light.get_const_att());
+
+    GLint lin_att_idx = glGetUniformLocation(program_id_, "light.lin_att");
+    glUniform1f(lin_att_idx, light.get_linear_att());
+
+    GLint quad_att_idx = glGetUniformLocation(program_id_, "light.quad_att");
+    glUniform1f(quad_att_idx, light.get_quadratic_att());
+}
+
+template <>
+void
+program::bind_light(spot_light& light, const glm::mat4& view_mat)
+{
+    bind_light(static_cast<pos_light&>(light), view_mat);
+
+    GLint spot_exp_idx = glGetUniformLocation(program_id_, "light.spot_exp");
+    glUniform1f(spot_exp_idx, light.get_spot_exponent());
+
+    GLint spot_cut_idx = glGetUniformLocation(program_id_, "light.spot_cut");
+    glUniform1f(spot_cut_idx, light.get_spot_cutoff());
+}

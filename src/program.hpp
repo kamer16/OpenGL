@@ -35,6 +35,8 @@ public:
     void bind_screen_dimension(int width, int height);
     ~program();
 private:
+    // Base function to load lights
+    void bind_light(light& light);
     GLuint program_id_;
     render_type render_type_;
     texture_binder texture_binder_;
@@ -46,29 +48,5 @@ private:
         GLint shininess;
     } material_location_;
 };
-
-template <class light_t>
-void
-program::bind_light(light_t& light, const glm::mat4& view_mat)
-{
-    GLint specular_idx = glGetUniformLocation(program_id_, "light.specular");
-    glUniform4fv(specular_idx, 1, glm::value_ptr(light.get_specular()));
-
-    GLint diffuse_idx = glGetUniformLocation(program_id_, "light.diffuse");
-    glUniform4fv(diffuse_idx, 1, glm::value_ptr(light.get_diffuse()));
-
-    using namespace glm;
-    // create directional light
-    GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
-    // When world moves, lights direction moves with it, therefore we multiply
-    // it by a normal matrix.
-    if (light_t::is_dir)
-    glUniform4fv(light_dir_idx, 1,
-                 value_ptr(normalize(view_mat * light.get_position())));
-    else {
-        glUniform4fv(light_dir_idx, 1, value_ptr(view_mat * light.get_position()));
-    }
-}
-
 
 #endif // PROGRAM_HPP

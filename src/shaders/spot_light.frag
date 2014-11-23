@@ -5,6 +5,11 @@ struct light_source {
     vec4 position;
     vec4 diffuse;
     vec4 specular;
+    float const_att;
+    float lin_att;
+    float quad_att;
+    float spot_exp;
+    float spot_cut;
 };
 
 uniform sampler2D map_pos_cam;
@@ -20,9 +25,7 @@ out vec4 out_color;
 
 void main()
 {
-    vec3 cone_dir_cam = vec3(0, 0, -1);
-    float cone_exponent = 2;
-    float cone_cutoff = 20;
+    vec3 spot_dir_cam = vec3(0, 0, -1);
 
     // Get screen space texture coordinates
     vec2 text_coord = gl_FragCoord.xy / screen_size;
@@ -38,13 +41,14 @@ void main()
 
     float n_dot_l = max(dot(normal_cam, light_dir_cam), 0);
     float dist = length(pos_cam - light_pos_cam);
-    float clamp_cosine = max(0, dot(-light_dir_cam, cone_dir_cam));
+    float clamp_cosine = max(0, dot(-light_dir_cam, spot_dir_cam));
     float attenuation;
-    if (clamp_cosine < cos(cone_cutoff * 3.14159 / 180))
+    if (clamp_cosine < cos(light.spot_cut * 3.14159 / 180))
         attenuation = 0;
     else {
-        attenuation = 1 / (2 + 1 * dist + 0.5 * dist * dist);
-        attenuation *= pow(clamp_cosine, cone_exponent);
+        attenuation = 1 / (light.const_att + light.lin_att * dist +
+                           light.quad_att * dist * dist);
+        attenuation *= pow(clamp_cosine, light.spot_exp);
     }
 
     out_color = n_dot_l * light.diffuse * Kd * attenuation;

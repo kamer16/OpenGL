@@ -5,6 +5,9 @@ struct light_source {
     vec4 position;
     vec4 diffuse;
     vec4 specular;
+    float const_att;
+    float lin_att;
+    float quad_att;
 };
 
 uniform sampler2D map_pos_cam;
@@ -33,14 +36,15 @@ void main()
 
     float n_dot_l = max(dot(normal_cam, light_dir_cam), 0);
     float dist = length(pos_cam - light_pos_cam);
-    float attenuation = 1 + 0.0001 * dist + 0.00001 * dist * dist;
+    float attenuation = 1 / (light.const_att + light.lin_att * dist +
+                             light.quad_att * dist * dist);
 
-    out_color = n_dot_l * light.diffuse * Kd / attenuation;
+    out_color = n_dot_l * light.diffuse * Kd * attenuation;
     vec3 reflection_cam = reflect(-light_dir_cam, normal_cam);
     vec3 eye_vector_cam = -normalize(pos_cam);
 
     if (n_dot_l > 0) {
         float e_dot_r = max(dot(eye_vector_cam, normalize(reflection_cam)), 0);
-        out_color += light.specular * Ks * pow(e_dot_r, 60) / attenuation;
+        out_color += light.specular * Ks * pow(e_dot_r, 60) * attenuation;
     }
 }

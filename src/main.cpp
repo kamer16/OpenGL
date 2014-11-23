@@ -39,8 +39,8 @@
 #define SRC_DIR_LIGHT_FRAG ("src/shaders/dir_light.frag")
 #define SRC_POS_LIGHT_VERT ("src/shaders/pos_light.vert")
 #define SRC_POS_LIGHT_FRAG ("src/shaders/pos_light.frag")
-#define SRC_CONE_LIGHT_VERT ("src/shaders/cone_light.vert")
-#define SRC_CONE_LIGHT_FRAG ("src/shaders/cone_light.frag")
+#define SRC_CONE_LIGHT_VERT ("src/shaders/spot_light.vert")
+#define SRC_CONE_LIGHT_FRAG ("src/shaders/spot_light.frag")
 
 static void enableEnv()
 {
@@ -114,7 +114,9 @@ int main(int argc, char *argv[])
     /* Loop until the user closes the window */
     scene scene1(aspect_ratio);
     scene1.init(rm);
-    scene1.add_light(light_cone_default_new());
+    scene1.add_light(light_spot_default_new());
+    scene1.add_light(light_pos_default_new());
+    scene1.add_light(light_dir_default_new());
     scene1.add_object(obj);
     scene scene2(aspect_ratio);
     scene2.init(rm);
@@ -162,7 +164,7 @@ int main(int argc, char *argv[])
         glClear(GL_COLOR_BUFFER_BIT);
         scene1.draw_dir_lights(p8);
         scene1.draw_pos_lights(p9);
-        scene1.draw_cone_lights(p10);
+        scene1.draw_spot_lights(p10);
 
         // update and draw scene2
         scene2.update(device);

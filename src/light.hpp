@@ -25,32 +25,53 @@ private:
     glm::vec4 position_;
 };
 
-class cone_light : public light
+class dir_light : public light
 {
 public:
-    static const bool is_dir = 0;
+    static const bool is_dir = 1;
     static const bool is_pos = 0;
-    static const bool is_cone = 1;
+    static const bool is_spot = 0;
 };
+
 
 class pos_light : public light
 {
 public:
     static const bool is_dir = 0;
     static const bool is_pos = 1;
-    static const bool is_cone = 0;
+    static const bool is_spot = 0;
+    void set_const_att(float att) { const_att_ = att; }
+    float get_const_att() { return const_att_; }
+    void set_linear_att(float att) { linear_att_ = att; }
+    float get_linear_att() { return linear_att_; }
+    void set_quadratic_att(float att) { quadratic_att_ = att; }
+    float get_quadratic_att() { return quadratic_att_; }
+private:
+    float const_att_ = 1.0f;
+    float linear_att_ = 0.0001f;
+    float quadratic_att_ = 0.0001f;
 };
 
-class dir_light : public light
+class spot_light : public pos_light
 {
 public:
-    static const bool is_dir = 1;
+    static const bool is_dir = 0;
     static const bool is_pos = 0;
-    static const bool is_cone = 0;
+    static const bool is_spot = 1;
+    void set_spot_cutoff(float att) { spot_cutoff_ = att; }
+    float get_spot_cutoff() { return spot_cutoff_; }
+    void set_spot_exponent(float att) { spot_exponent_ = att; }
+    float get_spot_exponent() { return spot_exponent_; }
+private:
+    // Degree value between 0 and 90
+    float spot_cutoff_ = 20;
+    // Exponent between 0 and 128
+    float spot_exponent_ = 2;
 };
+
 
 dir_light* light_dir_default_new();
 pos_light* light_pos_default_new();
-cone_light* light_cone_default_new();
+spot_light* light_spot_default_new();
 
 #endif // LIGHT_HPP
