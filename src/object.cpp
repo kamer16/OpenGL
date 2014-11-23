@@ -46,7 +46,7 @@ object::rotate(float degrees, const glm::vec3& dir)
 void
 object::scale(const glm::vec3& vec)
 {
-    model_mat_ = glm::scale(vec);
+    model_mat_ = glm::scale(model_mat_, vec);
 }
 
 void

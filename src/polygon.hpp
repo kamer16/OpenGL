@@ -14,6 +14,7 @@ polygon* make_coordinate_polygon();
 polygon* make_quad_xz_polygon();
 polygon* make_quad_xy_polygon();
 polygon* make_cube_polygon();
+polygon* make_sphere_polygon(unsigned stacks, unsigned slices, float radius = 1);
 
 // TODO remove inheritance, leave object class for complexe objects
 class polygon : public object

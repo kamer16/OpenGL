@@ -108,6 +108,47 @@ make_cube_polygon()
     return cube;
 }
 
+polygon*
+make_sphere_polygon(unsigned stacks, unsigned slices, float radius)
+{
+    polygon *sphere = new polygon(GL_TRIANGLES);
+    auto& indices = sphere->get_indices();
+    auto& vertices = sphere->get_vertices();
+    // Calc The Vertices
+    for (unsigned i = 0; i <= stacks; ++i) {
+        float V  = i / static_cast<float>(stacks);
+        float phi = V * glm::pi<float>();
+
+        // Loop Through slices
+        for (unsigned j = 0; j <= slices; ++j) {
+
+            float U = j / static_cast<float>(slices);
+            float theta = U * (glm::pi<float>() * 2);
+
+            // Calc The Vertex Positions
+            float x = cosf(theta) * sinf(phi);
+            float y = cosf(phi);
+            float z = sinf(theta) * sinf(phi);
+
+            // Push Back Vertex Data
+            vertices.push_back ({ glm::vec3 (x, y, z) * radius,
+                                glm::normalize(glm::vec3(x, y, z)) });
+        }
+    }
+
+    // Calc The Index Positions
+    for (unsigned i = 0; i < slices * stacks + slices; ++i) {
+        indices.push_back(i);
+        indices.push_back(i + slices + 1);
+        indices.push_back(i + slices);
+
+        indices.push_back(i + slices + 1);
+        indices.push_back(i);
+        indices.push_back(i + 1);
+    }
+    return sphere;
+}
+
 auto
 polygon::get_vertices() -> container_vn&
 {
