@@ -25,7 +25,31 @@ private:
     glm::vec4 position_;
 };
 
-light* light_dir_default_new();
-light* light_pos_default_new();
+class cone_light : public light
+{
+public:
+    static const bool is_dir = 0;
+    static const bool is_pos = 0;
+    static const bool is_cone = 1;
+};
+
+class pos_light : public light
+{
+public:
+    static const bool is_dir = 0;
+    static const bool is_pos = 1;
+    static const bool is_cone = 0;
+};
+
+class dir_light : public light
+{
+public:
+    static const bool is_dir = 1;
+    static const bool is_pos = 0;
+    static const bool is_cone = 0;
+};
+
+dir_light* light_dir_default_new();
+pos_light* light_pos_default_new();
 
 #endif // LIGHT_HPP

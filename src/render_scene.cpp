@@ -15,11 +15,22 @@ scene::init(std::shared_ptr<resource_manager> rm)
 }
 
 void
-scene::draw_lights(program& program)
+scene::draw_pos_lights(program& program)
 {
     program.use();
-    for (auto light : lights_) {
-        program.bind_dir_light(*light, camera_.get_view_mat());
+    for (auto light : pos_lights_) {
+        program.bind_light(*light, camera_.get_view_mat());
+        program.bind_mvp(glm::mat4());
+        quad_xy->draw(program);
+    }
+}
+
+void
+scene::draw_dir_lights(program& program)
+{
+    program.use();
+    for (auto light : dir_lights_) {
+        program.bind_light(*light, camera_.get_view_mat());
         program.bind_mvp(glm::mat4());
         quad_xy->draw(program);
     }
@@ -42,7 +53,6 @@ void
 scene::draw(program& program)
 {
     program.use();
-    program.bind_lights(camera_.get_view_mat(), lights_);
     for (auto obj : objects_) {
         const glm::mat4& model_mat = obj->get_model_mat();
         program.bind_scene(model_mat, camera_.get_view_mat(),
@@ -61,12 +71,6 @@ void
 scene::add_object(object* object)
 {
     objects_.push_back(object);
-}
-
-void
-scene::add_light(light* light)
-{
-    lights_.push_back(light);
 }
 
 scene::~scene()

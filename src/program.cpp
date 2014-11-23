@@ -1,8 +1,6 @@
 #include "program.hpp"
 #include "shader.hpp"
 
-#include <glm/gtc/type_ptr.hpp>
-
 program::program(const char* vertex_shader, const char* fragment_shader,
                  render_type type)
     : render_type_(type)
@@ -13,8 +11,9 @@ program::program(const char* vertex_shader, const char* fragment_shader,
 void
 program::bind_screen_dimension(int width, int height)
 {
-     GLint dims_idx = glGetUniformLocation(program_id_, "screen_size");
-     glUniform2fv(dims_idx, 1, glm::value_ptr(glm::vec2(width, height)));
+    use();
+    GLint dims_idx = glGetUniformLocation(program_id_, "screen_size");
+    glUniform2fv(dims_idx, 1, glm::value_ptr(glm::vec2(width, height)));
 }
 
 void
@@ -45,7 +44,7 @@ program::init()
                                                        "material.specular");
     material_location_.shininess = glGetUniformLocation(program_id_,
                                                         "material.shininess");
-    glUseProgram(program_id_);
+    use();
     texture_binder_.set_shader_uniforms(program_id_);
 }
 
@@ -64,50 +63,6 @@ program::use()
     }
 }
 
-void
-program::bind_dir_light(light& light, const glm::mat4& view_mat)
-{
-    GLint specular_idx = glGetUniformLocation(program_id_, "light.specular");
-    glUniform4fv(specular_idx, 1, glm::value_ptr(light.get_specular()));
-
-    GLint diffuse_idx = glGetUniformLocation(program_id_, "light.diffuse");
-    glUniform4fv(diffuse_idx, 1, glm::value_ptr(light.get_diffuse()));
-
-    using namespace glm;
-    // create directional light
-    GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
-    // When world moves, lights direction moves with it, therefore we multiply
-    // it by a normal matrix.
-    glUniform4fv(light_dir_idx, 1,
-                 value_ptr(normalize(view_mat * light.get_position())));
-}
-
-void
-program::bind_light(light& light, const glm::mat4& view_mat)
-{
-    GLint specular_idx = glGetUniformLocation(program_id_, "light.param.specular");
-    glUniform4fv(specular_idx, 1, glm::value_ptr(light.get_specular()));
-
-    GLint diffuse_idx = glGetUniformLocation(program_id_, "light.param.diffuse");
-    glUniform4fv(diffuse_idx, 1, glm::value_ptr(light.get_diffuse()));
-
-    GLint ambient_idx = glGetUniformLocation(program_id_, "light.param.ambient");
-    glUniform4fv(ambient_idx, 1, glm::value_ptr(light.get_ambient()));
-
-    // TODO, currently setting default global light here
-    glm::vec4 g_ambient(0.2f, 0.2f, 0.2f, 1.0f);
-    GLint g_ambient_idx = glGetUniformLocation(program_id_, "global_ambient");
-    glUniform4fv(g_ambient_idx, 1, glm::value_ptr(g_ambient));
-
-
-    using namespace glm;
-    // create directional light
-    GLint light_dir_idx = glGetUniformLocation(program_id_, "light.position");
-    // When world moves, lights direction moves with it, therefore we multiply
-    // it by a normal matrix.
-    glUniform4fv(light_dir_idx, 1,
-                 value_ptr(normalize(view_mat * light.get_position())));
-}
 
 void program::bind_mvp(const glm::mat4&& mvp_mat)
 {
@@ -134,13 +89,6 @@ program::bind_scene(const glm::mat4& model_mat,
     // Shaders needs model_view matrix to transform each vertex to camera space
     // allowing the shader to compute the direction vector from the vertex to cam
     glUniformMatrix4fv(mv_idx, 1, GL_FALSE, glm::value_ptr(model_view_mat));
-}
-
-void
-program::bind_lights(const glm::mat4& view_mat, lights& lights)
-{
-    for (auto light : lights)
-        bind_light(*light, view_mat);
 }
 
 render_type

@@ -22,7 +22,9 @@
 class scene
 {
 public:
-    using lights = std::vector<light*>;
+    using pos_lights = std::vector<pos_light*>;
+    using dir_lights = std::vector<dir_light*>;
+    using cone_lights = std::vector<cone_light*>;
     using objects = std::vector<object*>;
     scene(float aspect_ratio);
     // Update model matrix and light position accordingly.
@@ -33,11 +35,13 @@ public:
     // Function used for drawing elments in deferred rendering mode
     void draw_geometry(program& program);
     // Function used for drawing light sources in deferred rendering mode
-    void draw_lights(program& program);
+    void draw_pos_lights(program& program);
+    void draw_dir_lights(program& program);
     // Check for devices inputs, and update camera position
     void update(const devices_state &device);
     void add_object(object *object);
-    void add_light(light* light);
+    template <class light_t>
+    void add_light(light_t* light);
     void init(std::shared_ptr<resource_manager> rm);
     ~scene();
 
@@ -55,7 +59,22 @@ private:
 
     objects objects_;
     polygon *quad_xy;
-    lights lights_;
+    dir_lights dir_lights_;
+    pos_lights pos_lights_;
+    cone_lights cone_lights_;
 };
+
+template <class light_t>
+void
+scene::add_light(light_t* light)
+{
+    if (light_t::is_dir)
+        dir_lights_.push_back(reinterpret_cast<dir_light*>(light));
+    if (light_t::is_pos)
+        pos_lights_.push_back(reinterpret_cast<pos_light*>(light));
+    if (light_t::is_cone)
+        cone_lights_.push_back(reinterpret_cast<cone_light*>(light));
+}
+
 
 #endif // RENDER_SCENE_CPP
