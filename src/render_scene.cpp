@@ -37,6 +37,17 @@ scene::draw_dir_lights(program& program)
 }
 
 void
+scene::draw_cone_lights(program& program)
+{
+    program.use();
+    for (auto light : cone_lights_) {
+        program.bind_light(*light, camera_.get_view_mat());
+        program.bind_mvp(glm::mat4());
+        quad_xy->draw(program);
+    }
+}
+
+void
 scene::draw_geometry(program& program)
 {
     program.use();

@@ -37,6 +37,7 @@ public:
     // Function used for drawing light sources in deferred rendering mode
     void draw_pos_lights(program& program);
     void draw_dir_lights(program& program);
+    void draw_cone_lights(program& program);
     // Check for devices inputs, and update camera position
     void update(const devices_state &device);
     void add_object(object *object);

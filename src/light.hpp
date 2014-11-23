@@ -51,5 +51,6 @@ public:
 
 dir_light* light_dir_default_new();
 pos_light* light_pos_default_new();
+cone_light* light_cone_default_new();
 
 #endif // LIGHT_HPP
