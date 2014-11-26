@@ -23,7 +23,7 @@ pos_light* light_pos_default_new()
     glm::vec4 ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     glm::vec4 diffuse = glm::vec4(light_color);
     glm::vec4 specular = glm::vec4(light_color);
-    glm::vec4 pos(0.0f, 0.0f, 80.2f, 1.0f);
+    glm::vec4 pos(80.0f, 10.0f, 0.0f, 1.0f);
     res->set_ambient(ambient);
     res->set_diffuse(diffuse);
     res->set_specular(specular);

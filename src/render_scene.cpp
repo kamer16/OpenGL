@@ -16,24 +16,80 @@ scene::init(std::shared_ptr<resource_manager> rm)
     rm->load_indexed_polygon(*sphere);
 }
 
-void
-scene::draw_pos_lights(program& program)
+template <typename light_t>
+void scene::positional_stencil_pass(program& program, light_t* light,
+                                    g_buffer& fbo)
 {
-    program.use();
+    fbo.bind_for_stencil_pass();
+
+    glEnable(GL_DEPTH_TEST);
+    glClear(GL_STENCIL_BUFFER_BIT);
+    glDisable(GL_CULL_FACE);
+
+    // We need the stencil test to be enabled but we want it
+    // to succeed always. Only the depth test matters.
+    glStencilFunc(GL_ALWAYS, 0, 0);
+
+    glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+    glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+
+    program.bind_light(*light, camera_.get_view_mat());
+    glm::mat4 vp_mat = camera_.get_proj_mat() * camera_.get_view_mat();
+    glm::mat4 model_mat = glm::translate(glm::vec3(light->get_position()));
+    float scale = light->get_scale();
+    model_mat = glm::scale(model_mat, glm::vec3(scale, scale, scale));
+    program.bind_mvp(vp_mat * model_mat);
+    sphere->draw(program);
+}
+
+template <typename light_t>
+void scene::positional_light_pass(program& program, light_t* light,
+                                  g_buffer& fbo)
+{
+    light_pass(fbo);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+
+    glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+
+    program.bind_light(*light, camera_.get_view_mat());
+    glm::mat4 vp_mat = camera_.get_proj_mat() * camera_.get_view_mat();
+    glm::mat4 model_mat = glm::translate(glm::vec3(light->get_position()));
+    float scale = light->get_scale();
+    model_mat = glm::scale(model_mat, glm::vec3(scale, scale, scale));
+    program.bind_mvp(vp_mat * model_mat);
+    sphere->draw(program);
+
+    glCullFace(GL_BACK);
+}
+
+void
+scene::draw_pos_lights(program& light_program, program& stencil_program,
+                       g_buffer& fbo)
+{
     for (auto light : pos_lights_) {
-        program.bind_light(*light, camera_.get_view_mat());
-        glm::mat4 vp_mat = camera_.get_proj_mat() * camera_.get_view_mat();
-        glm::mat4 model_mat = glm::translate(glm::vec3(light->get_position()));
-        float scale = light->get_scale();
-        model_mat = glm::scale(model_mat, glm::vec3(scale, scale, scale));
-        program.bind_mvp(vp_mat * model_mat);
-        sphere->draw(program);
+        stencil_program.use();
+        positional_stencil_pass(stencil_program, light, fbo);
+        light_program.use();
+        positional_light_pass(light_program, light, fbo);
     }
 }
 
 void
-scene::draw_dir_lights(program& program)
+scene::light_pass(g_buffer& fbo)
 {
+    fbo.bind_for_light_pass();
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_ONE, GL_ONE);
+}
+
+void
+scene::draw_dir_lights(program& program, g_buffer& fbo)
+{
+    light_pass(fbo);
     program.use();
     for (auto light : dir_lights_) {
         program.bind_light(*light, camera_.get_view_mat());
@@ -43,18 +99,15 @@ scene::draw_dir_lights(program& program)
 }
 
 void
-scene::draw_spot_lights(program& program)
+scene::draw_spot_lights(program& light_program, program& stencil_program,
+                        g_buffer& fbo)
 {
-    program.use();
     for (auto light : spot_lights_) {
-        program.bind_light(*light, camera_.get_view_mat());
-        glm::mat4 vp_mat = camera_.get_proj_mat() * camera_.get_view_mat();
-        glm::mat4 model_mat = glm::translate(glm::vec3(light->get_position()));
-        float scale = light->get_scale();
-        model_mat = glm::scale(model_mat, glm::vec3(scale, scale, scale));
-        program.bind_mvp(vp_mat * model_mat);
+        stencil_program.use();
+        positional_stencil_pass(stencil_program, light, fbo);
+        light_program.use();
         // TODO should use a cone to bound light
-        sphere->draw(program);
+        positional_light_pass(light_program, light, fbo);
     }
 }
 

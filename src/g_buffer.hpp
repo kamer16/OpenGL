@@ -18,11 +18,26 @@ public:
     void bind_for_reading();
     void bind_for_writing();
     void set_read_buffer(GBUFFER_TEXTURE_TYPE type);
+    // Function called before light shading.  It loads all the needed texture
+    // for the light shading
+    void bind_for_light_pass();
+    // Function called before write all geometry data to textures.  It binds
+    // multiple textures to allow MRT.
+    void bind_for_geom_pass();
+    // Function called when we start rendering lights from textures.  It load
+    // framebuffer for writing
+    void start_frame();
     // Copies g_buffer to main fram buffer
     void blit(GLsizei width, GLsizei height);
+    // Before stencil pass, asserts that the final rendering fb will not be
+    // affected
+    void bind_for_stencil_pass();
+    // Called to copy internal fb, to main's screen fb.
+    void final_pass(GLsizei width, GLsizei height);
 private:
     GLuint fbo_;
     GLuint depth_texture_;
+    GLuint final_texture_;
     GLuint textures_[GBUFFER_NUM_TEXTURES];
 };
 

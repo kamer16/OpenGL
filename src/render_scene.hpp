@@ -18,6 +18,7 @@
 # include "program.hpp"
 # include "light.hpp"
 # include "polygon.hpp"
+# include "g_buffer.hpp"
 
 class scene
 {
@@ -35,9 +36,11 @@ public:
     // Function used for drawing elments in deferred rendering mode
     void draw_geometry(program& program);
     // Function used for drawing light sources in deferred rendering mode
-    void draw_pos_lights(program& program);
-    void draw_dir_lights(program& program);
-    void draw_spot_lights(program& program);
+    void draw_pos_lights(program& light_program, program& stencil_program,
+                         g_buffer& fbo);
+    void draw_spot_lights(program& light_program, program& stencil_program,
+                          g_buffer& fbo);
+    void draw_dir_lights(program& program, g_buffer& fbo);
     // Check for devices inputs, and update camera position
     void update(const devices_state &device);
     void add_object(object *object);
@@ -55,6 +58,12 @@ private:
     void set_model_view_matrix(const glm::mat4& model_mat);
     // Activate ambiant, specular, diffuse parameter for light in shader
     void set_light_color();
+    // Called to setup the OpenGL state and inform shaders of light.
+    template <typename light_t>
+    void positional_light_pass(program& program, light_t* light, g_buffer& fbo);
+    template <typename light_t>
+    void positional_stencil_pass(program& program, light_t* light, g_buffer& fbo);
+    void light_pass(g_buffer& fbo);
 
     camera camera_;
 
@@ -66,17 +75,6 @@ private:
     spot_lights spot_lights_;
 };
 
-template <class light_t>
-void
-scene::add_light(light_t* light)
-{
-    if (light_t::is_dir)
-        dir_lights_.push_back(reinterpret_cast<dir_light*>(light));
-    if (light_t::is_pos)
-        pos_lights_.push_back(reinterpret_cast<pos_light*>(light));
-    if (light_t::is_spot)
-        spot_lights_.push_back(reinterpret_cast<spot_light*>(light));
-}
-
+# include "render_scene.hxx"
 
 #endif // RENDER_SCENE_CPP

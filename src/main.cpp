@@ -42,11 +42,11 @@
 #define SRC_SPOT_LIGHT_VERT ("src/shaders/spot_light.vert")
 #define SRC_SPOT_LIGHT_FRAG ("src/shaders/spot_light.frag")
 
+#define SRC_STENCIL_VERT ("src/shaders/stencil.vert")
+#define SRC_STENCIL_FRAG ("src/shaders/stencil.frag")
+
 static void enableEnv()
 {
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
 }
 
 int main(int argc, char *argv[])
@@ -98,8 +98,9 @@ int main(int argc, char *argv[])
     program p8(SRC_DIR_LIGHT_VERT, SRC_DIR_LIGHT_FRAG, render_type::basic);
     program p9(SRC_POS_LIGHT_VERT, SRC_POS_LIGHT_FRAG, render_type::basic);
     program p10(SRC_SPOT_LIGHT_VERT, SRC_SPOT_LIGHT_FRAG, render_type::basic);
+    program p11(SRC_STENCIL_VERT, SRC_STENCIL_FRAG, render_type::basic);
     p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p7.init(); p8.init();
-    p9.init(); p10.init();
+    p9.init(); p10.init(); p11.init();
     p8.bind_screen_dimension(opt.window_width, opt.window_height);
     p9.bind_screen_dimension(opt.window_width, opt.window_height);
     p10.bind_screen_dimension(opt.window_width, opt.window_height);
@@ -140,12 +141,16 @@ int main(int argc, char *argv[])
         const devices_state &device = devices_state::get_instance(window);
 
         // Write data to current framebuffer
-        fb.bind_for_writing();
+        fb.start_frame();
         glDepthMask(GL_TRUE);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
         scene1.update(device);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        // No stencil test required for geometry pass
+        fb.bind_for_geom_pass();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Draw basic textures
         scene1.draw_geometry(p7);
         // Draw bump maps
@@ -154,18 +159,22 @@ int main(int argc, char *argv[])
         scene1.draw_geometry(p5);
         // Draw material objects
         scene1.draw_geometry(p1);
+        // After geometry pass, no one shouldl write in depth buffer.  However,
+        // this does not prevent the stencil pass from reading it.
         glDepthMask(GL_FALSE);
-        glDisable(GL_DEPTH_TEST);
 
-        glEnable(GL_BLEND);
-        glBlendEquation(GL_FUNC_ADD);
-        glBlendFunc(GL_ONE, GL_ONE);
-        fb.bind_for_reading();
-        glClear(GL_COLOR_BUFFER_BIT);
-        scene1.draw_dir_lights(p8);
-        scene1.draw_pos_lights(p9);
-        scene1.draw_spot_lights(p10);
+        glEnable(GL_STENCIL_TEST);
+        scene1.draw_pos_lights(p9, p11, fb);
+        scene1.draw_spot_lights(p10, p11, fb);
 
+        // Directionnal light does not need a stencil buffer, also the geometry
+        // pass also needs the stencil to be disactivated
+        glDisable(GL_STENCIL_TEST);
+        scene1.draw_dir_lights(p8, fb);
+
+        fb.final_pass(opt.window_width, opt.window_height);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         // update and draw scene2
         scene2.update(device);
         // Draw basic
