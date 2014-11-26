@@ -65,8 +65,8 @@ camera::update_position(const devices_state &device)
 {
     fps_manager& fps = fps_manager::get_instance();
     float ms = static_cast<float>(fps.get_sec_per_frame());
-    float pos_incr = 500.0f * ms;
-    float rot_incr = 2.0f * ms;
+    float pos_incr = pos_incr_ * ms;
+    float rot_incr = rot_incr_ * ms;
 
     if (device.key_state.left_pressed) {
         position_ -= right_ * pos_incr;
@@ -91,6 +91,14 @@ camera::update_position(const devices_state &device)
     }
     if (device.key_state.d_pressed) {
         rotation_.y -= rot_incr;
+    }
+    if (device.key_state.shift_pressed) {
+        pos_incr_ += 2;
+    }
+    if (device.key_state.ctrl_pressed) {
+        pos_incr_ -= 2;
+        if (pos_incr_ < 0)
+            pos_incr_ += 1.9;
     }
 }
 

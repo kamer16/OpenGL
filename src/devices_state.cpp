@@ -37,6 +37,12 @@ devices_state::update_keyboard_state(GLFWwindow *w)
     // D key
     key_state.d_pressed = glfwGetKey(w, GLFW_KEY_D) == GLFW_PRESS;
     key_state.d_pressed |= glfwGetKey(w, GLFW_KEY_E) == GLFW_PRESS;
+
+    // CTRL
+    key_state.ctrl_pressed = glfwGetKey(w, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS;
+
+    // SHIFT
+    key_state.shift_pressed = glfwGetKey(w, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
 }
 
 void

@@ -13,6 +13,8 @@ struct s_keyboard_state
     char a_pressed;
     char s_pressed;
     char d_pressed;
+    char shift_pressed;
+    char ctrl_pressed;
 };
 
 struct s_mouse_state

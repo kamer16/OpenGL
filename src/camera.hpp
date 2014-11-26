@@ -42,6 +42,9 @@ private:
     void update_position(const devices_state &device);
     // Update model matrix to move world around
     void update_rotation(const devices_state &device);
+
+    float pos_incr_ = 500.0f;
+    float rot_incr_ = 2.0f;
 };
 
 #endif // CAMERA_HPP
