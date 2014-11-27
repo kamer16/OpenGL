@@ -50,7 +50,7 @@ float
 pos_light::get_scale()
 {
     float c = 0;
-    for (int i = 0; i < 3; ++i)
+    for (unsigned i = 0; i < 3; ++i)
         c = diffuse_[i] < c ? c : diffuse_[i];
     float dist = -linear_att_;
     dist += sqrtf(linear_att_ * linear_att_ - 4 * quadratic_att_ *
