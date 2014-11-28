@@ -5,8 +5,8 @@
 scene::scene(float aspect_ratio)
     : camera_(aspect_ratio)
 {
-    quad_xy = make_quad_xy_polygon();
-    sphere = make_sphere_polygon(20, 20, 1);
+    quad_xy = polygon::make_quad_xy();
+    sphere = polygon::make_sphere(20, 20, 1);
 }
 
 void

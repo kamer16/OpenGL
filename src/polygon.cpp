@@ -3,8 +3,11 @@
 
 #include <GL/glu.h>
 
+namespace polygon
+{
+
 object*
-make_coordinate_polygon()
+make_coordinate()
 {
     using namespace glm;
     using namespace utility;
@@ -47,7 +50,7 @@ make_coordinate_polygon()
 }
 
 object*
-make_quad_xy_polygon()
+make_quad_xy()
 {
     material_vn* mat = new material_vn();
     auto& vertices = mat->get_vertices();
@@ -70,7 +73,7 @@ make_quad_xy_polygon()
 }
 
 object*
-make_quad_xz_polygon()
+make_quad_xz()
 {
     material_vn* mat = new material_vn();
     auto& vertices = mat->get_vertices();
@@ -94,7 +97,7 @@ make_quad_xz_polygon()
 }
 
 object*
-make_cube_polygon()
+make_cube()
 {
     object *cube = new object(GL_TRIANGLES);
     material_vn* mat = new material_vn();
@@ -129,7 +132,7 @@ make_cube_polygon()
 }
 
 object*
-make_sphere_polygon(unsigned stacks, unsigned slices, float radius)
+make_sphere(unsigned stacks, unsigned slices, float radius)
 {
     object *sphere = new object(GL_TRIANGLES);
     material_vn* mat = new material_vn();
@@ -171,4 +174,6 @@ make_sphere_polygon(unsigned stacks, unsigned slices, float radius)
     mat->set_ambient(glm::vec4(0.3, 0.8, 0.3, 1));
     sphere->add_material(mat);
     return sphere;
+}
+
 }

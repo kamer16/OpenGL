@@ -125,13 +125,13 @@ int main(int argc, char *argv[])
     scene1.add_object(obj);
     scene scene2(aspect_ratio);
     scene2.init(rm);
-    object* coord = make_coordinate_polygon();
+    object* coord = polygon::make_coordinate();
     rm->load_indexed_polygon(*coord);
-    object* quad = make_quad_xz_polygon();
+    object* quad = polygon::make_quad_xz();
     rm->load_indexed_polygon(*quad);
     scene2.add_object(coord);
     scene2.add_object(quad);
-    object* cube = make_cube_polygon();
+    object* cube = polygon::make_cube();
     rm->load_indexed_polygon(*cube);
     cube->scale(glm::vec3(10, 10, 10));
     cube->translate(glm::vec3(0, 0, 20));

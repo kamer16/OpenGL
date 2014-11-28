@@ -8,10 +8,15 @@
 # include "program.hpp"
 # include "utility.hpp"
 
-object* make_coordinate_polygon();
-object* make_quad_xz_polygon();
-object* make_quad_xy_polygon();
-object* make_cube_polygon();
-object* make_sphere_polygon(unsigned stacks, unsigned slices, float radius = 1);
+namespace polygon
+{
+
+object* make_coordinate();
+object* make_quad_xz();
+object* make_quad_xy();
+object* make_cube();
+object* make_sphere(unsigned stacks, unsigned slices, float radius = 1);
+
+}
 
 #endif // POLYGONS_HPP
