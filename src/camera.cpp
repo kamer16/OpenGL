@@ -7,7 +7,7 @@ camera::camera(float aspect_ratio)
     : position_(0, 1, 1.0),
       rotation_(-0.4, -3.14),
       aspect_ratio_(aspect_ratio),
-      fov_(45.0f)
+      fov_(65.0f)
 {
 }
 
@@ -93,12 +93,14 @@ camera::update_position(const devices_state &device)
         rotation_.y -= rot_incr;
     }
     if (device.key_state.shift_pressed) {
-        pos_incr_ += 2;
+        pos_incr_ *= 1.05;
+        if (pos_incr_ >= 1000)
+            pos_incr_ = 1000;
     }
     if (device.key_state.ctrl_pressed) {
-        pos_incr_ -= 2;
-        if (pos_incr_ < 0)
-            pos_incr_ += 1.9;
+        pos_incr_ /= 1.05;
+        if (pos_incr_ <= 0.001)
+            pos_incr_ = 0.001f;
     }
 }
 

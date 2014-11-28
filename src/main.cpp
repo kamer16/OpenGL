@@ -49,6 +49,27 @@ static void enableEnv()
 {
 }
 
+static void generate_lights(std::shared_ptr<resource_manager> rm, scene& scene)
+{
+    for (unsigned i = 0; i < 4; ++i) {
+        pos_light* p = new pos_light();
+        object* cube = polygon::make_cube();
+        rm->load_indexed_object(*cube);
+        p->set_diffuse(glm::vec4(1));
+        p->set_specular(glm::vec4(1));
+        p->set_quadratic_att(0.00001f);
+        p->set_linear_att(0.00001f);
+        float z = i < 2 ? -1 : 1;
+        float x = i == 1  || i == 3 ? -1 : 1;
+        float depth = 500;
+        p->set_position(glm::vec4(depth * x, i * depth / 2, depth * z, 1));
+        cube->translate(glm::vec3(depth * x, i * depth / 2, depth * z));
+        cube->scale(glm::vec3(5));
+        scene.add_light(p);
+        scene.add_object(cube);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     options opt;
@@ -122,6 +143,7 @@ int main(int argc, char *argv[])
     scene1.add_light(light_spot_default_new());
     scene1.add_light(light_pos_default_new());
     scene1.add_light(light_dir_default_new());
+    generate_lights(rm, scene1);
     scene1.add_object(obj);
     object* coord = polygon::make_coordinate();
     rm->load_indexed_object(*coord);

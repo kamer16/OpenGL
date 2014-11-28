@@ -52,7 +52,6 @@ devices_state::get_mouse_movement(double *xpos, double *ypos) const
     *ypos = mouse_state.y_axis;
 }
 
-#include <iostream>
 void
 devices_state::update_mouse_state(GLFWwindow *window)
 {
