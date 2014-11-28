@@ -4,7 +4,7 @@
 #include "fps_manager.hpp"
 
 camera::camera(float aspect_ratio)
-    : position_(0, 1, 1.0),
+    : position_(600, 600, 800.0),
       rotation_(-0.4, -3.14),
       aspect_ratio_(aspect_ratio),
       fov_(65.0f)
