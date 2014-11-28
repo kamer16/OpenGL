@@ -127,10 +127,7 @@ int main(int argc, char *argv[])
     scene2.init(rm);
     object* coord = polygon::make_coordinate();
     rm->load_indexed_polygon(*coord);
-    object* quad = polygon::make_quad_xz();
-    rm->load_indexed_polygon(*quad);
     scene2.add_object(coord);
-    scene2.add_object(quad);
     object* cube = polygon::make_cube();
     rm->load_indexed_polygon(*cube);
     cube->scale(glm::vec3(10, 10, 10));
