@@ -117,16 +117,17 @@ make_cube()
     indices.push_back(3); indices.push_back(6); indices.push_back(2);
 
     using namespace glm;
-    vertices.push_back({ vec3( 0.5f,  0.5f,  0.5f), vec3(1.0f, 0.0f, 0.0f) });
-    vertices.push_back({ vec3( 0.5f,  0.5f, -0.5f), vec3(1.0f, 0.0f, 0.0f) });
-    vertices.push_back({ vec3( 0.5f, -0.5f, -0.5f), vec3(1.0f, 1.0f, 0.0f) });
-    vertices.push_back({ vec3( 0.5f, -0.5f,  0.5f), vec3(1.0f, 0.0f, 0.0f) });
-    vertices.push_back({ vec3(-0.5f,  0.5f,  0.5f), vec3(1.0f, 0.0f, 0.0f) });
-    vertices.push_back({ vec3(-0.5f,  0.5f, -0.5f), vec3(1.0f, 1.0f, 0.0f) });
-    vertices.push_back({ vec3(-0.5f, -0.5f, -0.5f), vec3(1.0f, 1.0f, 0.0f) });
-    vertices.push_back({ vec3(-0.5f, -0.5f,  0.5f), vec3(1.0f, 1.0f, 0.0f) });
+    vertices.push_back({ vec3( 0.5f,  0.5f,  0.5f), vec3(1.0f, 1.0f, 1.0f) });
+    vertices.push_back({ vec3( 0.5f,  0.5f, -0.5f), vec3(1.0f, 1.0f, -1.0f) });
+    vertices.push_back({ vec3( 0.5f, -0.5f, -0.5f), vec3(1.0f, -1.0f, -1.0f) });
+    vertices.push_back({ vec3( 0.5f, -0.5f,  0.5f), vec3(1.0f, -1.0f, 1.0f) });
+    vertices.push_back({ vec3(-0.5f,  0.5f,  0.5f), vec3(-1.0f, 1.0f, 1.0f) });
+    vertices.push_back({ vec3(-0.5f,  0.5f, -0.5f), vec3(-1.0f, 1.0f, -1.0f) });
+    vertices.push_back({ vec3(-0.5f, -0.5f, -0.5f), vec3(-1.0f, -1.0f, -1.0f) });
+    vertices.push_back({ vec3(-0.5f, -0.5f,  0.5f), vec3(-1.0f, -1.0f, 1.0f) });
 
-    mat->set_ambient(glm::vec4(0.3, 0.1, 0.3, 1));
+    mat->set_ambient(glm::vec4(0.6, 0.4, 0.6, 1));
+    mat->set_diffuse(glm::vec4(0.6, 0.4, 0.6, 1));
     cube->add_material(mat);
     return cube;
 }
