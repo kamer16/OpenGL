@@ -7,6 +7,11 @@ object::object()
 {
 }
 
+object::object(GLenum mode)
+    : mode_(mode)
+{
+}
+
 void
 object::add_material(material* mat)
 {

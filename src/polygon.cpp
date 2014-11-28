@@ -3,24 +3,12 @@
 
 #include <GL/glu.h>
 
-polygon::polygon(GLenum mode)
-{
-    glGenVertexArrays(1, &resource_.vao_id);
-    glGenBuffers(1, &resource_.index_buffer_id);
-    glGenBuffers(1, &resource_.vertex_buffer_id);
-    mode_ = mode;
-}
-
-polygon::~polygon()
-{
-}
-
-polygon*
+object*
 make_coordinate_polygon()
 {
     using namespace glm;
     using namespace utility;
-    polygon *coord = new polygon(GL_LINES);
+    object *coord = new object(GL_LINES);
 
     {
     material_vn* mat = new material_vn();
@@ -58,14 +46,14 @@ make_coordinate_polygon()
     return coord;
 }
 
-polygon*
+object*
 make_quad_xy_polygon()
 {
     material_vn* mat = new material_vn();
     auto& vertices = mat->get_vertices();
     auto& indices = mat->get_indices();
 
-    polygon *quad_xy = new polygon(GL_TRIANGLES);
+    object *quad_xy = new object(GL_TRIANGLES);
     //auto& indices = quad_xy->get_indices();
     indices.push_back(0); indices.push_back(1); indices.push_back(2);
     indices.push_back(2); indices.push_back(3); indices.push_back(0);
@@ -81,14 +69,14 @@ make_quad_xy_polygon()
     return quad_xy;
 }
 
-polygon*
+object*
 make_quad_xz_polygon()
 {
     material_vn* mat = new material_vn();
     auto& vertices = mat->get_vertices();
     auto& indices = mat->get_indices();
 
-    polygon *quad_xz = new polygon(GL_TRIANGLES);
+    object *quad_xz = new object(GL_TRIANGLES);
     //auto& indices = quad_xz->get_indices();
     indices.push_back(2); indices.push_back(1); indices.push_back(0);
     indices.push_back(0); indices.push_back(3); indices.push_back(2);
@@ -105,10 +93,10 @@ make_quad_xz_polygon()
     return quad_xz;
 }
 
-polygon*
+object*
 make_cube_polygon()
 {
-    polygon *cube = new polygon(GL_TRIANGLES);
+    object *cube = new object(GL_TRIANGLES);
     material_vn* mat = new material_vn();
     auto& vertices = mat->get_vertices();
     auto& indices = mat->get_indices();
@@ -140,10 +128,10 @@ make_cube_polygon()
     return cube;
 }
 
-polygon*
+object*
 make_sphere_polygon(unsigned stacks, unsigned slices, float radius)
 {
-    polygon *sphere = new polygon(GL_TRIANGLES);
+    object *sphere = new object(GL_TRIANGLES);
     material_vn* mat = new material_vn();
     auto& vertices = mat->get_vertices();
     auto& indices = mat->get_indices();
@@ -183,22 +171,4 @@ make_sphere_polygon(unsigned stacks, unsigned slices, float radius)
     mat->set_ambient(glm::vec4(0.3, 0.8, 0.3, 1));
     sphere->add_material(mat);
     return sphere;
-}
-
-auto
-polygon::get_vertices() -> container_vn&
-{
-    return vertices_;
-}
-
-auto
-polygon::get_indices() -> vertices_idx&
-{
-    return indices_;
-}
-
-auto
-polygon::get_resource() -> element_resource&
-{
-    return resource_;
 }

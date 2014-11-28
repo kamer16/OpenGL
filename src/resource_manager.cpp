@@ -99,7 +99,7 @@ resource_manager::load_indexed_object(object& obj)
 }
 
 void
-resource_manager::load_indexed_polygon(polygon& p)
+resource_manager::load_indexed_polygon(object& p)
 {
     for (auto mat : p.get_materials())
         load_indexed_data(static_cast<material_vn&>(*mat));

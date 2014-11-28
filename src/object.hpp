@@ -26,6 +26,7 @@ public:
     using materials_t = std::vector<material*>;
 
     object();
+    object(GLenum mode);
     void translate(const glm::vec3& dir);
     void scale(const glm::vec3& vec);
     void rotate(float degrees, const glm::vec3& dir);
