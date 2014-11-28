@@ -14,34 +14,34 @@ make_coordinate()
     object *coord = new object(GL_LINES);
 
     {
-    material_vn* mat = new material_vn();
+    material_v* mat = new material_v();
     auto& vertices = mat->get_vertices();
     auto& indices = mat->get_indices();
     indices.push_back(0); indices.push_back(1);
-    vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 0.0f   ), vec3(1.0f, 0.0f, 0.0f)));
-    vertices.push_back(vertex_vn(vec3(800.0f, 0.0f, 0.0f ), vec3(1.0f, 0.0f, 0.0f)));
+    vertices.push_back(vertex_v(vec3(0.0f, 0.0f, 0.0f   )));
+    vertices.push_back(vertex_v(vec3(800.0f, 0.0f, 0.0f )));
     mat->set_ambient(glm::vec4(1, 0, 0, 1));
     coord->add_material(mat);
     }
 
     {
-    material_vn* mat = new material_vn();
+    material_v* mat = new material_v();
     auto& vertices = mat->get_vertices();
     auto& indices = mat->get_indices();
     indices.push_back(0); indices.push_back(1);
-    vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 0.0f   ), vec3(0.0f, 1.0f, 0.0f)));
-    vertices.push_back(vertex_vn(vec3(0.0f, 800.0f, 0.0f ), vec3(0.0f, 1.0f, 0.0f)));
+    vertices.push_back(vertex_v(vec3(0.0f, 0.0f, 0.0f   )));
+    vertices.push_back(vertex_v(vec3(0.0f, 800.0f, 0.0f )));
     mat->set_ambient(glm::vec4(0, 1, 0, 1));
     coord->add_material(mat);
     }
 
     {
-    material_vn*mat = new material_vn();
+    material_v*mat = new material_v();
     auto&vertices = mat->get_vertices();
     auto& indices = mat->get_indices();
     indices.push_back(0); indices.push_back(1);
-    vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 0.0f   ), vec3(0.0f, 0.0f, 1.0f)));
-    vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 800.0f ), vec3(0.0f, 0.0f, 1.0f)));
+    vertices.push_back(vertex_v(vec3(0.0f, 0.0f, 0.0f   )));
+    vertices.push_back(vertex_v(vec3(0.0f, 0.0f, 800.0f )));
     mat->set_ambient(glm::vec4(0, 0, 1, 1));
     coord->add_material(mat);
     }

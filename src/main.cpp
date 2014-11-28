@@ -126,10 +126,10 @@ int main(int argc, char *argv[])
     scene scene2(aspect_ratio);
     scene2.init(rm);
     object* coord = polygon::make_coordinate();
-    rm->load_indexed_polygon(*coord);
+    rm->load_indexed_object(*coord);
     scene2.add_object(coord);
     object* cube = polygon::make_cube();
-    rm->load_indexed_polygon(*cube);
+    rm->load_indexed_object(*cube);
     cube->scale(glm::vec3(10, 10, 10));
     cube->translate(glm::vec3(0, 0, 20));
     scene2.add_object(cube);

@@ -18,7 +18,6 @@ public:
     template <typename mesh>
     void load_indexed_data(mesh& m);
     void load_indexed_object(object& obj);
-    void load_indexed_polygon(object& p);
     GLuint load_texture(std::string&& file, unsigned texture_unit);
 private:
     texture_loader texture_loader_;
@@ -30,5 +29,7 @@ private:
     template <typename T>
     void load_vertex_buffer(std::vector<T>& vertices, GLuint* vert_buffer_id);
 };
+
+# include "resource_manager.hxx"
 
 #endif // RESOURCE_MANAGER_HPP

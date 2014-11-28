@@ -13,6 +13,8 @@
 # include "utility.hpp"
 # include "resource.hpp" // struct element_resource
 
+class resource_manager;
+
 class material
 {
 public:
@@ -22,6 +24,8 @@ public:
     using index_map = std::unordered_map<std::tuple<size_t, size_t, size_t>,
           unsigned, hash_ptr>;
     using vertices_idx = std::vector<unsigned>;
+    virtual ~material();
+    virtual void accept(resource_manager* rm);
     void draw(GLenum mode);
     glm::vec4& get_ambient();
     glm::vec4& get_specular();
@@ -83,6 +87,7 @@ public:
     {}
     using container_vnt = std::vector<utility::vertex_vnt>;
     using value_type = utility::vertex_vnt;
+    virtual void accept(resource_manager* rm) override;
     container_vnt& get_vertices();
     static const bool has_normal = 1;
     static const bool has_texture = 1;
@@ -98,8 +103,9 @@ public:
     material_v(material& parent)
         : material(parent)
     {}
-    using container_v = std::vector<utility::vertex_vn>;
-    using value_type = utility::vertex_vn;
+    using container_v = std::vector<utility::vertex_v>;
+    using value_type = utility::vertex_v;
+    virtual void accept(resource_manager* rm) override;
     container_v& get_vertices();
     static const bool has_normal = 0;
     static const bool has_texture = 0;
@@ -115,6 +121,7 @@ public:
     material_vn(material& parent)
         : material(parent)
     {}
+    virtual void accept(resource_manager* rm) override;
     using container_vn = std::vector<utility::vertex_vn>;
     using value_type = utility::vertex_vn;
     container_vn& get_vertices();
@@ -133,6 +140,7 @@ public:
     {}
     using container_vnta = std::vector<utility::vertex_vnta>;
     using value_type = utility::vertex_vnta;
+    virtual void accept(resource_manager* rm) override;
     container_vnta& get_vertices();
     static const bool has_normal = 1;
     static const bool has_texture = 1;

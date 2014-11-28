@@ -12,9 +12,9 @@ scene::scene(float aspect_ratio)
 void
 scene::init(std::shared_ptr<resource_manager> rm)
 {
-    rm->load_indexed_polygon(*quad_xy);
+    rm->load_indexed_object(*quad_xy);
     quad_xy->set_render_mode(render_type::stencil);
-    rm->load_indexed_polygon(*sphere);
+    rm->load_indexed_object(*sphere);
     sphere->set_render_mode(render_type::stencil);
 }
 
