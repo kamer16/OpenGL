@@ -123,16 +123,14 @@ int main(int argc, char *argv[])
     scene1.add_light(light_pos_default_new());
     scene1.add_light(light_dir_default_new());
     scene1.add_object(obj);
-    scene scene2(aspect_ratio);
-    scene2.init(rm);
     object* coord = polygon::make_coordinate();
     rm->load_indexed_object(*coord);
-    scene2.add_object(coord);
+    scene1.add_object(coord);
     object* cube = polygon::make_cube();
     rm->load_indexed_object(*cube);
     cube->scale(glm::vec3(10, 10, 10));
     cube->translate(glm::vec3(0, 0, 20));
-    scene2.add_object(cube);
+    scene1.add_object(cube);
 
 
     fps_manager& fps_manager = fps_manager::get_instance();
@@ -172,13 +170,12 @@ int main(int argc, char *argv[])
         glDisable(GL_STENCIL_TEST);
         scene1.draw_dir_lights(p8, fb);
 
-        fb.final_pass(opt.window_width, opt.window_height);
 
+        fb.final_pass(opt.window_width, opt.window_height);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        // update and draw scene2
-        scene2.update(device);
-        // Draw basic
-        scene2.draw(p2);
+
+        // update and draw color objects which dont use lighting equations
+        scene1.draw(p2);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
