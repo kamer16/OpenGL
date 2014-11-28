@@ -12,8 +12,12 @@ enum class render_type
     bump,
     bump_dissolve,
     dissolve,
+    // Object that only define vertices, and have a color attached to them
     color,
     material,
+    // Object that only define vertices
+    stencil,
+    // Object that define vtn, and has all basic textures (Ka, Kd)
     basic
 };
 

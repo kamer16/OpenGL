@@ -24,7 +24,10 @@ resource_manager::load_indexed_data(mesh& m)
     load_vertex_buffer(vertices, &resource.vertex_buffer_id);
     load_index_buffer(indices, &resource.index_buffer_id);
     size_t stride = sizeof (typename mesh::value_type);
-    enable_vertex_and_normal(stride);
+    // A mesh always has vertices so we always send them to shader
+    enable_vertices(stride);
+    if (mesh::has_normal)
+        enable_normals(stride);
 
     if (mesh::has_texture) {
         // Sets shaders attribute for texture coordinates
@@ -41,16 +44,20 @@ resource_manager::load_indexed_data(mesh& m)
 }
 
 void
-resource_manager::enable_vertex_and_normal(size_t stride)
+resource_manager::enable_normals(size_t stride)
 {
-    // Sets shaders attribute for vertices positions
-    glEnableVertexAttribArray(0); // Matches layout (location = 0)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, 0);
-
     // Sets shaders attribute for color (r, g, b)
     glEnableVertexAttribArray(1); // Matches layout (location = 1)
     GLvoid* offset = reinterpret_cast<GLvoid *> (sizeof (glm::vec3));
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, offset);
+}
+
+void
+resource_manager::enable_vertices(size_t stride)
+{
+    // Sets shaders attribute for vertices positions
+    glEnableVertexAttribArray(0); // Matches layout (location = 0)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, 0);
 }
 
 template <typename T>

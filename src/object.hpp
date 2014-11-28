@@ -36,9 +36,13 @@ public:
     void add_material(material* mat);
     // Can be accessed to be sorted
     materials_t& get_materials();
+    // This functions sets the render_type of each materials associated to the
+    // object to the new render_type
+    void set_render_mode(render_type type);
     virtual ~object();
 protected:
     materials_t materials_;
+    GLenum mode_;
 private:
     glm::mat4 model_mat_;
 };

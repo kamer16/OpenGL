@@ -3,6 +3,7 @@
 #include <SOIL/SOIL.h>
 
 object::object()
+    : mode_(GL_TRIANGLES)
 {
 }
 
@@ -55,9 +56,16 @@ object::draw(program& program)
     for (auto mat : materials_) {
         if (mat->get_render_type() == program.get_render_type()) {
             program.bind_material(*mat);
-            mat->draw();
+            mat->draw(mode_);
         }
     }
+}
+
+void
+object::set_render_mode(render_type type)
+{
+    for (auto mat : materials_)
+        mat->set_render_type(type);
 }
 
 object::~object()

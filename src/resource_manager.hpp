@@ -23,7 +23,8 @@ public:
 private:
     texture_loader texture_loader_;
 
-    void enable_vertex_and_normal(size_t stride);
+    void enable_normals(size_t stride);
+    void enable_vertices(size_t stride);
     void load_index_buffer(vertices_idx& indices, GLuint* index_buffer_id);
 
     template <typename T>

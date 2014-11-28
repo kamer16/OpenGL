@@ -13,7 +13,9 @@ void
 scene::init(std::shared_ptr<resource_manager> rm)
 {
     rm->load_indexed_polygon(*quad_xy);
+    quad_xy->set_render_mode(render_type::stencil);
     rm->load_indexed_polygon(*sphere);
+    sphere->set_render_mode(render_type::stencil);
 }
 
 template <typename light_t>

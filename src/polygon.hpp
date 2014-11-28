@@ -20,6 +20,7 @@ polygon* make_sphere_polygon(unsigned stacks, unsigned slices, float radius = 1)
 class polygon : public object
 {
 public:
+    static const bool has_normal = 0;
     static const bool has_texture = 0;
     static const bool has_adjacent = 0;
     using value_type = utility::vertex_vn;
@@ -41,7 +42,6 @@ private:
     element_resource resource_;
     container_vn vertices_;
     vertices_idx indices_;
-    GLenum mode_;
 };
 
 #endif // POLYGONS_HPP

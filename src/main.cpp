@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
     program p8(SRC_DIR_LIGHT_VERT, SRC_DIR_LIGHT_FRAG, render_type::basic);
     program p9(SRC_POS_LIGHT_VERT, SRC_POS_LIGHT_FRAG, render_type::basic);
     program p10(SRC_SPOT_LIGHT_VERT, SRC_SPOT_LIGHT_FRAG, render_type::basic);
-    program p11(SRC_STENCIL_VERT, SRC_STENCIL_FRAG, render_type::basic);
+    program p11(SRC_STENCIL_VERT, SRC_STENCIL_FRAG, render_type::stencil);
     p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p7.init(); p8.init();
     p9.init(); p10.init(); p11.init();
     p8.bind_screen_dimension(opt.window_width, opt.window_height);

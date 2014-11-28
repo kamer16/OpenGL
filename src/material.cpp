@@ -26,6 +26,11 @@ auto material_vn::get_vertices() -> container_vn&
     return vertices_vn;
 }
 
+auto material_v::get_vertices() -> container_v&
+{
+    return vertices_v;
+}
+
 
 ////////////////////////////////////
 // MATERIAL BASE CLASS DEFINITION //
@@ -37,11 +42,11 @@ auto material::get_resource() -> element_resource&
 }
 
 void
-material::draw()
+material::draw(GLenum mode)
 {
     glBindVertexArray(resource.vao_id);
     int nb_elt = static_cast<int>(indices.size());
-    glDrawElements(GL_TRIANGLES, nb_elt, GL_UNSIGNED_INT, 0);
+    glDrawElements(mode, nb_elt, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 

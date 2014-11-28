@@ -22,7 +22,7 @@ public:
     using index_map = std::unordered_map<std::tuple<size_t, size_t, size_t>,
           unsigned, hash_ptr>;
     using vertices_idx = std::vector<unsigned>;
-    void draw();
+    void draw(GLenum mode);
     glm::vec4& get_ambient();
     glm::vec4& get_specular();
     glm::vec4& get_diffuse();
@@ -78,10 +78,28 @@ public:
     using container_vnt = std::vector<utility::vertex_vnt>;
     using value_type = utility::vertex_vnt;
     container_vnt& get_vertices();
+    static const bool has_normal = 1;
     static const bool has_texture = 1;
     static const bool has_adjacent = 0;
 private:
     container_vnt vertices_vnt;
+};
+
+class material_v : public material
+{
+public:
+    material_v() = default;
+    material_v(material& parent)
+        : material(parent)
+    {}
+    using container_v = std::vector<utility::vertex_vn>;
+    using value_type = utility::vertex_vn;
+    container_v& get_vertices();
+    static const bool has_normal = 0;
+    static const bool has_texture = 0;
+    static const bool has_adjacent = 0;
+private:
+    container_v vertices_v;
 };
 
 class material_vn : public material
@@ -94,6 +112,7 @@ public:
     using container_vn = std::vector<utility::vertex_vn>;
     using value_type = utility::vertex_vn;
     container_vn& get_vertices();
+    static const bool has_normal = 1;
     static const bool has_texture = 0;
     static const bool has_adjacent = 0;
 private:
@@ -109,6 +128,7 @@ public:
     using container_vnta = std::vector<utility::vertex_vnta>;
     using value_type = utility::vertex_vnta;
     container_vnta& get_vertices();
+    static const bool has_normal = 1;
     static const bool has_texture = 1;
     static const bool has_adjacent = 1;
 private:
