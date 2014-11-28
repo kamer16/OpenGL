@@ -128,7 +128,8 @@ int main(int argc, char *argv[])
     p8.bind_screen_dimension(opt.window_width, opt.window_height);
     p9.bind_screen_dimension(opt.window_width, opt.window_height);
     p10.bind_screen_dimension(opt.window_width, opt.window_height);
-    obj_loader loader;
+    bool draw_lines = 0;
+    obj_loader loader(draw_lines);
     std::shared_ptr<resource_manager> rm = std::make_shared<resource_manager>();
     object* obj = loader.load_obj(opt.mesh_file, rm);
     rm->load_indexed_object(*obj);

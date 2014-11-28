@@ -42,6 +42,9 @@ public:
     // Reads an Obj files and stores vertices, normals, and texture coords.
     // A simple call to glDrawArarys will render the object.
     object* load_obj(std::string& file, resource_manager_ptr rm);
+    obj_loader(bool draw_line = true)
+        : draw_lines_(draw_line)
+    { }
 
     // Print out vector in the mesh format
     // Mesh will only contain triangles
@@ -70,6 +73,7 @@ private:
     container_idx indices_;
     std::istringstream iss_;
     std::ifstream ifs_;
+    bool draw_lines_;
 };
 
 #endif // OBJ_LOADER_HPP

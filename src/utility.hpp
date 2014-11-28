@@ -54,6 +54,8 @@ namespace utility
         vertex_vnt(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_)
             : v(v_), n(n_), t(t_)
         { }
+        vertex_vnt(glm::vec3& v_);
+        vertex_vnt(glm::vec3&& v_);
     };
 
     struct vertex_vnta
@@ -67,6 +69,8 @@ namespace utility
         vertex_vnta(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_, glm::vec4&& a_)
             : v(v_), n(n_), t(t_), a(a_)
         { }
+        vertex_vnta(glm::vec3& v_);
+        vertex_vnta(glm::vec3&& v_);
     };
 
     struct vertex_v
@@ -96,6 +100,8 @@ namespace utility
         vertex_vn(glm::vec3&& v_, glm::vec3&& n_)
             : v(v_), n(n_)
         { }
+        vertex_vn(glm::vec3& v_);
+        vertex_vn(glm::vec3&& v_);
     };
 
     void print(glm::mat4 mat);

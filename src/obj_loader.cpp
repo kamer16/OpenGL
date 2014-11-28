@@ -64,16 +64,22 @@ obj_loader::add_indices()
 {
     std::string vertex;
     s_vertex_idx v_idx[3] = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1} };
-    for (unsigned idx = 0; idx < 3; ++idx) {
+    for (unsigned idx = 0; idx < 2; ++idx) {
         iss_ >> vertex;
         get_vertex(vertex, v_idx[idx]);
 
         indices_.push_back(v_idx[idx]);
     }
     if (iss_.fail())
-        std::cerr << "A face must have at least 3 vertices_" << std::endl;
+        std::cerr << "A face must have at least 2 vertices" << std::endl;
     iss_ >> vertex;
-    // If face is composed of 4 vertices_, than create 2 triangles
+    if (!iss_.fail()) {
+        get_vertex(vertex, v_idx[2]);
+
+        indices_.push_back(v_idx[2]);
+    }
+    iss_ >> vertex;
+    // If face is composed of 4 vertices, than create 2 triangles
     if (!iss_.fail()) {
         s_vertex_idx v = { 1, 1, 1 };
         get_vertex(vertex, v);
@@ -207,6 +213,10 @@ obj_loader::index_object(material& mat)
                 container_t content(vertices_[v_idx], normals_[n_idx]);
                 out_vertices.push_back(content);
             }
+            else if (std::is_same<container_t, utility::vertex_v>::value) {
+                container_t content(vertices_[v_idx]);
+                out_vertices.push_back(content);
+            }
             else
                 std::cerr << "Obj Loader : Unkown material type\n";
         }
@@ -308,11 +318,10 @@ obj_loader::compute_tangents(material_vnta& material)
 
 void obj_loader::set_material_indices(material* mat)
 {
-    if (indices_[0].n == 0)
-        compute_normals(0);
     if (vertices_.size() == 0)
         std::cerr << "File does not define any vertices\n";
-    assert(indices_[0].n && "We always hove normals");
+    if (indices_[0].n == 0 && !dynamic_cast<material_v*>(mat))
+        compute_normals(0);
     if (mat->get_bump_map_id()) {
         index_object(static_cast<material_vnta&>(*mat));
         compute_tangents(static_cast<material_vnta&>(*mat));
@@ -321,6 +330,8 @@ void obj_loader::set_material_indices(material* mat)
     else if (mat->get_ambient_map_id() || mat->get_diffuse_map_id() ||
              mat->get_specular_map_id() || mat->get_dissolve_map_id())
         index_object(static_cast<material_vnt&>(*mat));
+    else if (draw_lines_)
+        index_object(static_cast<material_v&>(*mat));
     // Vertices and Normals
     else
         index_object(static_cast<material_vn&>(*mat));
@@ -363,7 +374,7 @@ obj_loader::load_obj(std::string& file, resource_manager_ptr rm) -> object*
         else if (!token.compare("f"))
             add_indices();
         else if (!token.compare("mtllib")) {
-            mat_lib.load_material_lib(iss_, rm);
+            mat_lib.load_material_lib(iss_, rm, draw_lines_);
         }
         else if (!token.compare("usemtl")) {
             // Update indices in current_material, and add new vertex_elements
@@ -384,7 +395,8 @@ obj_loader::load_obj(std::string& file, resource_manager_ptr rm) -> object*
         iss_.clear();
     }
     // Now that materials have been computed we can bind them to object
-    object* res = new object();
+    GLenum mode = draw_lines_ ? GL_LINES : GL_TRIANGLES;
+    object* res = new object(mode);
     // Update last object that was added to materials object list
     if (!current_mat) {
         // Use default material since there were none
