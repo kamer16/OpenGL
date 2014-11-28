@@ -19,18 +19,21 @@ program::bind_screen_dimension(int width, int height)
 void
 program::bind_material(material& mat)
 {
+    using namespace glm;
     // TODO use unfirorm buffer objects, glBindBufferBase(GL_UNIFORM_BUFFER)
     // glNamedBufferSubDataEXT();
     if (render_type_ == render_type::material) {
-        using namespace glm;
         glUniform4fv(material_location_.specular, 1, value_ptr(mat.get_specular()));
         glUniform4fv(material_location_.diffuse, 1, value_ptr(mat.get_diffuse()));
         glUniform4fv(material_location_.ambient, 1, value_ptr(mat.get_ambient()));
         glUniform1f(material_location_.shininess, mat.get_shininess());
     }
-    else {
+    else if (render_type_ == render_type::color)
+        glUniform4fv(material_location_.ambient, 1, value_ptr(mat.get_ambient()));
+    else if (render_type_ == render_type::stencil)
+    { /* Empty, Stencils only render vertices */ }
+    else
         texture_binder_.bind_material(mat);
-    }
 }
 
 void

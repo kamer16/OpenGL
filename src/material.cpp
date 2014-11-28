@@ -53,19 +53,19 @@ material::draw(GLenum mode)
 glm::vec4&
 material::get_ambient()
 {
-    return ambient;
+    return ambient_;
 }
 
 glm::vec4&
 material::get_specular()
 {
-    return specular;
+    return specular_;
 }
 
 glm::vec4&
 material::get_diffuse()
 {
-    return diffuse;
+    return diffuse_;
 }
 
 float&

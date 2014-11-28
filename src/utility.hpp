@@ -69,6 +69,21 @@ namespace utility
         { }
     };
 
+    struct vertex_v
+    {
+        glm::vec3 v;
+        vertex_v(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_, glm::vec4&& a_);
+        vertex_v(glm::vec3& v_, glm::vec3& n_, glm::vec2& t_);
+        vertex_v(glm::vec3&& v_, glm::vec3&& n_);
+        vertex_v(glm::vec3& v_, glm::vec3& n_);
+        vertex_v(glm::vec3& v_)
+            : v(v_)
+        { }
+        vertex_v(glm::vec3&& v_)
+            : v(v_)
+        { }
+    };
+
     struct vertex_vn
     {
         glm::vec3 v;

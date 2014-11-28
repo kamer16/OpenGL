@@ -15,65 +15,93 @@ polygon::~polygon()
 {
 }
 
-void polygon::draw(program& program)
-{
-    (void) program;
-    glBindVertexArray(resource_.vao_id);
-    int nb_elt = static_cast<int>(indices_.size());
-    glDrawElements(mode_, nb_elt, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-}
-
 polygon*
 make_coordinate_polygon()
 {
-    polygon *coord = new polygon(GL_LINES);
-    auto& indices = coord->get_indices();
-    indices.push_back(0); indices.push_back(1); indices.push_back(2);
-    indices.push_back(3); indices.push_back(4); indices.push_back(5);
-    auto& vertices = coord->get_vertices();
     using namespace glm;
     using namespace utility;
+    polygon *coord = new polygon(GL_LINES);
+
+    {
+    material_vn* mat = new material_vn();
+    auto& vertices = mat->get_vertices();
+    auto& indices = mat->get_indices();
+    indices.push_back(0); indices.push_back(1);
     vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 0.0f   ), vec3(1.0f, 0.0f, 0.0f)));
     vertices.push_back(vertex_vn(vec3(800.0f, 0.0f, 0.0f ), vec3(1.0f, 0.0f, 0.0f)));
+    mat->set_ambient(glm::vec4(1, 0, 0, 1));
+    coord->add_material(mat);
+    }
+
+    {
+    material_vn* mat = new material_vn();
+    auto& vertices = mat->get_vertices();
+    auto& indices = mat->get_indices();
+    indices.push_back(0); indices.push_back(1);
     vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 0.0f   ), vec3(0.0f, 1.0f, 0.0f)));
     vertices.push_back(vertex_vn(vec3(0.0f, 800.0f, 0.0f ), vec3(0.0f, 1.0f, 0.0f)));
+    mat->set_ambient(glm::vec4(0, 1, 0, 1));
+    coord->add_material(mat);
+    }
+
+    {
+    material_vn*mat = new material_vn();
+    auto&vertices = mat->get_vertices();
+    auto& indices = mat->get_indices();
+    indices.push_back(0); indices.push_back(1);
     vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 0.0f   ), vec3(0.0f, 0.0f, 1.0f)));
     vertices.push_back(vertex_vn(vec3(0.0f, 0.0f, 800.0f ), vec3(0.0f, 0.0f, 1.0f)));
+    mat->set_ambient(glm::vec4(0, 0, 1, 1));
+    coord->add_material(mat);
+    }
+
     return coord;
 }
 
 polygon*
 make_quad_xy_polygon()
 {
+    material_vn* mat = new material_vn();
+    auto& vertices = mat->get_vertices();
+    auto& indices = mat->get_indices();
+
     polygon *quad_xy = new polygon(GL_TRIANGLES);
-    auto& indices = quad_xy->get_indices();
+    //auto& indices = quad_xy->get_indices();
     indices.push_back(0); indices.push_back(1); indices.push_back(2);
     indices.push_back(2); indices.push_back(3); indices.push_back(0);
-    auto& vertices = quad_xy->get_vertices();
+    //auto& vertices = quad_xy->get_vertices();
     using namespace glm;
     using namespace utility;
     vertices.push_back(vertex_vn(vec3(-1.0f, -1.0f, 0.0f), vec3(0.5f, 0.0f, 0.0f)));
     vertices.push_back(vertex_vn(vec3( 1.0f, -1.0f, 0.0f), vec3(0.0f, 0.0f, 0.5f)));
     vertices.push_back(vertex_vn(vec3( 1.0f,  1.0f, 0.0f), vec3(0.0f, 0.5f, 0.0f)));
     vertices.push_back(vertex_vn(vec3(-1.0f,  1.0f, 0.0f), vec3(0.5f, 0.5f, 0.5f)));
+    mat->set_ambient(glm::vec4(0.3, 0.3, 0.1, 1));
+    quad_xy->add_material(mat);
     return quad_xy;
 }
 
 polygon*
 make_quad_xz_polygon()
 {
+    material_vn* mat = new material_vn();
+    auto& vertices = mat->get_vertices();
+    auto& indices = mat->get_indices();
+
     polygon *quad_xz = new polygon(GL_TRIANGLES);
-    auto& indices = quad_xz->get_indices();
+    //auto& indices = quad_xz->get_indices();
     indices.push_back(2); indices.push_back(1); indices.push_back(0);
     indices.push_back(0); indices.push_back(3); indices.push_back(2);
-    auto& vertices = quad_xz->get_vertices();
+    //auto& vertices = quad_xz->get_vertices();
     using namespace glm;
     using namespace utility;
     vertices.push_back(vertex_vn(vec3(-9.5f, 0.0f, -9.5f), vec3(0.5f, 0.0f, 0.0f)));
     vertices.push_back(vertex_vn(vec3( 9.5f, 0.0f, -9.5f), vec3(0.0f, 0.0f, 0.5f)));
     vertices.push_back(vertex_vn(vec3( 9.5f, 0.0f,  9.5f), vec3(0.0f, 0.5f, 0.0f)));
     vertices.push_back(vertex_vn(vec3(-9.5f, 0.0f,  9.5f), vec3(0.5f, 0.5f, 0.5f)));
+    mat->set_ambient(glm::vec4(0.1, 0.3, 0.3, 1));
+
+    quad_xz->add_material(mat);
     return quad_xz;
 }
 
@@ -81,8 +109,9 @@ polygon*
 make_cube_polygon()
 {
     polygon *cube = new polygon(GL_TRIANGLES);
-    auto& indices = cube->get_indices();
-    auto& vertices = cube->get_vertices();
+    material_vn* mat = new material_vn();
+    auto& vertices = mat->get_vertices();
+    auto& indices = mat->get_indices();
     indices.push_back(0); indices.push_back(2); indices.push_back(1);
     indices.push_back(0); indices.push_back(3); indices.push_back(2);
     indices.push_back(4); indices.push_back(5); indices.push_back(6);
@@ -105,6 +134,9 @@ make_cube_polygon()
     vertices.push_back({ vec3(-0.5f,  0.5f, -0.5f), vec3(1.0f, 1.0f, 0.0f) });
     vertices.push_back({ vec3(-0.5f, -0.5f, -0.5f), vec3(1.0f, 1.0f, 0.0f) });
     vertices.push_back({ vec3(-0.5f, -0.5f,  0.5f), vec3(1.0f, 1.0f, 0.0f) });
+
+    mat->set_ambient(glm::vec4(0.3, 0.1, 0.3, 1));
+    cube->add_material(mat);
     return cube;
 }
 
@@ -112,8 +144,9 @@ polygon*
 make_sphere_polygon(unsigned stacks, unsigned slices, float radius)
 {
     polygon *sphere = new polygon(GL_TRIANGLES);
-    auto& indices = sphere->get_indices();
-    auto& vertices = sphere->get_vertices();
+    material_vn* mat = new material_vn();
+    auto& vertices = mat->get_vertices();
+    auto& indices = mat->get_indices();
     // Calc The Vertices
     for (unsigned i = 0; i <= stacks; ++i) {
         float V  = i / static_cast<float>(stacks);
@@ -146,6 +179,9 @@ make_sphere_polygon(unsigned stacks, unsigned slices, float radius)
         indices.push_back(i);
         indices.push_back(i + 1);
     }
+
+    mat->set_ambient(glm::vec4(0.3, 0.8, 0.3, 1));
+    sphere->add_material(mat);
     return sphere;
 }
 

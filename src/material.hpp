@@ -26,6 +26,12 @@ public:
     glm::vec4& get_ambient();
     glm::vec4& get_specular();
     glm::vec4& get_diffuse();
+    void set_ambient(glm::vec4&& ambient) { ambient_ = ambient; }
+    void set_diffuse(glm::vec4&& diffuse) { diffuse_ = diffuse; }
+    void set_specular(glm::vec4&& specular) { specular_ = specular; }
+    void set_ambient(glm::vec4& ambient) { ambient_ = ambient; }
+    void set_diffuse(glm::vec4& diffuse) { diffuse_ = diffuse; }
+    void set_specular(glm::vec4& specular) { specular_ = specular; }
     float& get_shininess();
     float& get_dissolve();
     GLuint& get_ambient_map_id();
@@ -42,11 +48,11 @@ private:
     // Ns
     float shininess = 1.0f;
     // Ka
-    glm::vec4 ambient;
+    glm::vec4 ambient_;
     // Kd
-    glm::vec4 diffuse;
+    glm::vec4 diffuse_;
     // Ks
-    glm::vec4 specular;
+    glm::vec4 specular_;
     // ambient texture map ==> map_Ka
     GLuint ambient_map_id = 0;
     // diffuse texture map ==> map_Kd

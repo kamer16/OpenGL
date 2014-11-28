@@ -95,9 +95,12 @@ int main(int argc, char *argv[])
     program p4(SRC_DISS_VERT, SRC_DISS_FRAG, render_type::dissolve);
     program p5(SRC_BUMP_DISS_VERT, SRC_BUMP_DISS_FRAG, render_type::bump_dissolve);
     program p7(SRC_GEO_VERT, SRC_GEO_FRAG, render_type::basic);
-    program p8(SRC_DIR_LIGHT_VERT, SRC_DIR_LIGHT_FRAG, render_type::basic);
-    program p9(SRC_POS_LIGHT_VERT, SRC_POS_LIGHT_FRAG, render_type::basic);
-    program p10(SRC_SPOT_LIGHT_VERT, SRC_SPOT_LIGHT_FRAG, render_type::basic);
+    // The light pass renders stencil objects to apply lighting equations only
+    // on the affectet objects that have been loaded in multiple textures
+    program p8(SRC_DIR_LIGHT_VERT, SRC_DIR_LIGHT_FRAG, render_type::stencil);
+    program p9(SRC_POS_LIGHT_VERT, SRC_POS_LIGHT_FRAG, render_type::stencil);
+    program p10(SRC_SPOT_LIGHT_VERT, SRC_SPOT_LIGHT_FRAG, render_type::stencil);
+    // The shader updates the stencil buffer
     program p11(SRC_STENCIL_VERT, SRC_STENCIL_FRAG, render_type::stencil);
     p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p7.init(); p8.init();
     p9.init(); p10.init(); p11.init();

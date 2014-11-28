@@ -28,7 +28,6 @@ public:
     using vertices_idx = std::vector<unsigned>;
     polygon(GLenum mode);
     virtual ~polygon() override;
-    virtual void draw(program& program) override;
     container_vn& get_vertices();
     vertices_idx& get_indices();
     auto get_resource() -> element_resource&;
