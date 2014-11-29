@@ -56,6 +56,18 @@ also should be drawn consecutively.
 Drawing: glMultiDrawLements, minimize CPU call to draw, draw once batch of
 objects associated to a material once.
 
+Shadow Mapping:  Using texture2DShadow and GL_LINEAR filter to do anti-aliasing
+over the depth texture. This will compare nearby depth values and return an
+average value of how many trues and false (0.5 i-e half true half false).
+    - Render one shadow map per light source over each object of scene.
+      Transorm objects into light space to update the depth buffer.  This buffer
+      will be attached to the light shaders after their stencil pass.  The light
+      shaders will have a cam_space_to_light_screen_space matrix to transform
+      the positions of each vertices from the current camera space to the
+      projecting screen space in light space.  The transforme vertices w
+      components are then compare to the buffer texture to know whether or that
+      vertex is in shadow.
+
 REFACTORING:
 Currently files :
     - material.hpp

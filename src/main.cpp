@@ -43,7 +43,6 @@
 #define SRC_SPOT_LIGHT_FRAG ("src/shaders/spot_light.frag")
 
 #define SRC_STENCIL_VERT ("src/shaders/stencil.vert")
-#define SRC_STENCIL_FRAG ("src/shaders/stencil.frag")
 
 static void enableEnv()
 {
@@ -122,7 +121,7 @@ int main(int argc, char *argv[])
     program p9(SRC_POS_LIGHT_VERT, SRC_POS_LIGHT_FRAG, render_type::stencil);
     program p10(SRC_SPOT_LIGHT_VERT, SRC_SPOT_LIGHT_FRAG, render_type::stencil);
     // The shader updates the stencil buffer
-    program p11(SRC_STENCIL_VERT, SRC_STENCIL_FRAG, render_type::stencil);
+    program p11(SRC_STENCIL_VERT, NULL, render_type::stencil);
     p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p7.init(); p8.init();
     p9.init(); p10.init(); p11.init();
     p8.bind_screen_dimension(opt.window_width, opt.window_height);

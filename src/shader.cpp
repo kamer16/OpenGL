@@ -37,43 +37,51 @@ static void printProgramInfoLog(GLuint obj)
     }
 }
 
+GLuint attach_shader(const char *shader_file, GLenum shader_type,
+                     GLuint program_id)
+{
+  char *shader_string = NULL;
+
+  GLuint shader = glCreateShader(shader_type);
+
+  shader_string = textFileRead(shader_file);
+
+  glShaderSource(shader, 1, &shader_string, NULL);
+  delete[] shader_string;
+
+  glCompileShader(shader);
+
+  printShaderInfoLog(shader, shader_file);
+
+  glAttachShader(program_id, shader);
+
+  return shader;
+}
+
+void destroy_shader(GLuint shader, GLuint program_id)
+{
+  glDetachShader(program_id, shader);
+  glDeleteShader(shader);
+}
 
 void load_shaders(const char *vert_file, const char *frag_file,
                  GLuint *program_id)
 {
-  char *vs = NULL,*fs = NULL;
-
-  GLuint v = glCreateShader(GL_VERTEX_SHADER);
-  GLuint f = glCreateShader(GL_FRAGMENT_SHADER);
-
-  vs = textFileRead(vert_file);
-  fs = textFileRead(frag_file);
-
-  const char * vv = vs;
-  const char * ff = fs;
-
-  glShaderSource(v, 1, &vv,NULL);
-  glShaderSource(f, 1, &ff,NULL);
-
-  delete[] vs;
-  delete[] fs;
-
-  glCompileShader(v);
-  glCompileShader(f);
-
-  printShaderInfoLog(v, vert_file);
-  printShaderInfoLog(f, frag_file);
+  GLuint vertex_shader = 0;
+  GLuint fragment_shader = 0;
 
   *program_id = glCreateProgram();
-  glAttachShader(*program_id,v);
-  glAttachShader(*program_id,f);
+  if (vert_file)
+      vertex_shader = attach_shader(vert_file, GL_VERTEX_SHADER, *program_id);
+  if (frag_file)
+      fragment_shader = attach_shader(frag_file, GL_FRAGMENT_SHADER, *program_id);
 
   glLinkProgram(*program_id);
 
-  glDetachShader(*program_id, v);
-  glDetachShader(*program_id, f);
-  glDeleteShader(v);
-  glDeleteShader(f);
+  if (vertex_shader)
+      destroy_shader(vertex_shader, *program_id);
+  if (fragment_shader)
+      destroy_shader(fragment_shader, *program_id);
 
   printProgramInfoLog(*program_id);
 }
