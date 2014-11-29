@@ -14,6 +14,7 @@
 #include "options.hpp" // parse_args
 #include "fps_manager.hpp" // update_and_print_fps
 #include "program.hpp" // init()
+#include "program_factory.hpp" // generate shader programs
 #include "resource_manager.hpp" // set_shader_uniforms
 
 #include "obj_loader.hpp"
@@ -35,12 +36,8 @@
 
 #define SRC_GEO_VERT ("src/shaders/geometry.vert")
 #define SRC_GEO_FRAG ("src/shaders/geometry.frag")
-#define SRC_DIR_LIGHT_VERT ("src/shaders/dir_light.vert")
-#define SRC_DIR_LIGHT_FRAG ("src/shaders/dir_light.frag")
 #define SRC_POS_LIGHT_VERT ("src/shaders/pos_light.vert")
 #define SRC_POS_LIGHT_FRAG ("src/shaders/pos_light.frag")
-#define SRC_SPOT_LIGHT_VERT ("src/shaders/spot_light.vert")
-#define SRC_SPOT_LIGHT_FRAG ("src/shaders/spot_light.frag")
 
 #define SRC_STENCIL_VERT ("src/shaders/stencil.vert")
 
@@ -109,6 +106,8 @@ int main(int argc, char *argv[])
     g_buffer fb;
     fb.init(opt.window_width, opt.window_height);
 
+    program_factory prog_fact;
+
     program p1(SRC_MAT_VERT, SRC_MAT_FRAG, render_type::material);
     program p2(SRC_COL_VERT, SRC_COL_FRAG, render_type::color);
     program p3(SRC_BUMP_VERT,SRC_BUMP_FRAG, render_type::bump);
@@ -117,16 +116,16 @@ int main(int argc, char *argv[])
     program p7(SRC_GEO_VERT, SRC_GEO_FRAG, render_type::basic);
     // The light pass renders stencil objects to apply lighting equations only
     // on the affectet objects that have been loaded in multiple textures
-    program p8(SRC_DIR_LIGHT_VERT, SRC_DIR_LIGHT_FRAG, render_type::stencil);
+    program* p8 = prog_fact.generate_deferred_dir_light();
     program p9(SRC_POS_LIGHT_VERT, SRC_POS_LIGHT_FRAG, render_type::stencil);
-    program p10(SRC_SPOT_LIGHT_VERT, SRC_SPOT_LIGHT_FRAG, render_type::stencil);
+    program* p10 = prog_fact.generate_deferred_spot_light();
     // The shader updates the stencil buffer
     program p11(SRC_STENCIL_VERT, NULL, render_type::stencil);
-    p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p7.init(); p8.init();
-    p9.init(); p10.init(); p11.init();
-    p8.bind_screen_dimension(opt.window_width, opt.window_height);
+    p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p7.init(); p8->init();
+    p9.init(); p10->init(); p11.init();
+    p8->bind_screen_dimension(opt.window_width, opt.window_height);
     p9.bind_screen_dimension(opt.window_width, opt.window_height);
-    p10.bind_screen_dimension(opt.window_width, opt.window_height);
+    p10->bind_screen_dimension(opt.window_width, opt.window_height);
     bool draw_lines = 0;
     obj_loader loader(draw_lines);
     std::shared_ptr<resource_manager> rm = std::make_shared<resource_manager>();
@@ -185,12 +184,12 @@ int main(int argc, char *argv[])
 
         glEnable(GL_STENCIL_TEST);
         scene1.draw_pos_lights(p9, p11, fb);
-        scene1.draw_spot_lights(p10, p11, fb);
+        scene1.draw_spot_lights(*p10, p11, fb);
 
         // Directionnal light does not need a stencil buffer, also the geometry
         // pass also needs the stencil to be disactivated
         glDisable(GL_STENCIL_TEST);
-        scene1.draw_dir_lights(p8, fb);
+        scene1.draw_dir_lights(*p8, fb);
 
 
         fb.final_pass(opt.window_width, opt.window_height);

@@ -8,6 +8,12 @@ program::program(const char* vertex_shader, const char* fragment_shader,
     load_shaders(vertex_shader, fragment_shader, &program_id_);
 }
 
+program::program(GLuint program_id, render_type type)
+    : program_id_(program_id),
+      render_type_(type)
+{
+}
+
 void
 program::bind_screen_dimension(int width, int height)
 {

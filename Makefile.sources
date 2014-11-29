@@ -1,5 +1,6 @@
 SOURCES=main.cpp \
 	utility.cpp \
+	program_factory.cpp \
 	g_buffer.cpp \
 	light.cpp \
 	program.cpp \

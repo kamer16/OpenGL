@@ -21,6 +21,7 @@ public:
     // Initializes program and sets it as the current program
     program(const char* vertex_shader, const char* fragment_shader,
             render_type type);
+    program(GLuint program_id, render_type type);
     void init();
     void use();
     render_type get_render_type();
