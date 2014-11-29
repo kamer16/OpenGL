@@ -3,7 +3,7 @@
 #include "textfile.hpp"
 #include "shader.hpp"
 
-static void printShaderInfoLog(GLuint obj, const char *file)
+void printShaderInfoLog(GLuint obj, const char *file)
 {
   int infologLength = 0;
   int charsWritten  = 0;

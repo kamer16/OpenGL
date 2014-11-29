@@ -10,4 +10,6 @@ GLuint attach_shader(const char *shader_file, GLenum shader_type,
                      GLuint program_id);
 void destroy_shader(GLuint shader, GLuint program_id);
 
+void printShaderInfoLog(GLuint obj, const char *file);
+
 #endif // SHADER_HPP

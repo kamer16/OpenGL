@@ -116,13 +116,15 @@ int main(int argc, char *argv[])
     program p7(SRC_GEO_VERT, SRC_GEO_FRAG, render_type::basic);
     // The light pass renders stencil objects to apply lighting equations only
     // on the affectet objects that have been loaded in multiple textures
-    program* p8 = prog_fact.generate_deferred_dir_light();
+    program* p8 = prog_fact.generate(DEFERRED_DIR_LIGHT);
     program p9(SRC_POS_LIGHT_VERT, SRC_POS_LIGHT_FRAG, render_type::stencil);
-    program* p10 = prog_fact.generate_deferred_spot_light();
+    program* p10 = prog_fact.generate(DEFERRED_SPOT_LIGHT);
     // The shader updates the stencil buffer
     program p11(SRC_STENCIL_VERT, NULL, render_type::stencil);
-    p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p7.init(); p8->init();
-    p9.init(); p10->init(); p11.init();
+    // Release shader resources from memory as they are now loaded to GPU
+    prog_fact.clear_cache();
+    p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p7.init();
+    p9.init(); p11.init();
     p8->bind_screen_dimension(opt.window_width, opt.window_height);
     p9.bind_screen_dimension(opt.window_width, opt.window_height);
     p10->bind_screen_dimension(opt.window_width, opt.window_height);
