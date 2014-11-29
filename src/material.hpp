@@ -25,6 +25,9 @@ public:
           unsigned, hash_ptr>;
     using vertices_idx = std::vector<unsigned>;
     virtual ~material();
+    material(render_type type);
+    material() = default;
+    material(material& other) = default;
     virtual void accept(resource_manager* rm);
     void draw(GLenum mode);
     glm::vec4& get_ambient();
@@ -82,6 +85,7 @@ private:
 class material_vnt : public material
 {
 public:
+    ~material_vnt();
     material_vnt(material& parent)
         : material(parent)
     {}
@@ -99,7 +103,9 @@ private:
 class material_v : public material
 {
 public:
+    ~material_v();
     material_v() = default;
+    material_v(material_v&) = default;
     material_v(material& parent)
         : material(parent)
     {}
@@ -117,6 +123,7 @@ private:
 class material_vn : public material
 {
 public:
+    ~material_vn();
     material_vn() = default;
     material_vn(material& parent)
         : material(parent)
@@ -140,6 +147,8 @@ public:
     {}
     using container_vnta = std::vector<utility::vertex_vnta>;
     using value_type = utility::vertex_vnta;
+    ~material_vnta();
+    material_vnta() = default;
     virtual void accept(resource_manager* rm) override;
     container_vnta& get_vertices();
     static const bool has_normal = 1;

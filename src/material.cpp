@@ -8,6 +8,9 @@
 #include <fstream>
 #include <iostream>
 
+material_vnta::~material_vnta()
+{
+}
 auto material_vnta::get_vertices() -> container_vnta&
 {
     return vertices_vnta;
@@ -17,31 +20,37 @@ void material_vnta::accept(resource_manager* rm)
     rm->load_indexed_data(*this);
 }
 
+material_vnt::~material_vnt()
+{
+}
 auto material_vnt::get_vertices() -> container_vnt&
 {
     return vertices_vnt;
 }
-
 void material_vnt::accept(resource_manager* rm)
 {
     rm->load_indexed_data(*this);
 }
 
+material_vn::~material_vn()
+{
+}
 auto material_vn::get_vertices() -> container_vn&
 {
     return vertices_vn;
 }
-
 void material_vn::accept(resource_manager* rm)
 {
     rm->load_indexed_data(*this);
 }
 
+material_v::~material_v()
+{
+}
 auto material_v::get_vertices() -> container_v&
 {
     return vertices_v;
 }
-
 void material_v::accept(resource_manager* rm)
 {
     rm->load_indexed_data(*this);
@@ -56,6 +65,10 @@ material::~material()
 {
 }
 
+material::material(render_type type)
+    : render_type_(type)
+{
+}
 
 void
 material::accept(resource_manager* rm)
