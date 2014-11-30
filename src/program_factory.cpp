@@ -5,19 +5,90 @@
 
 #define SRC_DIR_LIGHT_FRAG ("src/shaders/dir_light.frag")
 #define SRC_SPOT_LIGHT_FRAG ("src/shaders/spot_light.frag")
+#define SRC_POINT_LIGHT_FRAG ("src/shaders/pos_light.frag")
+
+#define SRC_STENCIL_VERT ("src/shaders/stencil.vert")
+#define SRC_STENCIL_FRAG (NULL)
+
+// Geometry sources
+#define SRC_COL_VERT ("src/shaders/color.vert")
+#define SRC_COL_FRAG ("src/shaders/color.frag")
+#define SRC_MAT_VERT ("src/shaders/material.vert")
+#define SRC_MAT_FRAG ("src/shaders/material.frag")
+#define SRC_BUMP_VERT ("src/shaders/bump.vert")
+#define SRC_BUMP_FRAG ("src/shaders/bump.frag")
+#define SRC_DISS_VERT ("src/shaders/dissolve.vert")
+#define SRC_DISS_FRAG ("src/shaders/dissolve.frag")
+#define SRC_BUMP_DISS_FRAG ("src/shaders/bump_dissolve.frag")
+#define SRC_GEO_FRAG ("src/shaders/geometry.frag")
+
 
 // TODO make uniform name for deferred_light_vs
 #define SRC_SPOT_LIGHT_VERT ("src/shaders/spot_light.vert")
 
+// DISOLVE_VERT == GEO_VERT
+// BUMP_VERT == BUMP_DISO_VERT
 static const char *g_vertex_source[] =
 {
-    SRC_SPOT_LIGHT_VERT
+    // deferred light
+    SRC_SPOT_LIGHT_VERT,
+    // stencil pass
+    SRC_STENCIL_VERT,
+    // gemetry pass
+    SRC_COL_VERT,
+    SRC_MAT_VERT,
+
+    // TODO change name
+    SRC_DISS_VERT,
+
+    // TODO change name
+    SRC_BUMP_VERT
 };
 static const char *g_fragment_source[] =
 {
+    // deferred light shaders
     SRC_SPOT_LIGHT_FRAG,
-    SRC_DIR_LIGHT_FRAG
+    SRC_DIR_LIGHT_FRAG,
+    SRC_POINT_LIGHT_FRAG,
+    // scencil frag (NULL)
+    SRC_STENCIL_FRAG,
+    // geometry pass
+    SRC_COL_FRAG,
+    SRC_MAT_FRAG,
+
+    SRC_DISS_FRAG,
+    SRC_GEO_FRAG,
+
+    SRC_BUMP_FRAG,
+    SRC_BUMP_DISS_FRAG
 };
+static const render_type g_render_type[NUMBER_OF_PROGRAMS] =
+{
+    // Light pass that use the stencil pass
+    render_type::stencil,
+    render_type::stencil,
+    render_type::stencil,
+    // Stencil pass
+    render_type::stencil,
+    // Geometry pass
+    render_type::color,
+    render_type::material,
+
+    render_type::dissolve,
+    render_type::basic,
+
+    render_type::bump,
+    render_type::bump_dissolve
+};
+
+program_factory::program_factory()
+{
+    for (unsigned i = 0; i < NUMBER_OF_PROGRAMS; ++i) {
+        vertex_shaders[i] = 0;
+        fragment_shaders[i] = 0;
+        program_ids[i] = 0;
+    }
+}
 
 GLuint
 program_factory::compile_shader(const char *shader_file, GLenum shader_type)
@@ -42,6 +113,8 @@ void
 program_factory::load_shader(GLuint program_id, const char* shader_file,
                              GLenum shader_type, GLuint& shader)
 {
+    if (!shader_file)
+        return;
     // shader value zero is used to check is shader was already compiled
     if (!shader)
         shader = compile_shader(shader_file, shader_type);
@@ -64,8 +137,7 @@ program_factory::generate(enum program_type type)
     glLinkProgram(program_id);
     program_ids[type] = program_id;
 
-    // TODO add indexed vector to guess render_type
-    program* res = new program(program_id, render_type::stencil);
+    program* res = new program(program_id, g_render_type[type]);
     res->init();
     return res;
 }
@@ -73,14 +145,14 @@ program_factory::generate(enum program_type type)
 void
 program_factory::clear_cache()
 {
-    // TODO remember to which program id's shader have been atteched to release
-    // them
     for (unsigned i = 0; i < NUMBER_OF_PROGRAMS; ++i) {
         // If no program was created there is now point in detaching shader
         if (!program_ids[i])
             continue;
-        glDetachShader(program_ids[i], vertex_shaders[vertex_idx[i]]);
-        glDetachShader(program_ids[i], fragment_shaders[fragment_idx[i]]);
+        if (vertex_shaders[vertex_idx[i]])
+            glDetachShader(program_ids[i], vertex_shaders[vertex_idx[i]]);
+        if (fragment_shaders[fragment_idx[i]])
+            glDetachShader(program_ids[i], fragment_shaders[fragment_idx[i]]);
     }
 
     for (unsigned i = 0; i < NUMBER_OF_PROGRAMS; ++i) {

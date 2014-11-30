@@ -22,25 +22,6 @@
 
 #include <iostream>
 
-#define SRC_COL_VERT ("src/shaders/color.vert")
-#define SRC_COL_FRAG ("src/shaders/color.frag")
-
-#define SRC_MAT_VERT ("src/shaders/material.vert")
-#define SRC_MAT_FRAG ("src/shaders/material.frag")
-#define SRC_BUMP_VERT ("src/shaders/bump.vert")
-#define SRC_BUMP_FRAG ("src/shaders/bump.frag")
-#define SRC_DISS_VERT ("src/shaders/dissolve.vert")
-#define SRC_DISS_FRAG ("src/shaders/dissolve.frag")
-#define SRC_BUMP_DISS_VERT ("src/shaders/bump_dissolve.vert")
-#define SRC_BUMP_DISS_FRAG ("src/shaders/bump_dissolve.frag")
-
-#define SRC_GEO_VERT ("src/shaders/geometry.vert")
-#define SRC_GEO_FRAG ("src/shaders/geometry.frag")
-#define SRC_POS_LIGHT_VERT ("src/shaders/pos_light.vert")
-#define SRC_POS_LIGHT_FRAG ("src/shaders/pos_light.frag")
-
-#define SRC_STENCIL_VERT ("src/shaders/stencil.vert")
-
 static void enableEnv()
 {
 }
@@ -108,25 +89,24 @@ int main(int argc, char *argv[])
 
     program_factory prog_fact;
 
-    program p1(SRC_MAT_VERT, SRC_MAT_FRAG, render_type::material);
-    program p2(SRC_COL_VERT, SRC_COL_FRAG, render_type::color);
-    program p3(SRC_BUMP_VERT,SRC_BUMP_FRAG, render_type::bump);
-    program p4(SRC_DISS_VERT, SRC_DISS_FRAG, render_type::dissolve);
-    program p5(SRC_BUMP_DISS_VERT, SRC_BUMP_DISS_FRAG, render_type::bump_dissolve);
-    program p7(SRC_GEO_VERT, SRC_GEO_FRAG, render_type::basic);
+    program* p1 = prog_fact.generate(GEOM_MATERIAL_PASS);
+    program* p2 = prog_fact.generate(GEOM_COLOR_PASS);
+    program* p3 = prog_fact.generate(GEOM_BUMP_PASS);
+    program* p4 = prog_fact.generate(GEOM_DISSOLVE_PASS);
+    program* p5 = prog_fact.generate(GEOM_BUMP_DISSOLVE_PASS);
+    // TODO change name
+    program* p7 = prog_fact.generate(GEOM_GEOMETRY_PASS);
     // The light pass renders stencil objects to apply lighting equations only
     // on the affectet objects that have been loaded in multiple textures
     program* p8 = prog_fact.generate(DEFERRED_DIR_LIGHT);
-    program p9(SRC_POS_LIGHT_VERT, SRC_POS_LIGHT_FRAG, render_type::stencil);
+    program* p9 = prog_fact.generate(DEFERRED_POINT_LIGHT);
     program* p10 = prog_fact.generate(DEFERRED_SPOT_LIGHT);
     // The shader updates the stencil buffer
-    program p11(SRC_STENCIL_VERT, NULL, render_type::stencil);
+    program* p11 = prog_fact.generate(STENCIL_PASS);
     // Release shader resources from memory as they are now loaded to GPU
     prog_fact.clear_cache();
-    p1.init(); p2.init(); p3.init(); p4.init(); p5.init(); p7.init();
-    p9.init(); p11.init();
     p8->bind_screen_dimension(opt.window_width, opt.window_height);
-    p9.bind_screen_dimension(opt.window_width, opt.window_height);
+    p9->bind_screen_dimension(opt.window_width, opt.window_height);
     p10->bind_screen_dimension(opt.window_width, opt.window_height);
     bool draw_lines = 0;
     obj_loader loader(draw_lines);
@@ -173,20 +153,22 @@ int main(int argc, char *argv[])
         fb.bind_for_geom_pass();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Draw basic textures
-        scene1.draw_geometry(p7);
+        scene1.draw_geometry(*p7);
+        // Draw dissolve objects
+        scene1.draw_geometry(*p4);
         // Draw bump maps
-        scene1.draw_geometry(p3);
+        scene1.draw_geometry(*p3);
         // Draw bump with dissolve maps
-        scene1.draw_geometry(p5);
+        scene1.draw_geometry(*p5);
         // Draw material objects
-        scene1.draw_geometry(p1);
+        scene1.draw_geometry(*p1);
         // After geometry pass, no one shouldl write in depth buffer.  However,
         // this does not prevent the stencil pass from reading it.
         glDepthMask(GL_FALSE);
 
         glEnable(GL_STENCIL_TEST);
-        scene1.draw_pos_lights(p9, p11, fb);
-        scene1.draw_spot_lights(*p10, p11, fb);
+        scene1.draw_pos_lights(*p9, *p11, fb);
+        scene1.draw_spot_lights(*p10, *p11, fb);
 
         // Directionnal light does not need a stencil buffer, also the geometry
         // pass also needs the stencil to be disactivated
@@ -198,7 +180,7 @@ int main(int argc, char *argv[])
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // update and draw color objects which dont use lighting equations
-        scene1.draw(p2);
+        scene1.draw(*p2);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
