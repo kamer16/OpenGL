@@ -94,8 +94,7 @@ int main(int argc, char *argv[])
     program* p3 = prog_fact.generate(GEOM_BUMP_PASS);
     program* p4 = prog_fact.generate(GEOM_DISSOLVE_PASS);
     program* p5 = prog_fact.generate(GEOM_BUMP_DISSOLVE_PASS);
-    // TODO change name
-    program* p7 = prog_fact.generate(GEOM_GEOMETRY_PASS);
+    program* p7 = prog_fact.generate(GEOM_BASIC_PASS);
     // The light pass renders stencil objects to apply lighting equations only
     // on the affectet objects that have been loaded in multiple textures
     program* p8 = prog_fact.generate(DEFERRED_DIR_LIGHT);

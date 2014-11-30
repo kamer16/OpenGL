@@ -3,9 +3,13 @@
 #include "shader.hpp"
 #include "textfile.hpp"
 
+// Geometry Light pass
 #define SRC_DIR_LIGHT_FRAG ("src/shaders/dir_light.frag")
 #define SRC_SPOT_LIGHT_FRAG ("src/shaders/spot_light.frag")
-#define SRC_POINT_LIGHT_FRAG ("src/shaders/pos_light.frag")
+#define SRC_POINT_LIGHT_FRAG ("src/shaders/point_light.frag")
+
+// Stencil pass
+#define SRC_LIGHT_VERT ("src/shaders/deferred_light.vert")
 
 #define SRC_STENCIL_VERT ("src/shaders/stencil.vert")
 #define SRC_STENCIL_FRAG (NULL)
@@ -22,16 +26,12 @@
 #define SRC_BUMP_DISS_FRAG ("src/shaders/bump_dissolve.frag")
 #define SRC_GEO_FRAG ("src/shaders/geometry.frag")
 
-
-// TODO make uniform name for deferred_light_vs
-#define SRC_SPOT_LIGHT_VERT ("src/shaders/spot_light.vert")
-
 // DISOLVE_VERT == GEO_VERT
 // BUMP_VERT == BUMP_DISO_VERT
 static const char *g_vertex_source[] =
 {
     // deferred light
-    SRC_SPOT_LIGHT_VERT,
+    SRC_LIGHT_VERT,
     // stencil pass
     SRC_STENCIL_VERT,
     // gemetry pass
