@@ -59,7 +59,9 @@ void
 object::draw(program& program)
 {
     for (auto mat : materials_) {
-        if (mat->get_render_type() == program.get_render_type()) {
+        if (program.get_render_type() == render_type::shadow_map)
+            mat->draw(mode_);
+        else if (mat->get_render_type() == program.get_render_type()) {
             program.bind_material(*mat);
             mat->draw(mode_);
         }

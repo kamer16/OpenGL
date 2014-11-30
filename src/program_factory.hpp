@@ -51,9 +51,9 @@ private:
     unsigned fragment_idx[NUMBER_OF_PROGRAMS] =
     {
         // Deferred light pass
-        0,
+        0, 1, 2,
         // Stencil pass
-        1, 2, 3,
+        3,
         // Geometry pass,
         4, 5, 6, 7, 8, 9,
         // Shadow map (NULL) like stencil fragment

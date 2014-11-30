@@ -165,6 +165,12 @@ int main(int argc, char *argv[])
         scene1.draw_geometry(*p5);
         // Draw material objects
         scene1.draw_geometry(*p1);
+
+        sm_fb.bind_for_writing();
+        scene1.draw(*p12);
+        sm_fb.bind_for_reading();
+        // Once texture has been set, we continue writing in previous fbo
+        fb.bind_for_writing();
         // After geometry pass, no one shouldl write in depth buffer.  However,
         // this does not prevent the stencil pass from reading it.
         glDepthMask(GL_FALSE);

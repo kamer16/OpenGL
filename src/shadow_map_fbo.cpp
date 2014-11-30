@@ -36,6 +36,7 @@ void
 shadow_map_fbo::bind_for_writing()
 {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_);
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void
