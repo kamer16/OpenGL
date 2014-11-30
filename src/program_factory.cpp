@@ -19,12 +19,12 @@
 #define SRC_COL_FRAG ("src/shaders/color.frag")
 #define SRC_MAT_VERT ("src/shaders/material.vert")
 #define SRC_MAT_FRAG ("src/shaders/material.frag")
-#define SRC_BUMP_VERT ("src/shaders/bump.vert")
+#define SRC_BUMP_AND_BUMP_DISS_VERT ("src/shaders/bump_and_bump_dissolve.vert")
 #define SRC_BUMP_FRAG ("src/shaders/bump.frag")
-#define SRC_DISS_VERT ("src/shaders/dissolve.vert")
+#define SRC_BASIC_AND_DISS_VERT ("src/shaders/dissolve.vert")
 #define SRC_DISS_FRAG ("src/shaders/dissolve.frag")
 #define SRC_BUMP_DISS_FRAG ("src/shaders/bump_dissolve.frag")
-#define SRC_GEO_FRAG ("src/shaders/geometry.frag")
+#define SRC_BASIC_FRAG ("src/shaders/basic.frag")
 
 // DISOLVE_VERT == GEO_VERT
 // BUMP_VERT == BUMP_DISO_VERT
@@ -38,11 +38,9 @@ static const char *g_vertex_source[] =
     SRC_COL_VERT,
     SRC_MAT_VERT,
 
-    // TODO change name
-    SRC_DISS_VERT,
+    SRC_BASIC_AND_DISS_VERT,
 
-    // TODO change name
-    SRC_BUMP_VERT
+    SRC_BUMP_AND_BUMP_DISS_VERT
 };
 static const char *g_fragment_source[] =
 {
@@ -57,7 +55,7 @@ static const char *g_fragment_source[] =
     SRC_MAT_FRAG,
 
     SRC_DISS_FRAG,
-    SRC_GEO_FRAG,
+    SRC_BASIC_FRAG,
 
     SRC_BUMP_FRAG,
     SRC_BUMP_DISS_FRAG
