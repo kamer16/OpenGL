@@ -30,8 +30,9 @@ public:
     // This function should also call the init function of the programs
     program* generate(enum program_type type);
     program_factory();
-    GLuint compile_shader(const char *shader_file, GLenum shader_type);
     void clear_cache();
+    void load_shader(GLuint program_id, const char* shader_file,
+                     GLenum shader_type, GLuint& shader);
 private:
     // Indices to know which shader object to reuse for which program
     unsigned vertex_idx[NUMBER_OF_PROGRAMS] =
@@ -58,8 +59,9 @@ private:
     // Removes all references to previously compiled shaders by releasing those
     // shaders.  However all current programs stay valid as long as
     // glLinkProgram is not called.
-    void load_shader(GLuint program_id, const char* shader_file,
-                     GLenum shader_type, GLuint& shader);
+    GLuint compile_shader(const char *shader_file, GLenum shader_type);
+    void printProgramInfoLog(GLuint obj);
+    void printShaderInfoLog(GLuint obj, const char *file);
 };
 
 #endif // PROGRAM_FACTORY_HPP

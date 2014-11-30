@@ -1,6 +1,5 @@
 #include "program_factory.hpp"
 #include "utility.hpp"
-#include "shader.hpp"
 #include "textfile.hpp"
 
 // Geometry Light pass
@@ -164,5 +163,41 @@ program_factory::clear_cache()
             glDeleteShader(f_shader);
             f_shader = 0;
         }
+    }
+}
+
+void
+program_factory::printShaderInfoLog(GLuint obj, const char *file)
+{
+  int infologLength = 0;
+  int charsWritten  = 0;
+  char *infoLog;
+
+  glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &infologLength);
+
+  if (infologLength > 1)
+    {
+      infoLog = new char[infologLength];
+      glGetShaderInfoLog(obj, infologLength, &charsWritten, infoLog);
+      printf("%s shader Log:%s\n",file, infoLog);
+      delete[] infoLog;
+    }
+}
+
+void
+program_factory::printProgramInfoLog(GLuint obj)
+{
+  int infologLength = 0;
+  int charsWritten  = 0;
+  char *infoLog;
+
+  glGetProgramiv(obj, GL_INFO_LOG_LENGTH,&infologLength);
+
+  if (infologLength > 1)
+    {
+      infoLog = new char[infologLength];
+      glGetProgramInfoLog(obj, infologLength, &charsWritten, infoLog);
+      printf("Program Log:%s\n", infoLog);
+      delete[] infoLog;
     }
 }

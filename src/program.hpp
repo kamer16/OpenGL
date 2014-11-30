@@ -17,10 +17,7 @@ public:
     using container_vnt = std::vector<utility::vertex_vnt>;
     using container_vn = std::vector<utility::vertex_vn>;
     using lights = std::vector<light*>;
-    // Initialises shader resources, such as texture uniforms.
-    // Initializes program and sets it as the current program
-    program(const char* vertex_shader, const char* fragment_shader,
-            render_type type);
+    // Creates a new program class from some previously compiled program shaders
     program(GLuint program_id, render_type type);
     void init();
     void use();

@@ -1,13 +1,6 @@
 #include "program.hpp"
 #include "shader.hpp"
 
-program::program(const char* vertex_shader, const char* fragment_shader,
-                 render_type type)
-    : render_type_(type)
-{
-    load_shaders(vertex_shader, fragment_shader, &program_id_);
-}
-
 program::program(GLuint program_id, render_type type)
     : program_id_(program_id),
       render_type_(type)
