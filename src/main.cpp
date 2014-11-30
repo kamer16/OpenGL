@@ -19,6 +19,7 @@
 
 #include "obj_loader.hpp"
 #include "g_buffer.hpp"
+#include "shadow_map_fbo.hpp"
 
 #include <iostream>
 
@@ -86,6 +87,8 @@ int main(int argc, char *argv[])
     enableEnv();
     g_buffer fb;
     fb.init(opt.window_width, opt.window_height);
+    shadow_map_fbo sm_fb;
+    sm_fb.init(opt.window_width, opt.window_height);
 
     program_factory prog_fact;
 
@@ -102,6 +105,7 @@ int main(int argc, char *argv[])
     program* p10 = prog_fact.generate(DEFERRED_SPOT_LIGHT);
     // The shader updates the stencil buffer
     program* p11 = prog_fact.generate(STENCIL_PASS);
+    program* p12 = prog_fact.generate(SHADOW_MAP_PASS);
     // Release shader resources from memory as they are now loaded to GPU
     prog_fact.clear_cache();
     p8->bind_screen_dimension(opt.window_width, opt.window_height);

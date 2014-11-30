@@ -40,6 +40,9 @@ texture_binder::set_shader_uniforms(GLuint program_id)
 
     GLint loc8 = glGetUniformLocation(program_id, "map_specular");
     glUniform1i(loc8, 8);
+
+    GLint loc9 = glGetUniformLocation(program_id, "shadow_map");
+    glUniform1i(loc9, 9);
 }
 
 void

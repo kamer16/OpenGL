@@ -1,6 +1,7 @@
 SOURCES=main.cpp \
 	utility.cpp \
 	program_factory.cpp \
+	shadow_map_fbo.cpp \
 	g_buffer.cpp \
 	light.cpp \
 	program.cpp \

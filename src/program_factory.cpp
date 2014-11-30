@@ -24,6 +24,7 @@
 #define SRC_DISS_FRAG ("src/shaders/dissolve.frag")
 #define SRC_BUMP_DISS_FRAG ("src/shaders/bump_dissolve.frag")
 #define SRC_BASIC_FRAG ("src/shaders/basic.frag")
+#define SRC_SHADOW_MAP_VERT ("src/shaders/shadow_map.vert")
 
 // DISOLVE_VERT == GEO_VERT
 // BUMP_VERT == BUMP_DISO_VERT
@@ -39,7 +40,9 @@ static const char *g_vertex_source[] =
 
     SRC_BASIC_AND_DISS_VERT,
 
-    SRC_BUMP_AND_BUMP_DISS_VERT
+    SRC_BUMP_AND_BUMP_DISS_VERT,
+
+    SRC_SHADOW_MAP_VERT
 };
 static const char *g_fragment_source[] =
 {
@@ -75,7 +78,10 @@ static const render_type g_render_type[NUMBER_OF_PROGRAMS] =
     render_type::basic,
 
     render_type::bump,
-    render_type::bump_dissolve
+    render_type::bump_dissolve,
+
+    // Shadow map
+    render_type::shadow_map
 };
 
 program_factory::program_factory()

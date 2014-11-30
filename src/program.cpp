@@ -1,5 +1,4 @@
 #include "program.hpp"
-#include "shader.hpp"
 
 program::program(GLuint program_id, render_type type)
     : program_id_(program_id),

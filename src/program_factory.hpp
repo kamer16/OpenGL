@@ -21,6 +21,8 @@ enum program_type
     GEOM_BUMP_PASS,
     GEOM_BUMP_DISSOLVE_PASS,
 
+    SHADOW_MAP_PASS,
+
     NUMBER_OF_PROGRAMS
 };
 
@@ -42,7 +44,9 @@ private:
         // Stencil pass
         1,
         // Geometry pass,
-        2, 3, 4, 4, 5, 5
+        2, 3, 4, 4, 5, 5,
+        // Shadow map
+        6
     };
     unsigned fragment_idx[NUMBER_OF_PROGRAMS] =
     {
@@ -51,7 +55,9 @@ private:
         // Stencil pass
         1, 2, 3,
         // Geometry pass,
-        4, 5, 6, 7, 8, 9
+        4, 5, 6, 7, 8, 9,
+        // Shadow map (NULL) like stencil fragment
+        3
     };
     GLuint vertex_shaders[NUMBER_OF_PROGRAMS];
     GLuint fragment_shaders[NUMBER_OF_PROGRAMS];

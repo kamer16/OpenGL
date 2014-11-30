@@ -18,6 +18,8 @@ uniform sampler2D map_normal_cam;
 uniform sampler2D map_diffuse;
 uniform sampler2D map_specular;
 
+uniform sampler2D shadow_map;
+
 uniform light_source light;
 uniform float material_shininess;
 uniform vec2 screen_size;

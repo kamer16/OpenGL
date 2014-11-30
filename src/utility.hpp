@@ -18,7 +18,8 @@ enum class render_type
     // Object that only define vertices
     stencil,
     // Object that define vtn, and has all basic textures (Ka, Kd)
-    basic
+    basic,
+    shadow_map
 };
 
 
