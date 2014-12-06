@@ -186,6 +186,7 @@ int main(int argc, char *argv[])
 
 
         fb.final_pass(opt.window_width, opt.window_height);
+        sm_fb.blit_to_screen(opt.window_width, opt.window_height);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // update and draw color objects which dont use lighting equations

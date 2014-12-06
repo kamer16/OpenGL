@@ -57,7 +57,7 @@ private:
         // Geometry pass,
         4, 5, 6, 7, 8, 9,
         // Shadow map (NULL) like stencil fragment
-        3
+        10
     };
     GLuint vertex_shaders[NUMBER_OF_PROGRAMS];
     GLuint fragment_shaders[NUMBER_OF_PROGRAMS];
