@@ -31,6 +31,8 @@ public:
     static const bool is_dir = 1;
     static const bool is_pos = 0;
     static const bool is_spot = 0;
+    glm::mat4 get_bias_cam_to_light_mvp(const glm::mat4& cam_view_mat);
+    glm::mat4 get_vp();
 };
 
 

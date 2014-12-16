@@ -87,3 +87,22 @@ spot_light::get_vp()
                                      1.f, 1 * 500.0f);
     return proj_mat * view_mat;
 }
+
+glm::mat4
+dir_light::get_bias_cam_to_light_mvp(const glm::mat4& cam_view_mat)
+{
+    const glm::mat4 bias_mat(0.5f, 0, 0, 0.0f,
+                             0, 0.5f, 0, 0.0f,
+                             0, 0, 0.5f, 0.0f,
+                             0.5f, 0.5f, 0.5f, 1.0f);
+    return bias_mat * get_vp() * glm::inverse(cam_view_mat);
+}
+
+glm::mat4
+dir_light::get_vp()
+{
+    auto view_mat = glm::lookAt(glm::vec3(0), -glm::vec3(get_position()),
+                                glm::vec3(0, 1, 0));
+    auto proj_mat = glm::ortho(-500.0f, 500.0f, -500.0f, 500.0f, -500.0f, 500.0f);
+    return proj_mat * view_mat;
+}

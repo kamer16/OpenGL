@@ -32,6 +32,9 @@ public:
     ~program();
 private:
     // Base function to load lights
+    template <typename light_t>
+    // view_mat is the camera space view_matricx
+    void bind_shadow(light_t& light, const glm::mat4& view_mat);
     void bind_light(light& light);
     GLuint program_id_;
     render_type render_type_;

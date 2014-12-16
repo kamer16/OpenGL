@@ -116,6 +116,16 @@ program::bind_light(light& light)
     glUniform4fv(diffuse_idx, 1, glm::value_ptr(light.get_diffuse()));
 }
 
+template <typename light_t>
+void program::bind_shadow(light_t& light, const glm::mat4& view_mat)
+{
+    GLint mvp_ls_idx = glGetUniformLocation(program_id_, "cam_to_ls_bias_proj");
+    // Fram position stored in texture in camera space, get light space
+    // projection point
+    glm::mat4 tmp = light.get_bias_cam_to_light_mvp(view_mat);
+    glUniformMatrix4fv(mvp_ls_idx, 1, GL_FALSE, glm::value_ptr(tmp));
+}
+
 
 template <>
 void
@@ -129,6 +139,8 @@ program::bind_light(dir_light& light, const glm::mat4& view_mat)
     // it by a normal matrix.
     glUniform4fv(light_dir_idx, 1,
                  value_ptr(normalize(view_mat * light.get_position())));
+
+    bind_shadow(light, view_mat);
 }
 
 template <>
@@ -167,9 +179,5 @@ program::bind_light(spot_light& light, const glm::mat4& view_mat)
     vec4 spot_dir = vec4(light.get_spot_dir(), 0);
     glUniform3fv(spot_dir_idx, 1, value_ptr(normalize(view_mat * spot_dir)));
 
-    GLint mvp_ls_idx = glGetUniformLocation(program_id_, "cam_to_ls_bias_proj");
-    // Fram position stored in texture in camera space, get light space
-    // projection point
-    glm::mat4 tmp = light.get_bias_cam_to_light_mvp(view_mat);
-    glUniformMatrix4fv(mvp_ls_idx, 1, GL_FALSE, glm::value_ptr(tmp));
+    bind_shadow(light, view_mat);
 }

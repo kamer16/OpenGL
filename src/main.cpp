@@ -146,6 +146,7 @@ int main(int argc, char *argv[])
     object* quad_xz = polygon::make_quad_xz();
     quad_xz->set_render_mode(render_type::material);
     rm->load_indexed_object(*quad_xz);
+    quad_xz->translate(glm::vec3(0, -10, 0));
     quad_xz->scale(glm::vec3(1000, 1000, 1000));
     scene1.add_object(quad_xz);
 
@@ -188,8 +189,8 @@ int main(int argc, char *argv[])
         glDepthMask(GL_FALSE);
 
         glEnable(GL_STENCIL_TEST);
-        scene1.draw_pos_lights(*p9, *p11, fb);
         scene1.draw_spot_lights(*p10, *p11, fb);
+        scene1.draw_pos_lights(*p9, *p11, fb);
 
         // Directionnal light does not need a stencil buffer, also the geometry
         // pass also needs the stencil to be disactivated
