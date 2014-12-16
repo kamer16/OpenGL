@@ -127,6 +127,19 @@ scene::draw_geometry(program& program)
 }
 
 void
+scene::draw_shadow_dir(program& program)
+{
+    program.use();
+    for (auto obj : objects_) {
+        dir_light* dl = dir_lights_[0];
+        const glm::mat4& model_mat = obj->get_model_mat();
+
+        program.bind_mvp(dl->get_vp() * model_mat);
+        obj->draw(program);
+    }
+}
+
+void
 scene::draw_shadow_spot(program& program, unsigned idx)
 {
     program.use();

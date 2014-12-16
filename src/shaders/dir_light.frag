@@ -27,7 +27,7 @@ float shadow_attenuation(vec4 pos_cam)
     // Get position in texture coord
     vec4 position_ls = cam_to_ls_bias_proj * pos_cam;
     // Add a threshold to avoid shadow acnee
-    position_ls.z -= 0.00001 * position_ls.w;
+    position_ls.z -= 0.001 * position_ls.w;
     // Using hardware PCF thanks to sampler2DShodw with linear sampling
     return textureProj(shadow_map, position_ls);
 }

@@ -13,6 +13,7 @@ float LinearizeDepth(float z)
 {
     float n = 1;
     float f = 500.0f;
+    return z;
     return (2.0f * n) / (f + n - z * (f - n));
 }
 

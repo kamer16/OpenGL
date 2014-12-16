@@ -180,7 +180,8 @@ int main(int argc, char *argv[])
         scene1.draw_geometry(*p1);
 
         sm_fb.bind_for_writing();
-        scene1.draw_shadow_spot(*p12, 0);
+        //scene1.draw_shadow_spot(*p12, 0);
+        scene1.draw_shadow_dir(*p12);
         sm_fb.bind_for_reading();
         // Once texture has been set, we continue writing in previous fbo
         fb.bind_for_writing();
