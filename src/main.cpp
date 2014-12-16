@@ -29,10 +29,11 @@ static void enableEnv()
 
 static void generate_lights(std::shared_ptr<resource_manager> rm, scene& scene)
 {
+    // Point light
     for (unsigned i = 0; i < 4; ++i) {
         pos_light* p = new pos_light();
-        object* cube = polygon::make_cube();
-        rm->load_indexed_object(*cube);
+        object* sphere = polygon::make_sphere(20, 20);
+        rm->load_indexed_object(*sphere);
         p->set_diffuse(glm::vec4(1));
         p->set_specular(glm::vec4(1));
         p->set_quadratic_att(0.00001f);
@@ -40,12 +41,24 @@ static void generate_lights(std::shared_ptr<resource_manager> rm, scene& scene)
         float z = i < 2 ? -1 : 1;
         float x = i == 1  || i == 3 ? -1 : 1;
         float depth = 500;
-        p->set_position(glm::vec4(depth * x, i * depth / 2, depth * z, 1));
-        cube->translate(glm::vec3(depth * x, i * depth / 2, depth * z));
-        cube->scale(glm::vec3(5));
+        p->set_position(glm::vec4(depth * x, 10 + i * depth / 2, depth * z, 1));
+        sphere->translate(glm::vec3(depth * x, 10 + i * depth / 2, depth * z));
+        sphere->scale(glm::vec3(5));
         scene.add_light(p);
-        scene.add_object(cube);
+        scene.add_object(sphere);
     }
+    scene.add_light(light_pos_default_new());
+
+    // Spot light
+    scene.add_light(light_spot_default_new());
+    object* c = polygon::make_cube();
+    rm->load_indexed_object(*c);
+    c->translate(glm::vec3(0.0f, 155.0f, 180.0f));
+    c->scale(glm::vec3(10));
+    scene.add_object(c);
+
+    // Directional light
+    scene.add_light(light_dir_default_new());
 }
 
 int main(int argc, char *argv[])
@@ -90,6 +103,7 @@ int main(int argc, char *argv[])
     shadow_map_fbo sm_fb;
     sm_fb.init(opt.window_width, opt.window_height);
 
+    // Initialize programs
     program_factory prog_fact;
 
     program* p1 = prog_fact.generate(GEOM_MATERIAL_PASS);
@@ -121,25 +135,23 @@ int main(int argc, char *argv[])
     else // TODO somehow not working, Bug in GLFW ??
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
-    /* Loop until the user closes the window */
+    // Create scene
     scene scene1(aspect_ratio);
     scene1.init(rm);
-    scene1.add_light(light_spot_default_new());
-    scene1.add_light(light_pos_default_new());
-    scene1.add_light(light_dir_default_new());
     generate_lights(rm, scene1);
     scene1.add_object(obj);
     object* coord = polygon::make_coordinate();
     rm->load_indexed_object(*coord);
     scene1.add_object(coord);
-    object* cube = polygon::make_cube();
-    rm->load_indexed_object(*cube);
-    cube->scale(glm::vec3(10, 10, 10));
-    cube->translate(glm::vec3(0, 0, 20));
-    scene1.add_object(cube);
-
+    object* quad_xz = polygon::make_quad_xz();
+    quad_xz->set_render_mode(render_type::material);
+    rm->load_indexed_object(*quad_xz);
+    quad_xz->scale(glm::vec3(1000, 1000, 1000));
+    scene1.add_object(quad_xz);
 
     fps_manager& fps_manager = fps_manager::get_instance();
+
+    /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         const devices_state &device = devices_state::get_instance(window);
@@ -167,7 +179,7 @@ int main(int argc, char *argv[])
         scene1.draw_geometry(*p1);
 
         sm_fb.bind_for_writing();
-        scene1.draw(*p12);
+        scene1.draw_shadow_spot(*p12, 0);
         sm_fb.bind_for_reading();
         // Once texture has been set, we continue writing in previous fbo
         fb.bind_for_writing();

@@ -33,6 +33,9 @@ public:
     // position.
     // Draw each object
     void draw(program& program);
+    // Called to updated shadow_map of first spot light [WIP]
+    // idx species which spot light to use to create the shadow map
+    void draw_shadow_spot(program& program, unsigned idx);
     // Function used for drawing elments in deferred rendering mode
     void draw_geometry(program& program);
     // Function used for drawing light sources in deferred rendering mode

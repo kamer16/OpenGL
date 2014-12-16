@@ -127,6 +127,19 @@ scene::draw_geometry(program& program)
 }
 
 void
+scene::draw_shadow_spot(program& program, unsigned idx)
+{
+    program.use();
+    for (auto obj : objects_) {
+        spot_light* sl = spot_lights_[idx];
+        const glm::mat4& model_mat = obj->get_model_mat();
+
+        program.bind_mvp(sl->get_vp() * model_mat);
+        obj->draw(program);
+    }
+}
+
+void
 scene::draw(program& program)
 {
     program.use();

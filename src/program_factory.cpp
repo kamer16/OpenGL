@@ -101,7 +101,7 @@ program_factory::program_factory()
 GLuint
 program_factory::compile_shader(const char *shader_file, GLenum shader_type)
 {
-    char *shader_string = NULL;
+    const char *shader_string = NULL;
 
     GLuint shader = glCreateShader(shader_type);
 

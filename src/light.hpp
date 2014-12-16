@@ -49,8 +49,8 @@ public:
     float get_scale();
 private:
     float const_att_ = 1.0f;
-    float linear_att_ = 0.001f;
-    float quadratic_att_ = 0.001f;
+    float linear_att_ = 0.00001f;
+    float quadratic_att_ = 0.00001f;
 };
 
 class spot_light : public pos_light
@@ -65,6 +65,11 @@ public:
     float get_spot_exponent() { return spot_exponent_; }
     void set_spot_dir(glm::vec3 dir) { spot_dir_ = dir; }
     glm::vec3 get_spot_dir() { return spot_dir_; }
+    // To get light space projection position, we need the inverse cam_view_mat
+    // as the position was stored in cam_space in texture
+    // pv (inv(cam_v)) cam_v m = pvm in light space
+    glm::mat4 get_bias_cam_to_light_mvp(const glm::mat4& cam_view_mat);
+    glm::mat4 get_vp();
 private:
     // Spot lights lighting direction
     glm::vec3 spot_dir_ = glm::vec3(0, 0, -1);

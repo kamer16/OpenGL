@@ -8,9 +8,6 @@
 # include "utility.hpp"
 # include "light.hpp"
 
-#include <glm/gtc/type_ptr.hpp>
-
-
 class program
 {
 public:

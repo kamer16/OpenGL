@@ -12,11 +12,25 @@ uniform sampler2D map_normal_cam;
 uniform sampler2D map_diffuse;
 uniform sampler2D map_specular;
 
+uniform sampler2DShadow shadow_map;
+
 uniform light_source light;
 uniform float material_shininess;
 uniform vec2 screen_size;
 
+uniform mat4 cam_to_ls_bias_proj;
+
 out vec4 out_color;
+
+float shadow_attenuation(vec4 pos_cam)
+{
+    // Get position in texture coord
+    vec4 position_ls = cam_to_ls_bias_proj * pos_cam;
+    // Add a threshold to avoid shadow acnee
+    position_ls.z -= 0.00001 * position_ls.w;
+    // Using hardware PCF thanks to sampler2DShodw with linear sampling
+    return textureProj(shadow_map, position_ls);
+}
 
 void main()
 {
@@ -39,4 +53,5 @@ void main()
         float e_dot_r = max(dot(eye_vector_cam, normalize(reflection_cam)), 0);
         out_color += light.specular * Ks * pow(e_dot_r, 42);
     }
+    out_color *= shadow_attenuation(vec4(pos_cam, 1));
 }

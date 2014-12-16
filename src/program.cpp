@@ -1,5 +1,7 @@
 #include "program.hpp"
 
+#include <glm/gtc/type_ptr.hpp> // value_ptr
+
 program::program(GLuint program_id, render_type type)
     : program_id_(program_id),
       render_type_(type)
@@ -164,4 +166,10 @@ program::bind_light(spot_light& light, const glm::mat4& view_mat)
     using namespace glm;
     vec4 spot_dir = vec4(light.get_spot_dir(), 0);
     glUniform3fv(spot_dir_idx, 1, value_ptr(normalize(view_mat * spot_dir)));
+
+    GLint mvp_ls_idx = glGetUniformLocation(program_id_, "cam_to_ls_bias_proj");
+    // Fram position stored in texture in camera space, get light space
+    // projection point
+    glm::mat4 tmp = light.get_bias_cam_to_light_mvp(view_mat);
+    glUniformMatrix4fv(mvp_ls_idx, 1, GL_FALSE, glm::value_ptr(tmp));
 }
